@@ -1,0 +1,134 @@
+---
+/**
+ * 한자 쓰기 연습.
+ * 본문과 같은 Base 레이아웃을 쓰므로 테마 전환·발음 버튼이 그대로 동작합니다.
+ *
+ * 원본과 달라진 점:
+ *  1. 연습 단어를 회차 YAML 에서 가져옵니다 — 페이지마다 목록을 손으로 적지 않습니다.
+ *  2. 획순 데이터를 통째로 넣지 않고, 이 회차에 필요한 글자만 /kanji/ 에서 받아옵니다.
+ */
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import { kanjiFileName } from '../../../lib/furigana';
+import { url } from '../../../lib/site';
+import '../../../styles/write.css';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('episodes', ({ data }) => !data.draft))
+    .filter((ep) => ep.data.kanjiPractice.length > 0)
+    .sort((a, b) => b.data.no - a.data.no);
+
+  // 회차 선택 콤보에 쓸 목록을 모든 페이지에 함께 넘겨줍니다.
+  const options = all.map((e) => ({
+    slug: e.id,
+    no: e.data.no,
+    subtitle: e.data.subtitle,
+    count: new Set([...e.data.kanjiPractice.flatMap((w) => [...w.w])].filter((c) =>
+      /[\u4E00-\u9FFF]/.test(c)
+    )).size,
+  }));
+
+  return all.map((ep) => ({ params: { slug: ep.id }, props: { ep, options } }));
+}
+
+const { ep, options } = Astro.props;
+const words = ep.data.kanjiPractice;
+
+// 이 회차에 실제로 필요한 한자만 골라 파일 이름 표를 만듭니다.
+const chars = [...new Set(words.flatMap((w) => [...w.w]))].filter((c) =>
+  /[\u4E00-\u9FFF]/.test(c)
+);
+const kanjiFiles = Object.fromEntries(chars.map((c) => [c, kanjiFileName(c)]));
+---
+<Base
+  title={`한자 쓰기 — ${ep.data.subtitle}`}
+  description={`${ep.data.description} 오늘 나온 한자를 획순대로 써봅니다.`}
+  bodyClass="write"
+  nav="write"
+>
+  <div class="write-wrap">
+  <header class="write-header">
+    <div class="eyebrow">한자 쓰기</div>
+    <h1>{ep.data.subtitle}</h1>
+    <p class="lead">{`읽고 → 따라 쓰고 → 혼자 써봅니다`}</p>
+  </header>
+
+  <div class="ep-picker">
+    <label for="epSelect">회차</label>
+    <select id="epSelect" aria-label="연습할 회차 고르기">
+      {options.map((o) => (
+        <option value={url(`/ep/${o.slug}/write/`)} selected={o.slug === ep.id}>
+          {`#${String(o.no).padStart(3, '0')} — ${o.subtitle}`}
+        </option>
+      ))}
+    </select>
+  </div>
+
+  <div class="stages">
+    <div class="stg on" data-s="0">읽기</div>
+    <div class="stg" data-s="1">따라쓰기</div>
+    <div class="stg" data-s="2">혼자 쓰기</div>
+  </div>
+
+  <div class="strip jp" id="strip"></div>
+
+  <div class="card jp" id="read">
+    <div class="nav">
+      <button class="arrow" id="prev" type="button" aria-label="이전 단어">‹</button>
+        <div class="cnt" id="navCnt"></div>
+        <button class="arrow" id="next" type="button" aria-label="다음 단어">›</button>
+    </div>
+    <div class="big"><span id="rWord"></span><button class="spk" id="rSpk" type="button" aria-label="발음 듣기">🔊</button></div>
+    <div class="kana" id="rKana"></div>
+    <div class="ko" id="rKo"></div>
+    <div class="ex"><span id="rEx"></span><button class="spk" id="rExSpk" type="button" aria-label="예문 듣기">🔊</button></div>
+    <div class="exko" id="rExKo"></div>
+  </div>
+
+  <div class="sheet hidden" id="sheet">
+    <svg id="svg" viewBox="0 0 109 109">
+      <rect class="frame" x=".5" y=".5" width="108" height="108" />
+      <path class="grid" d="M54.5,6V103 M6,54.5H103" />
+      <g id="rest"></g>
+      <path id="ghost" class="stroke ghost"></path>
+      <path id="runner" class="stroke"></path>
+      <g id="done"></g>
+      <path id="live" class="stroke live"></path>
+      <g id="hint"></g>
+    </svg>
+    <canvas id="fx"></canvas>
+    <div id="flash" class="ripple"></div>
+    <div id="flash2" class="ripple two"></div>
+    <div id="pop"><b></b><i></i></div>
+  </div>
+
+  <div id="msg"></div>
+
+  <div class="row" id="readBtns">
+    <button class="wide primary" id="rGo" type="button">쓰기 시작</button>
+  </div>
+
+  <div class="row hidden" id="writeBtns">
+    <button class="wide" id="demo" type="button">전체 획순 보기</button>
+    <button class="wide" id="reset" type="button">다시 쓰기</button>
+  </div>
+
+  <div class="write-foot-nav">
+    <a class="pill" href={url(`/ep/${ep.id}/`)}>← 본문으로 돌아가기</a>
+  </div>
+  </div>
+
+  <script is:inline>
+    // 회차를 고르면 그 회차 연습 페이지로 바로 이동합니다.
+    document.getElementById('epSelect').addEventListener('change', function (e) {
+      window.location.href = e.target.value;
+    });
+  </script>
+
+  <script is:inline define:vars={{ WORDS: words, KANJI_FILES: kanjiFiles, KANJI_BASE: url('/kanji/') }}>
+    window.WORDS = WORDS;
+    window.KANJI_FILES = KANJI_FILES;
+    window.KANJI_BASE = KANJI_BASE;
+  </script>
+  <script src={url('/write-engine.js')} is:inline></script>
+</Base>

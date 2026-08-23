@@ -1,0 +1,29 @@
+---
+import Jp from './Jp.astro';
+import Speak from './Speak.astro';
+import Rich from './Rich.astro';
+interface Props {
+  title: string;
+  bad: { mark: string; jp: string; aside?: string };
+  good: { jp: string };
+  tip: string;
+}
+const { title, bad, good, tip } = Astro.props;
+---
+<div class="compare">
+  <Rich class="compare-title" text={title} />
+  <div class="cline no">
+    <div class="mark">{bad.mark}</div>
+    <div class="txt">
+      <Jp text={bad.jp} />
+      {bad.aside && <span style="color:var(--muted)">({bad.aside})</span>}
+    </div>
+    <Speak text={bad.jp} />
+  </div>
+  <div class="cline ok">
+    <div class="mark">✓</div>
+    <div class="txt"><Jp text={good.jp} /></div>
+    <Speak text={good.jp} />
+  </div>
+  <Rich class="tip" text={`💡 ${tip}`} />
+</div>

@@ -1,0 +1,106 @@
+/* ===========================================================
+   상단 내비게이션 · 알약 버튼
+   모든 페이지가 공유하므로 Base 레이아웃에서 불러옵니다.
+   (예전에는 list.css 에만 있어서 회차 본문·한자 쓰기 페이지에서 내비가 깨졌어요.)
+   =========================================================== */
+.site-nav{
+  position:sticky; top:0; z-index:100;
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{
+  display:flex; align-items:center; gap:10px;
+  max-width:var(--page-max); margin:0 auto; padding:10px var(--page-pad);
+}
+.nav-brand{
+  font-size:15px; font-weight:800; letter-spacing:-.02em;
+  color:var(--text); text-decoration:none; flex:none;
+}
+.nav-links{ display:flex; gap:2px; margin-left:auto; }
+.nav-link{
+  padding:7px 12px; font-size:13px; font-weight:600;
+  color:var(--muted); text-decoration:none;
+  border-radius:999px; white-space:nowrap;
+  transition:color .15s ease, background .15s ease;
+}
+.nav-link:hover{ color:var(--text); }
+.nav-link.on{ color:var(--accent-ink); background:var(--accent-soft); font-weight:700; }
+
+/* 테마 버튼은 내비 안으로 들어옵니다 (기존 fixed 스타일 덮어쓰기) */
+.site-nav .theme-toggle{
+  position:static; flex:none; box-shadow:none;
+  width:32px; height:32px; padding:0;
+  display:grid; place-items:center;
+}
+.site-nav .theme-toggle .t-ico{ font-size:14px; }
+
+@media (max-width:420px){
+  .nav-inner{ padding:9px 12px; gap:6px; }
+  .nav-brand{ font-size:14px; }
+  .nav-link{ padding:6px 9px; font-size:12.5px; }
+}
+
+/* ===========================================================
+   알약 버튼 (회차 이동 · 페이지 이동)
+   =========================================================== */
+.pill{
+  display:inline-block; padding:10px 18px;
+  font-size:13.5px; font-weight:600; text-decoration:none;
+  color:var(--muted); background:transparent;
+  border:1px solid var(--line); border-radius:999px;
+  transition:color .15s ease, border-color .15s ease;
+  white-space:nowrap;
+}
+a.pill:hover{ color:var(--text); border-color:var(--line-2); }
+.pill.ghost{ opacity:.32; cursor:default; }
+
+.ep-foot-nav,.pager{
+  display:flex; align-items:center; justify-content:center;
+  gap:8px; margin:28px 0 6px; flex-wrap:wrap;
+}
+.pager-count{ font-size:12.5px; color:var(--muted-2); letter-spacing:.04em; }
+
+
+/* ===========================================================
+   회차 이동 바
+   본문 위에 한 번, 아래에 한 번. 아래쪽은 스크롤 중에도 따라붙습니다.
+   =========================================================== */
+.ep-nav{
+  display:flex; align-items:center; justify-content:center;
+  gap:8px; margin:18px 0;
+}
+.ep-nav .pill{ font-size:14px; padding:8px 24px; }
+
+.ep-nav.sticky{
+  position:sticky; bottom:12px; z-index:60;
+  margin:26px 0 6px; padding:8px;
+  background:color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter:blur(12px);
+  /* border:1px solid var(--line); border-radius:999px;
+  box-shadow:var(--shadow); */
+}
+.ep-nav.sticky .pill{ background:var(--card); }
+.ep-nav.sticky .pill.ghost{ background:transparent; }
+
+/* ===========================================================
+   공통 푸터
+   =========================================================== */
+.site-footer{
+  max-width:var(--page-max); margin:34px auto 0; padding:22px var(--page-pad) 34px;
+  border-top:1px solid var(--line);
+  font-size:12.5px; line-height:1.8; color:var(--muted);
+  text-align:center;
+}
+.site-footer p{ margin:0 0 4px; }
+/* 푸터 링크는 본문 강조색을 쓰지 않습니다. 여기서 시선을 끌 이유가 없어요.
+   대신 밑줄로 링크임을 알립니다. */
+.site-footer a{
+  color:var(--muted); text-decoration:underline;
+  text-underline-offset:2px; text-decoration-color:var(--line-2);
+}
+.site-footer a:hover{ color:var(--text); text-decoration-color:var(--muted-2); }
+.site-footer .foot-license a{ color:var(--muted-2); }
+.site-footer .foot-license a:hover{ color:var(--muted); }
+.site-footer .foot-license{ margin-top:12px; font-size:11.5px; color:var(--muted-2); }
+.site-footer .foot-copy{ margin-top:10px; font-size:11.5px; color:var(--muted-2); }

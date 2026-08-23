@@ -1,0 +1,18 @@
+---
+/**
+ * 발음 재생 버튼.
+ * data-jp 에는 후리가나를 걷어낸 순수 일본어만 들어갑니다 — 원문에서 자동으로 뽑습니다.
+ * data-audio 가 있으면 미리 만들어둔 음성 파일을 우선 재생하고, 없으면 브라우저 음성으로 읽습니다.
+ */
+import { toPlain } from '../lib/furigana';
+
+interface Props { text: string; audio?: string; label?: string; class?: string; }
+const { text, audio, label = '발음 듣기', class: className = 'spk' } = Astro.props;
+---
+<button
+  type="button"
+  class={className}
+  data-jp={toPlain(text)}
+  data-audio={audio}
+  aria-label={label}
+>🔊</button>

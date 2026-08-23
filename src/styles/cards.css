@@ -1,0 +1,165 @@
+/* ===========================================================
+   단어 플래시카드
+   =========================================================== */
+
+.card-filters{
+  display:flex; gap:7px; flex-wrap:wrap; margin-bottom:14px;
+}
+/* 회차 이름이 길어서 잘리기 쉬우므로 셀렉트마다 폭 비중을 다르게 줍니다. */
+.card-filters select{
+  flex:1 1 0; min-width:0; padding:10px 32px 10px 14px;
+  font-family:var(--font-kr); font-size:13px;
+  color:var(--text); background:var(--card);
+  border:1px solid var(--line); border-radius:999px;
+  cursor:pointer; outline:none; appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),
+                   linear-gradient(135deg,currentColor 50%,transparent 50%);
+  background-position:calc(100% - 17px) 51%, calc(100% - 12px) 51%;
+  background-size:5px 5px, 5px 5px;
+  background-repeat:no-repeat;
+  text-overflow:ellipsis;
+}
+.card-filters select:hover{ border-color:var(--line-2); }
+.card-filters select:focus{ border-color:var(--accent-ink); }
+#fCat{ flex:1 1 0; }
+#fKnown{ flex:1 1 0; }
+#fEp{ flex:2.4 1 0; }        /* 회차는 제목까지 보여야 해서 가장 넓게 */
+
+.card-filters .pill{ flex:none; cursor:pointer; font-family:var(--font-kr); }
+
+@media (max-width:600px){
+  /* 좁은 화면에서는 회차를 한 줄 통째로 씁니다. */
+  #fEp{ flex:1 1 100%; order:3; }
+  .card-filters .pill{ order:4; }
+}
+
+/* ---- 진행 막대 ---- */
+.deck-bar{ display:flex; align-items:center; gap:11px; margin-bottom:12px; }
+.deck-progress{
+  flex:1; height:5px; border-radius:999px;
+  background:var(--line); overflow:hidden;
+}
+.deck-progress span{
+  display:block; height:100%; width:0;
+  background:var(--accent-ink); border-radius:999px;
+  transition:width .25s ease;
+}
+.deck-count{
+  flex:none; font-size:12px; color:var(--muted-2);
+  letter-spacing:.04em; font-variant-numeric:tabular-nums;
+}
+
+/* ---- 카드 ---- */
+.flashcard{
+  perspective:1200px; cursor:pointer;
+  height:270px; margin-bottom:12px;
+}
+.flashcard:focus-visible{ outline:2px solid var(--accent-ink); outline-offset:4px; border-radius:var(--radius); }
+
+.fc-inner{
+  position:relative; width:100%; height:100%;
+  transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,.2,.2,1);
+}
+.fc-inner.flip{ transform:rotateY(180deg); }
+
+.fc-face{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:11px; padding:26px 22px; text-align:center;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius); box-shadow:var(--shadow);
+  backface-visibility:hidden; -webkit-backface-visibility:hidden;
+}
+.fc-back{ transform:rotateY(180deg); background:var(--bg-soft); }
+
+.fc-meta{
+  font-size:14px; font-weight:700; letter-spacing:.06em;
+  color:var(--muted-2);
+}
+.fc-jp{
+  font-family:var(--font-jp); font-size:32px; font-weight:700;
+  line-height:1.45; word-break:keep-all;
+}
+.fc-jp rt{ font-size:.42em; color:var(--ruby); font-weight:400; }
+.fc-hint{ font-size:14px; color:var(--muted-2); margin-top:10px; }
+
+.fc-mean{ font-size:24px; font-weight:700; line-height:1.45; }
+.fc-note{
+  font-size:15px; line-height:1.7; color:var(--muted);
+  max-height:110px; overflow:auto;
+}
+.fc-note b{ color:var(--text); }
+.fc-src{
+  font-size:14px; font-weight:700; color:var(--accent-ink);
+  text-decoration:none; margin-top: 24px;
+}
+
+/* ---- 점수판 ---- */
+.deck-tally{
+  display:flex; gap:8px; margin-bottom:12px;
+}
+.tally{
+  flex:1; padding:9px 12px; text-align:center;
+  font-size:14px; font-weight: 500; color:var(--muted);
+  background:var(--card); border:1px solid var(--line);
+  border-radius:11px;
+}
+.tally b{ font-size:14px; margin-left:4px; font-variant-numeric:tabular-nums; }
+.tally.ok b{ color:var(--right); }
+.tally.again b{ color:var(--hot); }
+
+/* ---- 채점 버튼 ---- */
+/* [hidden] 을 확실히 이기게 먼저 선언합니다. display 를 지정한 요소는
+   이 규칙이 없으면 hidden 속성을 무시해요. */
+[hidden]{ display:none !important; }
+
+.deck-actions{ display:flex; gap:8px; }
+.deck-actions .pill{ cursor:pointer; font-family:var(--font-kr); }
+.deck-actions .wide{
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
+  padding:12px 10px; text-align:center; font-size:15px; font-weight:700;
+}
+.deck-actions .wide small{
+  font-size:12px; font-weight:500; opacity:.7; letter-spacing:0;
+}
+.deck-actions .again{ color:var(--text); border-color:var(--line-2); }
+.deck-actions .again:hover{ border-color:var(--hot); }
+.deck-actions .know{
+  color:var(--on-hot); background:var(--hot); border-color:var(--hot);
+}
+
+/* 채점 전 안내 */
+.deck-guide{
+  padding:14px; text-align:center;
+  font-size:14px; font-weight: 500; color:var(--muted-2);
+  border:1px dashed var(--line); border-radius:14px;
+}
+
+/* ---- 완료 ---- */
+.deck-done{
+  display:flex; flex-direction:column; align-items:center; gap:13px;
+  margin-top:12px; padding:34px 20px; text-align:center;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius);
+}
+.done-emoji{ font-size:38px; }
+.done-text{ font-size:15px; font-weight:600; line-height:1.6; }
+
+@media (min-width:560px){
+  .flashcard{ height:300px; }
+  .fc-jp{ font-size:38px; }
+}
+
+/* 완료 화면의 버튼은 한 줄짜리라 세로 정렬을 되돌립니다. */
+.deck-done .deck-actions{ justify-content:center; }
+.deck-done .deck-actions .pill{
+  flex:none; flex-direction:row; padding:10px 18px; font-size:13.5px;
+}
+
+/* 저장 안내 */
+.deck-saved{
+  margin:0 0 10px; text-align:center;
+  font-size:14px; color:var(--muted-2);
+}
+.deck-saved b{ color:var(--text); }

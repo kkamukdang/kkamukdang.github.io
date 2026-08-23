@@ -1,0 +1,26 @@
+---
+import Jp from './Jp.astro';
+import Speak from './Speak.astro';
+import Rich from './Rich.astro';
+interface Props {
+  label: string;
+  items: { jp: string; mean: string; note?: string; speak?: string }[];
+  term?: boolean;
+}
+const { label, items, term = true } = Astro.props;
+---
+<div class="sub-label">{label}</div>
+<div class="word-list">
+  {items.map((it) => (
+    <div class={term ? 'word-card term' : 'word-card'}>
+      <div class="word-jp-row">
+        <Jp text={it.jp} class="word-jp" />
+        <Speak text={it.speak ?? it.jp} />
+      </div>
+      <div class="word-body">
+        <div class="word-mean">{it.mean}</div>
+        {it.note && <Rich class="word-note" text={it.note} />}
+      </div>
+    </div>
+  ))}
+</div>

@@ -1,0 +1,19 @@
+---
+/**
+ * 모든 페이지 맨 아래에 붙는 공통 푸터.
+ * 예전에는 회차 본문에만 있어서 목록·단어장에는 저작권 표기가 없었어요.
+ */
+import { SITE } from '../lib/site';
+const year = new Date().getFullYear();
+const span = year > SITE.since ? `${SITE.since}–${year}` : `${SITE.since}`;
+---
+<footer class="site-footer" data-pagefind-ignore>
+  <p>AI 도구로 초안을 잡고 사람이 다듬어요.</p>
+  <p>
+    이상한 부분을 발견하면 <a href={`mailto:${SITE.email}`}>알려주세요</a> — 다음 편에서 정정합니다.
+  </p>
+  <p class="foot-license">
+    획순 데이터: <a href="https://kanjivg.tagaini.net/" target="_blank" rel="noopener">KanjiVG</a> (CC BY-SA 3.0)
+  </p>
+  <p class="foot-copy">© {span} {SITE.name}</p>
+</footer>

@@ -1,0 +1,120 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import PrevCard from '../../components/PrevCard.astro';
+import EpisodeNav from '../../components/EpisodeNav.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import Scene from '../../components/Scene.astro';
+import WordGroup from '../../components/WordGroup.astro';
+import Compare from '../../components/Compare.astro';
+import Apply from '../../components/Apply.astro';
+import Quiz from '../../components/Quiz.astro';
+import Subscribe from '../../components/Subscribe.astro';
+import NextCard from '../../components/NextCard.astro';
+import EpisodeFooter from '../../components/EpisodeFooter.astro';
+import { toPlain } from '../../lib/furigana';
+import { SITE, url } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('episodes', ({ data }) => !data.draft)).sort(
+    (a, b) => a.data.no - b.data.no
+  );
+  // 이전/다음 편은 회차 번호 순서로 자동 연결됩니다. 손으로 링크를 고칠 일이 없습니다.
+  return all.map((ep, i) => ({
+    params: { slug: ep.id },
+    props: { ep, prev: all[i - 1] ?? null, next: all[i + 1] ?? null },
+  }));
+}
+
+const { ep, prev, next } = Astro.props;
+const d = ep.data;
+const plainTitle = toPlain(d.title);
+const hasKanji = d.kanjiPractice.length > 0;
+const kanjiChars = [...new Set(d.kanjiPractice.flatMap((w) => [...w.w]))]
+  .filter((c) => /[\u4E00-\u9FFF]/.test(c))
+  .join(' · ');
+---
+<Base
+  title={`${plainTitle} — ${SITE.name}`}
+  description={d.description}
+  ogTitle={`${plainTitle} — ${SITE.name}`}
+>
+  <div class="wrap" data-pagefind-body>
+    <meta data-pagefind-meta={`no:${d.no}`} />
+
+    <Hero emoji={d.emoji} title={d.title} subtitle={d.subtitle} />
+
+    <EpisodeNav prev={prev} next={next} />
+
+    {d.recap && (
+      <PrevCard
+        text={d.recap}
+        prev={prev ? { slug: prev.id, no: prev.data.no, subtitle: prev.data.subtitle } : null}
+      />
+    )}
+
+    {d.scene.length > 0 && (
+      <>
+        <SectionTitle badge="SCENE" title="오늘의 대화" />
+        <Scene lines={d.scene} />
+      </>
+    )}
+
+    {d.wordGroups.length > 0 && (
+      <>
+        <SectionTitle badge="WORD" title="새 단어 & 문법" />
+        {d.wordGroups.map((g, i) => (
+          <WordGroup label={g.label} items={g.items} term={i === 0} />
+        ))}
+      </>
+    )}
+
+    {d.compare.length > 0 && (
+      <>
+        <SectionTitle badge="CHECK" title="❌ vs ✅ 비교" />
+        {d.compare.map((c, i) => (
+          <Compare
+            title={`${String(i + 1).padStart(2, '0')}. ${c.title}`}
+            bad={c.bad}
+            good={c.good}
+            tip={c.tip}
+          />
+        ))}
+      </>
+    )}
+
+    {d.apply.length > 0 && (
+      <>
+        <SectionTitle badge="APPLY" title="응용 문장" />
+        <Apply items={d.apply} />
+      </>
+    )}
+
+    {d.quiz.length > 0 && (
+      <>
+        <SectionTitle badge="QUIZ" title="복습 퀴즈" />
+        <Quiz items={d.quiz} />
+      </>
+    )}
+
+    {SITE.subscribeOnEpisodes && <Subscribe />}
+
+    {hasKanji && (
+      <a class="write-link" href={url(`/ep/${ep.id}/write/`)}>
+        {`✍️ 오늘의 한자 써보기 — ${kanjiChars}`}
+      </a>
+    )}
+
+    {d.nextPreview && (
+      <NextCard
+        text={d.nextPreview}
+        next={next ? { slug: next.id, no: next.data.no } : null}
+      />
+    )}
+
+    <EpisodeFooter keyPoints={d.keyPoints} />
+
+    <EpisodeNav prev={prev} next={next} sticky />
+  </div>
+</Base>

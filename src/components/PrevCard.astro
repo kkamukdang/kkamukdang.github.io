@@ -1,0 +1,15 @@
+---
+/**
+ * 본문 맨 위의 지난 편 요약.
+ * 아래쪽 NEXT 카드와 짝을 이루도록 같은 모양을 씁니다.
+ */
+import Rich from './Rich.astro';
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+---
+<div class="prev-card" data-pagefind-ignore>
+  <div class="next-label">PREV</div>
+  <Rich class="next-text" text={text} />
+</div>

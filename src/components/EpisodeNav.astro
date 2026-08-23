@@ -1,0 +1,22 @@
+---
+/**
+ * 회차 이동 바. 본문 위아래에 같은 모양으로 놓고,
+ * 아래쪽 것은 스크롤 중에도 화면에 붙어 따라옵니다.
+ */
+import { url } from '../lib/site';
+interface Props {
+  prev?: { id: string } | null;
+  next?: { id: string } | null;
+  sticky?: boolean;
+}
+const { prev, next, sticky = false } = Astro.props;
+---
+<div class={sticky ? 'ep-nav sticky' : 'ep-nav'} data-pagefind-ignore>
+  {prev
+    ? <a class="pill" href={url(`/ep/${prev.id}/`)}>← 이전</a>
+    : <span class="pill ghost">← 이전</span>}
+  <a class="pill" href={url('/')}>전체 회차</a>
+  {next
+    ? <a class="pill" href={url(`/ep/${next.id}/`)}>다음 →</a>
+    : <span class="pill ghost">다음 →</span>}
+</div>

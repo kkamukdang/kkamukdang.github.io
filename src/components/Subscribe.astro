@@ -1,0 +1,15 @@
+---
+import { SITE } from '../lib/site';
+---
+<div class="sub-card" data-pagefind-ignore>
+  <div class="sub-title">{SITE.name} · {SITE.tagline}</div>
+  <div class="sub-text">
+    공부는 했는데 말은 잘 안 나올 때가 있죠?<br />
+    치킨 시킬 때, 주문 실수할 때, 일상 속 꼭 쓸 말만 쏙쏙.<br />
+    매주 목요일, 까먹어도 다시 만나요.
+  </div>
+  <a class="sub-btn" href={SITE.subscribeUrl} target="_blank" rel="noopener">
+    지금 까먹당에 입당하기
+  </a>
+  <div class="sub-meta">{SITE.subscribeNote}</div>
+</div>

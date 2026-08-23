@@ -1,0 +1,122 @@
+/* ===========================================================
+     까먹당 템플릿 v8
+     · 색 변경은 :root 와 [data-theme="light"] 두 블록만 고치면 됩니다.
+     =========================================================== */
+  :root{
+    color-scheme: dark;
+
+    --bg:#06070a;
+    --bg-soft:#101218;
+    --card:#15171f;
+    --glow-1:#1d1440;
+    --glow-2:#241a12;
+
+    --text:#f4f2f7;
+    --muted:#b0aec0;
+    --muted-2:#979797;
+
+    /* 보라 = 구조 · 후리가나 / 옐로 = 강조 · CTA */
+    /* --accent:red; */
+    --accent-ink:#35c8b5;
+    --accent-soft:rgba(180, 255, 244, 0.1);
+    --on-accent:#ffffff;
+
+    --hot:#ffd257;
+    --hot-ink:#efd89e;
+    --hot-soft:rgba(38, 39, 45, 0.9);
+    --on-hot:#06070a;
+
+    --ruby:#b79bff;
+    --ruby-alt:#ffecbe;
+
+    --wrong:#ea5d76;
+    --wrong-soft:rgba(255, 170, 114, 0.08);
+    --right:#6ecfbc;
+    --right-soft:rgba(78,227,155,.08);
+
+    --line:rgba(255,255,255,.12);
+    --line-2:rgba(255,255,255,.22);
+
+    /* 한자 밑그림 획 — 반드시 불투명한 색이어야 합니다.
+       rgba 를 쓰면 획이 겹치는 지점만 진해져 얼룩처럼 보여요. */
+    --sketch:#6a6f7a;
+    /* 시작점 화살표·점. 원래 디자인의 파란색입니다. */
+    --guide:#1a1c22;
+
+    /* --bubble-b:linear-gradient(135deg,#7f45ff,#6524e6); */
+    --bubble-b:#16af9b; 
+    /* --on-bubble:#1d0d2a;
+    --on-bubble-dim: #1d0d2a; */
+    /* --on-bubble-dim:rgba(255,255,255,.88); */
+    --bubble-rt:#09473a;
+    --sub-card-bg:linear-gradient(150deg,#1d1140 0%,#15171f 100%);
+    --badge: rgba(255,255,255,.7);
+    --shadow:0 4px 14px rgba(0,0,0,.5);
+
+    --radius:18px;
+
+    /* 페이지 최대 폭 — 본문·내비·푸터·한자 쓰기가 모두 이 값을 씁니다.
+       화면이 넓어질수록 아래 미디어쿼리에서 함께 커져요. */
+    --page-max:480px;
+    --page-pad:18px;
+
+    /* 폰트 : 일본어는 Noto Sans JP 한 폰트에서만 뽑아 굵기 차이를 없앱니다. */
+    --font-kr:"Pretendard Variable","Pretendard","Noto Sans KR",-apple-system,BlinkMacSystemFont,sans-serif;
+    --font-jp:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",var(--font-kr);
+  }
+
+  [data-theme="light"]{
+    color-scheme: light;
+
+    --bg:#fdf9e5;
+    --bg-soft:#f8f7f4;
+    --card:#fffdf7;
+    --glow-1:#efe9ff;
+    --glow-2:#fff3d6;
+
+    --text:#333;
+    --muted:#5f5d70;
+    --muted-2:#7e7e7e;
+
+    --accent:#a0a0a0;
+    --accent-ink:#007f54;
+    --accent-soft:rgba(48,140,255,.07);
+    --on-accent:#ffffff;
+
+    --hot:#ec781b;
+    --hot-ink:#6a7f7a;
+    --hot-soft:rgba(217,215,208,.20);
+    --on-hot:#fff;
+
+    /* --ruby:#7090b9; */
+    --ruby:#9658dd;
+    --ruby-alt:#6a7f7a;
+
+    --wrong:#ed6054;
+    --wrong-soft:rgba(189,58,31,.08);
+    --right:#24706d;
+    --right-soft:rgba(23,121,74,.08);
+
+    --line:#e6e5ec;
+    --line-2:#d3d1dc;
+
+    --sketch:#c3c1cc;
+    --guide:#1a1c22;
+
+    /* --bubble-b:linear-gradient(135deg,#7231ff,#5a1ee0); */
+    --bubble-b:#007f76;
+    --on-bubble:#ffffff;
+    --on-bubble-dim:rgba(255,255,255,.92);
+    --bubble-rt:#beeadd;
+    --sub-card-bg:linear-gradient(150deg,#f3eeff 0%,#ffffff 100%);
+    --badge: rgba(0,0,0,.7);
+    --shadow:0 4px 16px rgba(20,10,60,.10);
+  }
+
+/* 화면 크기별 폭. 여기 두 줄만 고치면 모든 페이지가 같이 따라옵니다. */
+@media (min-width:600px){
+  :root{ --page-max:640px; --page-pad:24px; }
+}
+@media (min-width:900px){
+  :root{ --page-max:760px; --page-pad:30px; }
+}

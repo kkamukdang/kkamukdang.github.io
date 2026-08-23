@@ -1,0 +1,16 @@
+---
+import Jp from './Jp.astro';
+import Speak from './Speak.astro';
+interface Props { items: { situation: string; jp: string; kr: string }[]; }
+const { items } = Astro.props;
+---
+{items.map((a) => (
+  <div class="apply-card">
+    <div class="apply-situ">{a.situation}</div>
+    <div class="apply-jp-row">
+      <Jp text={a.jp} class="apply-jp" />
+      <Speak text={a.jp} />
+    </div>
+    <div class="apply-kr">{a.kr}</div>
+  </div>
+))}

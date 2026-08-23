@@ -1,0 +1,178 @@
+---
+/**
+ * 모든 페이지가 공유하는 껍데기.
+ * 폰트·색 토큰·테마 전환·음성 재생이 여기 한 곳에만 있습니다.
+ * 회차가 100편이 되어도 스타일 수정은 이 파일과 styles/ 안에서 끝납니다.
+ */
+import '../styles/tokens.css';
+import '../styles/episode.css';
+import '../styles/nav.css';
+import { SITE } from '../lib/site';
+import SiteNav from '../components/SiteNav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogTitle?: string;
+  /** 페이지별 body 클래스. 한자 쓰기 페이지가 'write' 를 씁니다. */
+  bodyClass?: string;
+  /** 상단 내비게이션에서 어느 항목을 켜둘지 */
+  nav?: 'home' | 'words' | 'write';
+  /** 검색엔진에서 빼고 싶을 때 */
+  noindex?: boolean;
+}
+const {
+  title,
+  description = SITE.description,
+  ogTitle = title,
+  bodyClass,
+  nav,
+  noindex = false,
+} = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta property="og:title" content={ogTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="article" />
+  {noindex && <meta name="robots" content="noindex" />}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+  <script is:inline>
+    // 깜빡임 방지: 저장된 테마를 페인트 전에 적용합니다.
+    try {
+      var saved = localStorage.getItem('kkamukdang-theme');
+      if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    } catch (e) {}
+  </script>
+</head>
+<body class={bodyClass}>
+  <SiteNav current={nav} />
+
+  <div class="no-tts" id="noTtsWarning">⚠️ 이 브라우저는 음성 재생을 지원하지 않아요.</div>
+
+  <slot />
+
+  <SiteFooter />
+
+  <script is:inline>
+    /* ---------- 테마 ---------- */
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById('themeToggle');
+      var ico = document.getElementById('themeIcon');
+      function paint() {
+        var light = root.getAttribute('data-theme') === 'light';
+        ico.textContent = light ? '🌙' : '☀';
+        btn.setAttribute('title', light ? '어둡게 보기' : '밝게 보기');
+      }
+      paint();
+      btn.addEventListener('click', function () {
+        var light = root.getAttribute('data-theme') === 'light';
+        if (light) root.removeAttribute('data-theme');
+        else root.setAttribute('data-theme', 'light');
+        try {
+          localStorage.setItem('kkamukdang-theme', light ? 'dark' : 'light');
+        } catch (e) {}
+        paint();
+      });
+    })();
+
+    /* ---------- 발음 재생 ----------
+       1순위: data-audio 에 지정된 음성 파일
+       2순위: 브라우저 내장 음성 (파일이 아직 없을 때)                        */
+    (function () {
+      var synth = 'speechSynthesis' in window;
+      var jaVoice = null;
+      var current = null;
+
+      function pickVoice() {
+        var voices = window.speechSynthesis.getVoices();
+        jaVoice =
+          voices.find(function (v) { return v.lang === 'ja-JP'; }) ||
+          voices.find(function (v) { return v.lang && v.lang.indexOf('ja') === 0; }) ||
+          null;
+      }
+      if (synth) {
+        pickVoice();
+        window.speechSynthesis.onvoiceschanged = pickVoice;
+      }
+
+      function clearPlaying() {
+        document.querySelectorAll('.spk.playing').forEach(function (b) {
+          b.classList.remove('playing');
+        });
+      }
+
+      document.addEventListener('click', function (e) {
+        var btn = e.target.closest('.spk');
+        if (!btn) return;
+        // data-jp 도 data-audio 도 없으면 이 버튼은 페이지 자체 스크립트가 맡습니다.
+        if (!btn.hasAttribute('data-jp') && !btn.hasAttribute('data-audio')) return;
+
+        if (current) { current.pause(); current = null; }
+        if (synth) window.speechSynthesis.cancel();
+        clearPlaying();
+
+        var file = btn.getAttribute('data-audio');
+        var text = btn.getAttribute('data-jp');
+
+        if (file) {
+          var audio = new Audio(file);
+          current = audio;
+          btn.classList.add('playing');
+          audio.onended = function () { btn.classList.remove('playing'); };
+          audio.onerror = function () { btn.classList.remove('playing'); speak(btn, text); };
+          audio.play().catch(function () { speak(btn, text); });
+          return;
+        }
+        speak(btn, text);
+      });
+
+      function speak(btn, text) {
+        if (!text) return;
+        if (!synth) {
+          document.getElementById('noTtsWarning').style.display = 'block';
+          return;
+        }
+        var utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'ja-JP';
+        if (jaVoice) utter.voice = jaVoice;
+        utter.rate = 0.85;
+        btn.classList.add('playing');
+        utter.onend = function () { btn.classList.remove('playing'); };
+        utter.onerror = function () { btn.classList.remove('playing'); };
+        window.speechSynthesis.speak(utter);
+      }
+    })();
+
+    /* ---------- 퀴즈 ---------- */
+    document.querySelectorAll('[data-quiz]').forEach(function (card) {
+      var opts = card.querySelectorAll('.quiz-opt-btn');
+      var feedback = card.querySelector('.quiz-feedback');
+      opts.forEach(function (opt) {
+        opt.addEventListener('click', function () {
+          if (card.dataset.answered) return;
+          card.dataset.answered = 'true';
+          var isCorrect = opt.getAttribute('data-correct') === 'true';
+          opts.forEach(function (o) {
+            o.disabled = true;
+            if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+            else if (o === opt) o.classList.add('wrong');
+          });
+          feedback.textContent = isCorrect ? '⭕ 정답이에요!' : '❌ 아쉬워요! 초록색이 정답이에요.';
+          feedback.className = 'quiz-feedback ' + (isCorrect ? 'ok' : 'no');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

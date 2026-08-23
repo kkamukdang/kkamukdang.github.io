@@ -1,0 +1,11 @@
+---
+import Rich from './Rich.astro';
+interface Props { 
+  text: string;
+}
+const { text } = Astro.props;
+---
+<div class="next-card" data-pagefind-ignore>
+  <div class="next-label">NEXT</div>
+  <Rich class="next-text" text={text} />
+</div>

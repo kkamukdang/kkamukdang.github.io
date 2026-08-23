@@ -1,0 +1,21 @@
+---
+import Rich from './Rich.astro';
+import { toRubyRich } from '../lib/furigana';
+interface Props {
+  items: { q: string; options: { label: string; jp: string; correct: boolean }[] }[];
+}
+const { items } = Astro.props;
+---
+{items.map((quiz, i) => (
+  <div class="quiz-card" data-quiz>
+    <div class="quiz-q">
+      <span class="num">{`Q${i + 1}`}</span>
+      <Rich tag="span" text={quiz.q} />
+    </div>
+    {quiz.options.map((o) => (
+      <button class="quiz-opt-btn" data-correct={String(o.correct)}
+        set:html={`${o.label} ${toRubyRich(o.jp)}`} />
+    ))}
+    <div class="quiz-feedback"></div>
+  </div>
+))}

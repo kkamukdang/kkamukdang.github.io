@@ -1,0 +1,293 @@
+---
+/**
+ * 단어 플래시카드.
+ * 회차 데이터를 그대로 쓰므로 새 회차를 올리면 카드도 자동으로 늘어납니다.
+ *
+ * 진행 상황(외운 단어)은 브라우저에 저장하지 않습니다.
+ * 한 번의 학습 안에서만 유지되고, 새로고침하면 처음부터 시작해요.
+ */
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { SITE, url } from '../lib/site';
+import { toKanji, toRuby, toPlain } from '../lib/furigana';
+import '../styles/list.css';
+import '../styles/cards.css';
+
+const episodes = (await getCollection('episodes', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.no - b.data.no
+);
+
+function category(label: string): string {
+  return /문법|패턴|어미/.test(label) ? '회화 문법' : '실전 표현';
+}
+
+type Card = {
+  key: string;     // 외운 기록을 저장할 때 쓰는 고유 키
+  front: string;   // 후리가나가 붙은 일본어 (ruby HTML)
+  speak: string;   // 음성용 순수 텍스트
+  back: string;    // 뜻
+  note: string;    // 보충 설명
+  cat: string;
+  no: number;
+  slug: string;
+};
+
+const seen = new Set<string>();
+const cards: Card[] = [];
+
+for (const ep of episodes) {
+  for (const g of ep.data.wordGroups) {
+    for (const it of g.items) {
+      const key = toKanji(it.jp);
+      if (seen.has(key)) continue;   // 여러 회차에 나온 단어는 한 장으로
+      seen.add(key);
+      cards.push({
+        key,
+        front: toRuby(it.jp),
+        speak: toPlain(it.speak ?? it.jp),
+        back: it.mean,
+        note: it.note ?? '',
+        cat: category(g.label),
+        no: ep.data.no,
+        slug: ep.id,
+      });
+    }
+  }
+}
+
+const cats = [...new Set(cards.map((c) => c.cat))].sort();
+const epList = episodes.map((e) => ({ no: e.data.no, subtitle: e.data.subtitle }));
+---
+<Base
+  title={`단어 카드 — ${SITE.name}`}
+  description="까먹당에서 다룬 단어를 카드로 넘기며 외웁니다."
+  nav="words"
+>
+  <div class="wrap">
+    <div class="home-hero" data-pagefind-ignore>
+      <div class="hero-eyebrow">까먹당 · 단어 카드</div>
+      <h1>넘기면서 외우기</h1>
+      <p>{`카드 ${cards.length}장 · 뜻을 떠올린 뒤 눌러서 확인하세요`}</p>
+    </div>
+
+    <div class="card-filters" data-pagefind-ignore>
+      <select id="fCat" aria-label="분류 고르기">
+        <option value="">전체 분류</option>
+        {cats.map((c) => <option value={c}>{c}</option>)}
+      </select>
+      <select id="fKnown" aria-label="외운 단어 포함 여부">
+        <option value="new">안 외운 것만</option>
+        <option value="all">전체</option>
+        <option value="known">외운 것만</option>
+      </select>
+      <select id="fEp" aria-label="회차 고르기">
+        <option value="">전체 회차</option>
+        {epList.map((e) => (
+          <option value={String(e.no)}>{`#${String(e.no).padStart(3, '0')} ${e.subtitle}`}</option>
+        ))}
+      </select>
+      <button class="pill" id="shuffle" type="button">🔀 섞기</button>
+    </div>
+
+    <div class="deck-bar" data-pagefind-ignore>
+      <div class="deck-progress"><span id="bar"></span></div>
+      <div class="deck-count" id="count"></div>
+    </div>
+
+    <p class="deck-saved" data-pagefind-ignore>
+      외운 단어는 이 브라우저에 저장돼요 — 지금까지 <b id="saved">0개</b>
+    </p>
+
+    <div class="deck-tally" data-pagefind-ignore>
+      <span class="tally ok">외웠어요 <b id="tKnow">0</b></span>
+      <span class="tally again">다시 볼 카드 <b id="tHard">0</b></span>
+    </div>
+
+    <div class="flashcard" id="card" role="button" tabindex="0" aria-label="카드 뒤집어 뜻 보기">
+      <div class="fc-inner" id="inner">
+        <div class="fc-face fc-front">
+          <div class="fc-meta" id="fMeta"></div>
+          <div class="fc-jp jp" id="fJp"></div>
+          <button class="spk" id="fSpk" type="button" aria-label="발음 듣기">🔊</button>
+          <div class="fc-hint">뜻을 떠올린 뒤 눌러서 확인</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-mean" id="bMean"></div>
+          <div class="fc-note" id="bNote"></div>
+          <a class="fc-src" id="bSrc" href="#">대화 보기 →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 채점은 답을 본 뒤에만 할 수 있습니다. 뒤집기 전에는 안내만 보여요. -->
+    <div class="deck-actions" id="grade" hidden data-pagefind-ignore>
+      <button class="pill wide again" id="again" type="button">
+        모르겠어요<small>다시 나와요</small>
+      </button>
+      <button class="pill wide know" id="know" type="button">
+        외웠어요<small>이번 판에서 빠져요</small>
+      </button>
+    </div>
+
+    <div class="deck-guide" id="guide" data-pagefind-ignore>
+      카드를 눌러 뜻을 확인하면 채점 버튼이 나타나요
+    </div>
+
+    <div class="deck-done" id="done" hidden data-pagefind-ignore>
+      <div class="done-emoji" id="doneEmoji">🎉</div>
+      <div class="done-text" id="doneText"></div>
+      <div class="deck-actions">
+        <button class="pill" id="retryHard" type="button">다시 볼 카드만</button>
+        <button class="pill" id="restart" type="button">처음부터</button>
+      </div>
+    </div>
+
+    <div class="home-links" data-pagefind-ignore>
+      <a href={url('/words/')}>← 단어장 목록으로</a>
+    </div>
+  </div>
+
+  <script src={url('/known.js')} is:inline></script>
+
+  <script is:inline define:vars={{ CARDS: cards, BASE: url('/ep/') }}>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+
+      var pool = [];      // 이번 판에 남은 카드
+      var wrong = [];     // "모르겠어요" 로 넘긴 카드
+      var known = 0;      // 외운 장수
+      var total = 0;      // 이번 판 전체 장수
+      var flipped = false;
+
+      function filtered() {
+        var cat = $('fCat').value, ep = $('fEp').value, kn = $('fKnown').value;
+        return CARDS.filter(function (c) {
+          if (cat && c.cat !== cat) return false;
+          if (ep && String(c.no) !== ep) return false;
+          if (kn === 'new' && KkKnown.has(c.key)) return false;
+          if (kn === 'known' && !KkKnown.has(c.key)) return false;
+          return true;
+        });
+      }
+
+      function shuffle(arr) {
+        for (var i = arr.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+        }
+        return arr;
+      }
+
+      function start(cards) {
+        pool = cards.slice();
+        wrong = []; known = 0; total = pool.length;
+        render();
+      }
+
+      function build() { start(filtered()); }
+
+      function render() {
+        $('done').hidden = true;
+        $('card').style.display = '';
+        $('tKnow').textContent = known;
+        $('tHard').textContent = wrong.length;
+
+        if (total === 0) {
+          $('card').style.display = 'none';
+          $('grade').hidden = true;
+          $('guide').textContent = '조건에 맞는 카드가 없어요. 위에서 분류나 회차를 바꿔보세요.';
+          $('count').textContent = '';
+          $('bar').style.width = '0%';
+          return;
+        }
+        if (pool.length === 0) { finish(); return; }
+
+        var c = pool[0];
+        flipped = false;
+        $('inner').classList.remove('flip');
+        $('grade').hidden = true;
+        $('guide').hidden = false;
+        $('guide').textContent = '카드를 눌러 뜻을 확인하면 채점 버튼이 나타나요';
+
+        $('fJp').innerHTML = c.front;
+        $('fSpk').setAttribute('data-jp', c.speak);
+        $('fMeta').textContent = c.cat + ' · #' + String(c.no).padStart(3, '0');
+        $('bMean').textContent = c.back;
+        $('bNote').innerHTML = c.note;
+        $('bSrc').href = BASE + c.slug + '/';
+
+        var doneCount = total - pool.length;
+        $('count').textContent = (doneCount + 1) + ' / ' + total;
+        $('bar').style.width = (doneCount / total * 100) + '%';
+      }
+
+      function finish() {
+        $('card').style.display = 'none';
+        $('grade').hidden = true;
+        $('guide').hidden = true;
+        $('done').hidden = false;
+        $('bar').style.width = '100%';
+        $('count').textContent = total + ' / ' + total;
+
+        if (wrong.length === 0) {
+          $('doneEmoji').textContent = '🎉';
+          $('doneText').textContent = total + '장 전부 외웠어요!';
+          $('retryHard').style.display = 'none';
+        } else {
+          $('doneEmoji').textContent = '📚';
+          $('doneText').textContent =
+            total + '장 중 ' + known + '장을 외웠어요. ' + wrong.length + '장은 한 번 더 볼까요?';
+          $('retryHard').style.display = '';
+        }
+      }
+
+      function flip() {
+        if (pool.length === 0) return;
+        flipped = !flipped;
+        $('inner').classList.toggle('flip', flipped);
+        // 답을 본 뒤에야 채점할 수 있게 합니다.
+        $('grade').hidden = !flipped;
+        $('guide').hidden = flipped;
+      }
+
+      function grade(remember) {
+        if (!flipped || pool.length === 0) return;
+        var c = pool.shift();
+        if (remember) { known++; KkKnown.add(c.key); }
+        else { wrong.push(c); KkKnown.remove(c.key); }
+        paintSaved();
+        render();
+      }
+
+      function paintSaved() {
+        $('saved').textContent = KkKnown.count() + '개';
+      }
+
+      $('card').addEventListener('click', function (e) {
+        if (e.target.closest('.spk') || e.target.closest('a')) return;
+        flip();
+      });
+      $('card').addEventListener('keydown', function (e) {
+        if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); }
+      });
+
+      $('again').addEventListener('click', function () { grade(false); });
+      $('know').addEventListener('click', function () { grade(true); });
+      $('shuffle').addEventListener('click', function () { start(shuffle(filtered())); });
+      $('fCat').addEventListener('change', build);
+      $('fEp').addEventListener('change', build);
+      $('restart').addEventListener('click', build);
+      $('retryHard').addEventListener('click', function () { start(wrong); });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.target.tagName === 'SELECT') return;
+        if (e.key === 'ArrowLeft') grade(false);
+        if (e.key === 'ArrowRight') grade(true);
+      });
+
+      paintSaved();
+      $('fKnown').addEventListener('change', build);
+      build();
+    })();
+  </script>
+</Base>

@@ -1,0 +1,213 @@
+---
+/**
+ * 회차 목록. 12편씩 끊어서 보여줍니다.
+ *   /      → 1페이지
+ *   /2/    → 2페이지
+ * 검색과 태그 필터는 페이지와 무관하게 전체를 대상으로 동작합니다.
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Subscribe from '../components/Subscribe.astro';
+import { toPlain } from '../lib/furigana';
+import { SITE, url } from '../lib/site';
+import '../styles/list.css';
+
+const PER_PAGE = 12;
+/** 접었을 때 보여줄 태그 개수. 넘치면 "더 보기" 로 펼칩니다. */
+const TAGS_SHOWN = 6;
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const episodes = (await getCollection('episodes', ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.no - a.data.no
+  );
+  return paginate(episodes, { pageSize: 12 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+
+// 태그 목록은 현재 페이지가 아니라 전체 회차에서 뽑습니다.
+const all = await getCollection('episodes', ({ data }) => !data.draft);
+const tagCount = new Map<string, number>();
+for (const ep of all) {
+  for (const t of ep.data.tags) tagCount.set(t, (tagCount.get(t) ?? 0) + 1);
+}
+// 많이 쓰인 태그가 앞에 오도록 정렬 — 새 태그가 늘어도 위쪽은 안정적입니다.
+const tags = [...tagCount.entries()]
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ko'))
+  .map(([t]) => t);
+
+const fmt = new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+const isFirst = page.currentPage === 1;
+---
+<Base
+  title={isFirst ? `${SITE.name} — ${SITE.tagline}` : `${SITE.name} — ${page.currentPage}페이지`}
+  nav="home"
+>
+  <div class="wrap">
+    {isFirst && (
+      <div class="home-hero" data-pagefind-ignore>
+        <div class="hero-eyebrow">까먹당 · 일본어</div>
+        <h1>{SITE.tagline}</h1>
+        <p>{SITE.description}</p>
+      </div>
+    )}
+
+    <div class="search-box" data-pagefind-ignore>
+      <div class="search-field">
+        <input
+          type="search"
+          id="q"
+          placeholder="단어·문법·상황으로 찾기 (예: 我慢, てもいい, 배달)"
+          autocomplete="off"
+          aria-label="회차 검색"
+        />
+      </div>
+      <div id="search-status" class="search-status"></div>
+      <div id="results" class="results"></div>
+    </div>
+
+    {tags.length > 0 && (
+      <div class="tag-row" id="tagRow" data-pagefind-ignore>
+        <button class="tag-chip on" data-tag="">전체</button>
+        {tags.map((t, i) => (
+          <button class={i < TAGS_SHOWN ? 'tag-chip' : 'tag-chip extra'} data-tag={t}>{t}</button>
+        ))}
+        {tags.length > TAGS_SHOWN && (
+          <button class="tag-chip more" id="tagMore" type="button">
+            {`+${tags.length - TAGS_SHOWN}`}
+          </button>
+        )}
+      </div>
+    )}
+
+    <div class="ep-list" id="epList">
+      {page.data.map((ep) => (
+        <a class="ep-card" href={url(`/ep/${ep.id}/`)} data-tags={ep.data.tags.join(',')}>
+          <div class="ep-body">
+            <div class="ep-meta">
+              <span class="ep-no">{`#${String(ep.data.no).padStart(3, '0')}`}</span>
+              <span class="ep-date">{fmt.format(ep.data.date)}</span>
+            </div>
+            <div class="ep-title" set:html={toPlain(ep.data.title)} />
+            <div class="ep-sub">{ep.data.subtitle}</div>
+            {ep.data.tags.length > 0 && (
+              <div class="ep-tags">{ep.data.tags.map((t) => <span>{`#${t}`}</span>)}</div>
+            )}
+          </div>
+          <span class="ep-emoji" aria-hidden="true">{ep.data.emoji}</span>
+        </a>
+      ))}
+    </div>
+
+    {page.data.length === 0 && (
+      <p class="empty">아직 발행한 회차가 없어요. src/data/episodes/ 에 YAML 을 추가해 보세요.</p>
+    )}
+
+    {page.lastPage > 1 && (
+      <div class="pager" id="pager" data-pagefind-ignore>
+        {page.url.prev
+          ? <a class="pill" href={page.url.prev}>← 최신</a>
+          : <span class="pill ghost">← 최신</span>}
+        <span class="pager-count">{`${page.currentPage} / ${page.lastPage}`}</span>
+        {page.url.next
+          ? <a class="pill" href={page.url.next}>이전 →</a>
+          : <span class="pill ghost">이전 →</span>}
+      </div>
+    )}
+
+    {isFirst && <Subscribe />}
+  </div>
+
+  <script is:inline define:vars={{ PF: url('/pagefind/pagefind.js') }}>
+    window.__PF__ = PF;
+  </script>
+
+  <script is:inline>
+    /* ---------- 태그 더 보기 ---------- */
+    (function () {
+      var more = document.getElementById('tagMore');
+      if (!more) return;
+      more.addEventListener('click', function () {
+        document.querySelectorAll('.tag-chip.extra').forEach(function (c) {
+          c.classList.remove('extra');
+        });
+        more.remove();
+      });
+    })();
+
+    /* ---------- 태그 필터 ---------- */
+    document.querySelectorAll('.tag-chip[data-tag]').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        var tag = chip.dataset.tag;
+        document.querySelectorAll('.tag-chip[data-tag]').forEach(function (c) {
+          c.classList.toggle('on', c === chip);
+        });
+        document.querySelectorAll('.ep-card').forEach(function (card) {
+          var tags = (card.dataset.tags || '').split(',');
+          card.style.display = !tag || tags.indexOf(tag) >= 0 ? '' : 'none';
+        });
+      });
+    });
+
+    /* ---------- 검색 (Pagefind) ----------
+       빌드할 때 만들어지는 정적 색인을 씁니다. 서버가 필요 없습니다.
+       개발 서버(npm run dev)에서는 색인이 없어 동작하지 않는 게 정상이에요.  */
+    (function () {
+      var input = document.getElementById('q');
+      var results = document.getElementById('results');
+      var status = document.getElementById('search-status');
+      var list = document.getElementById('epList');
+      var tagRow = document.getElementById('tagRow');
+      var pager = document.getElementById('pager');
+      var pagefind = null;
+      var timer = null;
+
+      async function load() {
+        if (pagefind) return pagefind;
+        try {
+          pagefind = await import(window.__PF__);
+          await pagefind.options({ excerptLength: 20 });
+          return pagefind;
+        } catch (e) {
+          status.textContent = '검색 색인이 아직 없어요. npm run build 후에 동작합니다.';
+          return null;
+        }
+      }
+
+      function showList(on) {
+        list.style.display = on ? '' : 'none';
+        if (tagRow) tagRow.style.display = on ? '' : 'none';
+        if (pager) pager.style.display = on ? '' : 'none';
+        results.style.display = on ? 'none' : '';
+      }
+
+      input.addEventListener('input', function () {
+        clearTimeout(timer);
+        timer = setTimeout(run, 180);
+      });
+
+      async function run() {
+        var q = input.value.trim();
+        if (!q) { showList(true); status.textContent = ''; results.innerHTML = ''; return; }
+
+        var pf = await load();
+        if (!pf) return;
+
+        showList(false);
+        var search = await pf.search(q);
+        var found = await Promise.all(search.results.slice(0, 12).map(function (r) { return r.data(); }));
+
+        status.textContent = found.length
+          ? found.length + '개 회차에서 찾았어요'
+          : '결과가 없어요. 다른 말로 찾아보세요.';
+
+        results.innerHTML = found.map(function (d) {
+          return '<a class="result" href="' + d.url + '">' +
+                 '<div class="result-title">' + d.meta.title + '</div>' +
+                 '<div class="result-excerpt">' + d.excerpt + '</div></a>';
+        }).join('');
+      }
+    })();
+  </script>
+</Base>

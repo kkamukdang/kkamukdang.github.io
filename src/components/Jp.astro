@@ -1,0 +1,11 @@
+---
+/**
+ * 후리가나 단축 표기(今夜[こんや])를 ruby 로 그려줍니다.
+ * 원고에는 이 표기 하나만 쓰면 되고, 음성용 순수 텍스트는 Speak 가 같은 원문에서 뽑아 씁니다.
+ */
+import { toRuby } from '../lib/furigana';
+
+interface Props { text: string; class?: string; }
+const { text, class: className } = Astro.props;
+---
+<span class={className} set:html={toRuby(text)} />

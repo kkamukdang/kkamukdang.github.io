@@ -1,0 +1,276 @@
+/* ===========================================================
+   한자 쓰기 연습
+   색·폰트·라운드는 전부 tokens.css 변수를 씁니다.
+   본문과 같은 테마를 쓰므로 밝게/어둡게 전환도 함께 따라갑니다.
+   =========================================================== */
+
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+body.write{
+  margin:0; min-height:100%;
+  background:var(--bg); color:var(--text);
+  font-family:var(--font-kr);
+}
+
+/* 가운데 정렬은 body 가 아니라 이 래퍼가 맡습니다.
+   예전에는 body 자체가 flex 정렬이라 내비·푸터까지 끌려갔어요. */
+/* 쓰기판과 카드는 너무 넓으면 오히려 불편해서 본문보다 좁게 잡습니다. */
+.write-wrap{ --panel-max:480px; }
+
+.write-wrap{
+  display:flex; flex-direction:column; align-items:center;
+  gap:12px; max-width:var(--page-max); margin:0 auto; padding:14px var(--page-pad) 30px;
+}
+body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
+
+/* 본문 hero 와 같은 결의 머리말 */
+.write-header{ text-align:center; padding:34px 0 6px; }
+.write-header .eyebrow{
+  font-size:11.5px; font-weight:700; letter-spacing:.14em;
+  color:var(--accent-ink); text-transform:uppercase; margin-bottom:9px;
+}
+.write-header h1{
+  font-size:21px; font-weight:800; letter-spacing:-.02em;
+  margin:0; line-height:1.4;
+}
+.write-header .lead{
+  margin:9px 0 0; font-size:13.5px; font-weight: 500; color:var(--muted); line-height:1.6;
+}
+
+/* ---- 단어 이동 바 ---- */
+.nav{
+  display:flex; align-items:center; justify-content: center; gap:10px;
+  width:100%; max-width:var(--panel-max); padding:9px 10px;
+  /* background:var(--card); border:1px solid var(--line); 
+  border-radius:var(--radius); box-shadow:var(--shadow);*/
+}
+.nav .arrow{
+  flex:none; width:36px; height:36px; font-size:21px; font-weight: 600;
+  color:var(--muted); background:transparent;
+  border:1px solid var(--line); border-radius:50%; cursor:pointer;
+}
+.nav .arrow:hover{ color:var(--text); border-color:var(--line-2); }
+.nav .cnt{ flex: 1; display: flex; justify-content: center; font-size:12px; color:var(--muted-2); letter-spacing:.04em; text-align: right;}
+/* .nav .now{
+  flex:1; display:flex; align-items:center; justify-content:center;
+  gap:8px; min-width:0;
+}  */
+.nav .wd{ font-size:19px; font-weight:700; }
+.nav .rd{ font-size:12.5px; color:var(--ruby); }*/
+
+/* 본문의 스피커 버튼과 동일한 모양 */
+.spk{
+  flex:none; width:28px; height:28px; padding:0; font-size:13px; line-height:1;
+  cursor:pointer; color:var(--accent-ink);
+  background:var(--accent-soft); border:1px solid var(--line);
+  border-radius:50%; transition:transform .12s ease, border-color .12s ease;
+}
+.spk:hover{ border-color:var(--accent-ink); }
+.spk:active{ transform:scale(.9); }
+.spk.playing{ border-color:var(--accent-ink); animation:spk-pulse .8s ease infinite; }
+@keyframes spk-pulse{ 50%{ opacity:.5; } }
+
+/* ---- 단계 탭 ---- */
+.stages{ display:flex; gap:7px; margin: 16px;}
+.stg{
+  padding:6px 32px; font-size:14px; font-weight: 500; cursor:pointer;
+  color:var(--muted); background:transparent;
+  border:1px solid var(--line); border-radius:999px;
+  transition:all .15s ease; user-select:none;
+}
+.stg:hover{ border-color:var(--line-2); }
+.stg.on{ color:var(--on-hot); background:var(--hot); border-color:var(--hot); font-weight:700; }
+
+/* ---- 글자 스트립 ---- */
+.strip{ display:flex; gap:7px; flex-wrap:wrap; justify-content:center; }
+.strip .cell{
+  width:42px; height:42px; display:grid; place-items:center;
+  font-size:23px; cursor:pointer;
+  color:var(--muted); background:var(--card);
+  border:1px solid var(--line); border-radius:12px;
+  transition:all .15s ease;
+}
+.strip .cell.kana{ cursor:default; opacity:.45; border-style:dashed; }
+.strip .cell.now{ color:var(--text); border-color:var(--accent-ink); background:var(--accent-soft); }
+.strip .cell.done{ color:var(--right); border-color:var(--right); }
+
+/* ---- 읽기 카드 ---- */
+.card{
+  width:100%; max-width:var(--panel-max); padding:22px 20px; text-align:center;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius); box-shadow:var(--shadow);
+}
+.card .big{
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  font-size:40px; font-weight:700; letter-spacing:.02em;
+}
+.card .kana{ margin-top:7px; font-size:14px; font-weight: 500; color:var(--ruby); }
+.card .ko{ margin-top:5px; font-size:15px; font-weight:600; color:var(--text); }
+.card .ex{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  margin-top:17px; padding-top:15px;
+  font-family:var(--font-jp); font-size:15.5px; line-height:1.7;
+  border-top:1px solid var(--line);
+}
+.card .exko{ margin-top:6px; font-size:14px; font-weight: 600; color:var(--muted); }
+
+/* ---- 쓰기판 ---- */
+.sheet{
+  position:relative; width:min(300px,84vw); aspect-ratio:1;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden;
+}
+.sheet.hidden,.card.hidden,.row.hidden{ display:none; }
+.sheet svg{ position:absolute; inset:0; width:100%; height:100%; touch-action:none; }
+
+.frame{ fill:none; stroke:var(--line); stroke-width:.8; }
+.grid{ fill:none; stroke:var(--line); stroke-width:.6; stroke-dasharray:3 4; }
+
+.stroke{ fill:none; stroke-width:6.5; stroke-linecap:round; stroke-linejoin:round; }
+/* 밑그림 획이 겹치는 곳만 진해지던 문제
+   ------------------------------------------------------------
+   반투명하게 만드는 방법이 두 가지인데, 둘 다 조건이 있습니다.
+     ① path 마다 opacity  → 겹치는 지점이 두 번 칠해져 얼룩이 생김
+     ② 반투명한 stroke 색 → 마찬가지로 두 번 칠해짐 (--line-2 가 rgba 였어요)
+   그래서 stroke 는 불투명한 색으로 두고, 투명도는 그룹(<g>)에만 한 번 겁니다.
+   브라우저가 그룹 전체를 먼저 그린 뒤 한 번만 합성하므로 몇 겹이 겹쳐도 균일해요. */
+#rest{ opacity:.3; }
+.stroke.rest{ stroke:var(--sketch); opacity:1; }
+
+#ghost{ opacity:.22; }
+.stroke.ghost{ stroke:var(--accent-ink); opacity:1; }
+.stroke.live{ stroke:var(--accent-ink); }
+.stroke.done{ stroke:var(--right); }
+
+#runner{
+  stroke:var(--accent-ink); opacity:.85;
+  animation:run 1.5s linear infinite;
+}
+@keyframes run{
+  from{ stroke-dashoffset:var(--len); }
+  to{ stroke-dashoffset:0; }
+}
+
+.hint{ stroke:var(--guide); stroke-width:1.4; stroke-dasharray:2 2; fill:none; }
+.pulse{
+  animation:pulse 1.3s ease-out infinite;
+  transform-box:fill-box;      /* 기준을 그림 전체가 아니라 이 원 자신으로 */
+  transform-origin:center;
+}
+@keyframes pulse{
+  from{ opacity:.9; transform:scale(1); }
+  to{ opacity:0; transform:scale(2.6); }
+}
+
+#fx{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+
+.ripple{
+  position:absolute; left:50%; top:45%; width:24px; height:24px;
+  margin:-12px 0 0 -12px; border-radius:50%; opacity:0;
+  border:2px solid var(--right); pointer-events:none;
+}
+.ripple.go{ animation:ring .85s ease-out; }
+.ripple.two.go{ animation:ring .85s ease-out .12s; }
+@keyframes ring{
+  from{ opacity:.7; transform:scale(1); }
+  to{ opacity:0; transform:scale(9); }
+}
+
+#pop{
+  position:absolute; left:50%; top:44%; translate:-50% -50%;
+  text-align:center; opacity:0; pointer-events:none;
+}
+#pop b{
+  display:block; font-size:27px; font-weight:800; letter-spacing:-.01em;
+  color:var(--right);
+}
+#pop i{
+  display:block; margin-top:3px; font-size:12.5px; font-style:normal;
+  letter-spacing:.1em; color:var(--hot);
+}
+#pop.go{ animation:pop .9s ease-out; }
+#pop.long.go{ animation:pop 2.1s ease-out; }
+@keyframes pop{
+  0%{ opacity:0; scale:.7; }
+  18%{ opacity:1; scale:1.06; }
+  30%{ scale:1; }
+  75%{ opacity:1; }
+  100%{ opacity:0; scale:1; }
+}
+
+.shake{ animation:shake .32s; }
+@keyframes shake{
+  25%{ translate:-5px 0; }
+  75%{ translate:5px 0; }
+}
+
+/* ---- 안내문 · 버튼 ---- */
+#msg{
+  min-height:20px; font-size:13.5px; font-weight: 500; line-height:1.6;
+  color:var(--muted); text-align:center;
+}
+#msg.ok{ color:var(--right); font-weight:600; }
+
+.row{ display:flex; gap:8px; width:100%; max-width:var(--panel-max); }
+.row .wide{
+  flex:1; padding:13px 16px; font-size:14px; font-weight: 500; cursor:pointer;
+  font-family:var(--font-kr);
+  color:var(--muted); background:var(--card);
+  border:1px solid var(--line); border-radius:999px;
+  transition:all .15s ease;
+}
+.row .wide:hover{ color:var(--text); border-color:var(--line-2); }
+.row .wide.primary{
+  color:var(--on-hot); background:var(--hot);
+  border-color:var(--hot); font-weight:700;
+}
+
+/* ---- 하단 ---- */
+/* 목록·회차 이동 버튼과 같은 알약 모양을 씁니다. */
+.write-foot-nav{
+  display:flex; align-items:center; justify-content:center;
+  gap:8px; margin-top:24px; flex-wrap:wrap;
+}
+.write-foot-nav .pill{
+  display:inline-block; padding:10px 24px;
+  font-size:14px; font-weight:600; text-decoration:none;
+  color:var(--muted); background:transparent;
+  border:1px solid var(--line); border-radius:999px;
+  transition:color .15s ease, border-color .15s ease;
+  white-space:nowrap;
+}
+.write-foot-nav .pill:hover{ color:var(--text); border-color:var(--line-2); }
+
+@media (min-width:560px){
+  .write-header h1{ font-size:25px; }
+  .card .big{ font-size:46px; }
+}
+
+@media (prefers-reduced-motion:reduce){
+  #runner,.pulse,.ripple.go,#pop.go,.shake{ animation:none; }
+}
+
+/* ---- 회차 고르기 ---- */
+.ep-picker{
+  display:flex; align-items:center; gap:9px;
+  width:100%; max-width:var(--panel-max);
+}
+.ep-picker label{
+  flex:none; font-size:12px; font-weight:700; letter-spacing:.06em;
+  color:var(--muted-2); display: none;
+}
+.ep-picker select{
+  flex:1; min-width:0; padding:13px 34px 13px 14px;
+  font-family:var(--font-kr); font-size:14px;
+  color:var(--text); background:var(--card);
+  border:1px solid var(--line); border-radius:999px;
+  cursor:pointer; outline:none; appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),
+                   linear-gradient(135deg,currentColor 50%,transparent 50%);
+  background-position:calc(100% - 18px) 51%, calc(100% - 13px) 51%;
+  background-size:5px 5px, 5px 5px;
+  background-repeat:no-repeat;
+  text-overflow:ellipsis;
+}
+.ep-picker select:hover{ border-color:var(--line-2); }
+.ep-picker select:focus{ border-color:var(--accent-ink); }

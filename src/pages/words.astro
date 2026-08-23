@@ -1,0 +1,199 @@
+---
+/**
+ * 전체 회차의 단어를 한 곳에 모은 페이지.
+ * 같은 단어가 여러 회차에 나오면 하나로 합치고, 나온 회차를 전부 배지로 보여줍니다.
+ * 배지를 누르면 그 회차 본문으로 이동해요.
+ */
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Jp from '../components/Jp.astro';
+import Speak from '../components/Speak.astro';
+import { SITE, url } from '../lib/site';
+import { toKanji } from '../lib/furigana';
+import '../styles/list.css';
+
+const episodes = (await getCollection('episodes', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.no - b.data.no
+);
+
+/**
+ * 회차 안에서는 "🍗 야식 실전 표현", "⚾ 야구장 직관 실전 표현" 처럼
+ * 그 회차 상황에 맞는 이름을 씁니다. 하지만 단어장에서는 회차 맥락이 사라지고
+ * 표현 자체는 다른 상황에도 쓰이므로, 두 가지로만 묶습니다.
+ */
+function category(label: string): string {
+  return /문법|패턴|어미/.test(label) ? '회화 문법' : '실전 표현';
+}
+
+type Row = {
+  key: string;
+  jp: string;
+  speak?: string;
+  mean: string;
+  groups: Set<string>;
+  eps: { no: number; slug: string }[];
+};
+
+// toKanji 로 만든 표기를 키로 삼아 같은 단어를 합칩니다.
+const merged = new Map<string, Row>();
+
+for (const ep of episodes) {
+  for (const g of ep.data.wordGroups) {
+    for (const it of g.items) {
+      const key = toKanji(it.jp);
+      const row = merged.get(key);
+      if (row) {
+        row.groups.add(category(g.label));
+        if (!row.eps.some((e) => e.no === ep.data.no)) {
+          row.eps.push({ no: ep.data.no, slug: ep.id });
+        }
+      } else {
+        merged.set(key, {
+          key,
+          jp: it.jp,
+          speak: it.speak,
+          mean: it.mean,
+          groups: new Set([category(g.label)]),
+          eps: [{ no: ep.data.no, slug: ep.id }],
+        });
+      }
+    }
+  }
+}
+
+const rows = [...merged.values()];
+const repeated = rows.filter((r) => r.eps.length > 1).length;
+const cats = [...new Set(rows.flatMap((r) => [...r.groups]))].sort();
+---
+<Base title={`전체 단어장 — ${SITE.name}`} description="까먹당에서 다룬 단어와 문법을 한 번에 모아 봅니다." nav="words">
+  <div class="wrap">
+    <div class="home-hero" data-pagefind-ignore>
+      <div class="hero-eyebrow">까먹당 · 단어장</div>
+      <h1>지금까지 나온 말들</h1>
+      <p>
+        {`${rows.length}개`}
+        {repeated > 0 && ` · 그중 ${repeated}개는 두 번 이상 나왔어요`}
+      </p>
+    </div>
+
+    <a class="study-cta" href={url('/cards/')} data-pagefind-ignore>
+      🃏 플래시 카드로 외우기 — 뜻을 가리고 하나씩 넘겨보세요
+    </a>
+
+    <div class="word-filters" data-pagefind-ignore>
+      <select id="fCat" aria-label="분류 고르기">
+        <option value="">전체 분류</option>
+        {cats.map((c) => <option value={c}>{c}</option>)}
+      </select>
+      <select id="fKnown" aria-label="외움 상태 고르기">
+        <option value="">전체</option>
+        <option value="new">안 외운 것만</option>
+        <option value="known">외운 것만</option>
+      </select>
+      <button class="know-reset" id="reset" type="button">기록 지우기</button>
+    </div>
+
+    <p class="tile-hint" data-pagefind-ignore>
+      <span>· 카드를 누르면 <b>외움 / 안 외움</b>이 바뀌어요</span>
+      <span id="counts" class="counts"></span>
+    </p>
+
+    <p class="know-empty" id="knowEmpty" hidden>
+      여기에 해당하는 단어가 없어요.
+    </p>
+
+    <div class="word-grid" id="wordList">
+      {rows.map((r) => (
+        <div
+          class="word-tile"
+          data-cats={[...r.groups].join(',')}
+          data-key={r.key}
+          role="button"
+          tabindex="0"
+          aria-pressed="false"
+        >
+          <div class="tile-top">
+            <Jp text={r.jp} class="tile-jp" />
+            <Speak text={r.speak ?? r.jp} />
+          </div>
+          <div class="tile-mean">{r.mean}</div>
+          <div class="tile-foot">
+            {r.eps.map((e) => (
+              <a class="ep-badge" href={url(`/ep/${e.slug}/`)}>
+                {`#${String(e.no).padStart(3, '0')}`}
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {rows.length === 0 && <p class="empty">아직 단어가 없어요.</p>}
+
+    <div class="home-links" data-pagefind-ignore>
+      <a href={url('/')}>← 전체 회차 보기</a>
+    </div>
+  </div>
+
+  <script src={url('/known.js')} is:inline></script>
+
+  <script is:inline>
+    (function () {
+      var tiles = [].slice.call(document.querySelectorAll('#wordList .word-tile'));
+      var fCat = document.getElementById('fCat');
+      var fKnown = document.getElementById('fKnown');
+
+      function apply() {
+        var cat = fCat.value, known = fKnown.value, shown = 0, k = 0;
+
+        tiles.forEach(function (t) {
+          var isKnown = KkKnown.has(t.dataset.key);
+          if (isKnown) k++;
+          t.classList.toggle('is-known', isKnown);
+          t.setAttribute('aria-pressed', String(isKnown));
+
+          var cats = (t.dataset.cats || '').split(',');
+          var ok = (!cat || cats.indexOf(cat) >= 0) &&
+                   (!known || (known === 'known' ? isKnown : !isKnown));
+          t.style.display = ok ? '' : 'none';
+          if (ok) shown++;
+        });
+
+        document.getElementById('knowEmpty').hidden = shown > 0;
+        document.getElementById('counts').textContent =
+          '외운 단어 ' + k + ' / ' + tiles.length;
+      }
+
+      function toggle(tile) {
+        var key = tile.dataset.key;
+        if (KkKnown.has(key)) KkKnown.remove(key); else KkKnown.add(key);
+        // 목록에서 사라지는 대신 잠깐 남겨두면 실수로 눌렀을 때 되돌리기 쉬워요.
+        tile.classList.add('just-changed');
+        setTimeout(function () { tile.classList.remove('just-changed'); apply(); }, 550);
+        apply();
+      }
+
+      tiles.forEach(function (t) {
+        t.addEventListener('click', function (e) {
+          // 발음 버튼과 회차 링크는 원래 기능을 그대로 둡니다.
+          if (e.target.closest('.spk') || e.target.closest('a')) return;
+          toggle(t);
+        });
+        t.addEventListener('keydown', function (e) {
+          if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(t); }
+        });
+      });
+
+      fCat.addEventListener('change', apply);
+      fKnown.addEventListener('change', apply);
+
+      document.getElementById('reset').addEventListener('click', function () {
+        if (!confirm('외운 단어 기록을 모두 지울까요?')) return;
+        KkKnown.clear();
+        apply();
+      });
+
+      apply();
+    })();
+  </script>
+</Base>

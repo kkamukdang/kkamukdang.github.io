@@ -1,0 +1,8 @@
+---
+/** 후리가나 표기 + 인라인 HTML(<b>, <br>)을 함께 쓰는 설명문용. */
+import { toRubyRich } from '../lib/furigana';
+interface Props { text: string; class?: string; tag?: string; }
+const { text, class: className, tag = 'div' } = Astro.props;
+const Tag = tag as any;
+---
+<Tag class={className} set:html={toRubyRich(text)} />

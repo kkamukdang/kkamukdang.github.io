@@ -1,0 +1,20 @@
+---
+import Jp from './Jp.astro';
+import Speak from './Speak.astro';
+interface Props { lines: { who: string; side: 'a' | 'b'; jp: string; kr: string }[]; }
+const { lines } = Astro.props;
+---
+<div class="phone">
+  {lines.map((l) => (
+    <div class={`bubble-row ${l.side}`}>
+      <div class="bubble">
+        <div class="who">{l.who}</div>
+        <div class="jp-row">
+          <Jp text={l.jp} class="jp" />
+          <Speak text={l.jp} />
+        </div>
+        <div class="kr">{l.kr}</div>
+      </div>
+    </div>
+  ))}
+</div>
