@@ -13,7 +13,7 @@ export default defineConfig({
    *      site: 'https://아이디.github.io'
    *      base: '/kkamukdang'
    */
-  site: 'https://아이디.github.io',
+  site: 'https://kkamukdang.github.io',
   // base: '/kkamukdang',
 
   trailingSlash: 'always',
