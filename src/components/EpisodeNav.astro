@@ -15,7 +15,7 @@ const { prev, next, sticky = false } = Astro.props;
   {prev
     ? <a class="pill" href={url(`/ep/${prev.id}/`)}>← 이전</a>
     : <span class="pill ghost">← 이전</span>}
-  <a class="pill" href={url('/')}>전체 회차</a>
+  <a class="pill" href={url('/')}>전체 에피소드</a>
   {next
     ? <a class="pill" href={url(`/ep/${next.id}/`)}>다음 →</a>
     : <span class="pill ghost">다음 →</span>}

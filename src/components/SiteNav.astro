@@ -20,7 +20,7 @@ const withKanji = (await getCollection('episodes', ({ data }) => !data.draft))
 const writeHref = withKanji[0] ? url(`/ep/${withKanji[0].id}/write/`) : null;
 
 const links = [
-  { key: 'home', href: url('/'), label: '회차' },
+  { key: 'home', href: url('/'), label: '에피소드' },
   { key: 'words', href: url('/words/'), label: '단어장' },
   ...(writeHref ? [{ key: 'write', href: writeHref, label: '한자 쓰기' }] : []),
 ] as const;
