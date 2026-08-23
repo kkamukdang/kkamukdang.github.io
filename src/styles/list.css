@@ -37,12 +37,12 @@
 
 .results{ display:none; margin-top:12px; }
 .result{
-  display:block; padding:14px 16px; margin-bottom:8px; text-decoration:none;
+  display:block; padding:21px; margin-bottom:8px; text-decoration:none;
   background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
 }
 .result:hover{ border-color:var(--line-2); }
-.result-title{ color:var(--text); font-weight:700; font-size:15px; margin-bottom:4px; }
-.result-excerpt{ color:var(--muted); font-size:13px; line-height:1.6; }
+.result-title{ color:var(--text); font-weight:700; font-size:21px; margin-bottom:4px; }
+.result-excerpt{ color:var(--muted); font-size:14px; line-height:1.6; }
 .result-excerpt mark{ background:var(--accent-soft); color:var(--accent-ink); padding:0 2px; }
 
 /* ---- 태그 ---- */
