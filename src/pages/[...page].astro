@@ -119,8 +119,8 @@ const isFirst = page.currentPage === 1;
     {isFirst && <Subscribe />}
   </div>
 
-  <script is:inline define:vars={{ PF: url('/pagefind/pagefind.js') }}>
-    window.__PF__ = PF;
+  <script is:inline define:vars={{ INDEX: url('/search.json'), FALLBACK: SITE.tagline }}>
+    window.__INDEX__ = INDEX;
   </script>
 
   <script is:inline>
@@ -150,9 +150,9 @@ const isFirst = page.currentPage === 1;
       });
     });
 
-    /* ---------- 검색 (Pagefind) ----------
-       빌드할 때 만들어지는 정적 색인을 씁니다. 서버가 필요 없습니다.
-       개발 서버(npm run dev)에서는 색인이 없어 동작하지 않는 게 정상이에요.  */
+    /* ---------- 검색 ----------
+    빌드할 때 만들어둔 /search.json 을 받아 브라우저에서 부분 일치로 찾습니다.
+    한자·가나·한국어 뜻 어느 쪽으로 쳐도 걸리고, 결과에는 언제나 한자 원문을 보여줍니다. */
     (function () {
       var input = document.getElementById('q');
       var results = document.getElementById('results');
@@ -160,17 +160,85 @@ const isFirst = page.currentPage === 1;
       var list = document.getElementById('epList');
       var tagRow = document.getElementById('tagRow');
       var pager = document.getElementById('pager');
-      var pagefind = null;
+      var docs = null;
       var timer = null;
 
+      function norm(s) {
+        return s.replace(/[\s、。，．！？!?「」『』()（）·・…~〜\-]/g, '').toLowerCase();
+      }
+      function esc(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+
+      /* 검색어와 겹치는 부분에 표시를 답니다.
+        대조는 구두점을 걷어낸 표준형으로 하고 화면에는 원문을 보여줘야 하므로,
+        표준형을 만들 때 각 글자가 원문 몇 번째였는지 기록해두고 되돌립니다. */
+      var STRIP = /[\s、。，．！？!?「」『』()（）·・…~〜\-]/;
+
+      /** 덩어리 목록 → 표준형 문자열 + 각 글자가 몇 번째 덩어리였는지 */
+      function flatten(parts, useReading) {
+        var chars = [], owner = [];
+        for (var i = 0; i < parts.length; i++) {
+          var text = useReading ? (parts[i][1] || parts[i][0]) : parts[i][0];
+          for (var j = 0; j < text.length; j++) {
+            if (STRIP.test(text[j])) continue;
+            chars.push(text[j].toLowerCase());
+            owner.push(i);
+          }
+        }
+        return { flat: chars.join(''), owner: owner };
+      }
+
+      /* 읽는 법까지 대조할지 판단합니다.
+         한 글자 검색에서 읽기까지 뒤지면 노이즈가 큽니다.
+         예) も 로 찾으면 注文(ちゅうもん), 思う(おもう) 처럼
+             읽기 안쪽에만 들어 있는 한자까지 전부 걸려요.
+         그래서 두 글자 이상일 때만 읽기를 봅니다. */
+      function useReadings(q) { return q.length >= 2; }
+
+      /** 검색어가 걸린 덩어리 번호를 모읍니다 */
+      function hitParts(parts, q) {
+        var marked = {};
+        var modes = useReadings(q) ? [false, true] : [false];
+        modes.forEach(function (useReading) {
+          var f = flatten(parts, useReading);
+          var at = f.flat.indexOf(q);
+          while (at >= 0) {
+            for (var k = at; k < at + q.length; k++) marked[f.owner[k]] = true;
+            at = f.flat.indexOf(q, at + q.length);
+          }
+        });
+        return marked;
+      }
+
+      /** 덩어리 목록을 화면용 HTML 로. 걸린 덩어리에 표시를 답니다. */
+      function markParts(parts, q) {
+        if (!parts) return '';
+        var marked = q ? hitParts(parts, q) : {};
+        var out = '', open = false;
+        for (var i = 0; i < parts.length; i++) {
+          var on = !!marked[i];
+          if (on && !open) { out += '<mark>'; open = true; }
+          if (!on && open) { out += '</mark>'; open = false; }
+          out += esc(parts[i][0]);
+        }
+        return out + (open ? '</mark>' : '');
+      }
+
+      /** 한국어 뜻처럼 읽는 법이 없는 문자열용 */
+      function markText(original, q) {
+        if (!q || !original) return esc(original || '');
+        return markParts(original.split('').map(function (c) { return [c]; }), q);
+      }
+
       async function load() {
-        if (pagefind) return pagefind;
+        if (docs) return docs;
         try {
-          pagefind = await import(window.__PF__);
-          await pagefind.options({ excerptLength: 20 });
-          return pagefind;
+          var res = await fetch(window.__INDEX__);
+          docs = await res.json();
+          return docs;
         } catch (e) {
-          status.textContent = '검색 색인이 아직 없어요. npm run build 후에 동작합니다.';
+          status.textContent = '검색 자료를 불러오지 못했어요.';
           return null;
         }
       }
@@ -184,28 +252,62 @@ const isFirst = page.currentPage === 1;
 
       input.addEventListener('input', function () {
         clearTimeout(timer);
-        timer = setTimeout(run, 180);
+        timer = setTimeout(run, 140);
       });
 
       async function run() {
-        var q = input.value.trim();
-        if (!q) { showList(true); status.textContent = ''; results.innerHTML = ''; return; }
+        var raw = input.value.trim();
+        if (!raw) { showList(true); status.textContent = ''; results.innerHTML = ''; return; }
 
-        var pf = await load();
-        if (!pf) return;
+        var data = await load();
+        if (!data) return;
 
+        var q = norm(raw);
+        if (!q) { showList(true); return; }
         showList(false);
-        var search = await pf.search(q);
-        var found = await Promise.all(search.results.slice(0, 12).map(function (r) { return r.data(); }));
+
+        var found = [];
+        var deep = useReadings(q);
+
+        /** 이 항목이 검색어에 걸리는지. 짧은 검색어는 보이는 글자만 봅니다. */
+        function matches(parts, extra, wide) {
+          if (wide) return wide.indexOf(q) >= 0;
+          return flatten(parts, false).flat.indexOf(q) >= 0 ||
+                (extra ? norm(extra).indexOf(q) >= 0 : false);
+        }
+
+        data.forEach(function (doc) {
+          var hits = doc.entries.filter(function (e) {
+            return matches(e.p, e.mean, deep ? e.q : null);
+          });
+          var titleHit = matches(doc.p, doc.subtitle + doc.tags.join(''), deep ? doc.q : null);
+          if (!hits.length && !titleHit) return;
+          hits.sort(function (a, b) { return a.p.length - b.p.length; });
+          found.push({ doc: doc, hits: hits, score: (titleHit ? 100 : 0) + hits.length });
+        });
+
+        found.sort(function (a, b) { return b.score - a.score || b.doc.no - a.doc.no; });
 
         status.textContent = found.length
-          ? found.length + '개 회차에서 찾았어요'
+          ? found.length + '개 에피소드에서 찾았어요'
           : '결과가 없어요. 다른 말로 찾아보세요.';
 
-        results.innerHTML = found.map(function (d) {
-          return '<a class="result" href="' + d.url + '">' +
-                 '<div class="result-title">' + d.meta.title + '</div>' +
-                 '<div class="result-excerpt">' + d.excerpt + '</div></a>';
+        results.innerHTML = found.slice(0, 12).map(function (f) {
+          var rows = f.hits.slice(0, 4).map(function (e) {
+            return '<div class="hit">' +
+                    '<span class="hit-kind">' + esc(e.kind) + '</span>' +
+                    '<span class="hit-jp">' + markParts(e.p, q) + '</span>' +
+                    '<span class="hit-mean">' + markText(e.mean, q) + '</span>' +
+                    '</div>';
+            }).join('');
+          var more = f.hits.length > 4
+            ? '<div class="hit-more">외 ' + (f.hits.length - 4) + '개</div>' : '';
+
+          return '<a class="result" href="' + f.doc.url + '">' +
+                  '<div class="result-meta">#' +
+                    String(f.doc.no).padStart(3, '0') + ' · ' + markText(f.doc.subtitle, q) + '</div>' +
+                  '<div class="result-title">' + markParts(f.doc.p, q) + '</div>' +
+                  rows + more + '</a>';
         }).join('');
       }
     })();

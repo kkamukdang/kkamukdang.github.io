@@ -31,6 +31,13 @@ const { ep, prev, next } = Astro.props;
 const d = ep.data;
 const plainTitle = toPlain(d.title);
 const hasKanji = d.kanjiPractice.length > 0;
+const searchTexts = [
+  d.title,
+  ...d.scene.map((l) => l.jp),
+  ...d.wordGroups.flatMap((g) => g.items.map((i) => i.jp)),
+  ...d.compare.flatMap((c) => [c.bad.jp, c.good.jp]),
+  ...d.apply.map((a) => a.jp),
+];
 const kanjiChars = [...new Set(d.kanjiPractice.flatMap((w) => [...w.w]))]
   .filter((c) => /[\u4E00-\u9FFF]/.test(c))
   .join(' · ');

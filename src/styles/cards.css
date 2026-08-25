@@ -101,7 +101,7 @@
 }
 .tally{
   flex:1; padding:9px 12px; text-align:center;
-  font-size:14px; font-weight: 500; color:var(--muted);
+  font-size:14px; color:var(--muted);
   background:var(--card); border:1px solid var(--line);
   border-radius:11px;
 }
@@ -121,7 +121,7 @@
   padding:12px 10px; text-align:center; font-size:15px; font-weight:700;
 }
 .deck-actions .wide small{
-  font-size:12px; font-weight:500; opacity:.7; letter-spacing:0;
+  font-size:12px; opacity:.7; letter-spacing:0;
 }
 .deck-actions .again{ color:var(--text); border-color:var(--line-2); }
 .deck-actions .again:hover{ border-color:var(--hot); }
@@ -132,7 +132,7 @@
 /* 채점 전 안내 */
 .deck-guide{
   padding:14px; text-align:center;
-  font-size:14px; font-weight: 500; color:var(--muted-2);
+  font-size:14px; color:var(--muted-2);
   border:1px dashed var(--line); border-radius:14px;
 }
 

@@ -95,6 +95,28 @@ export function extractKanji(text: string): string[] {
   return [...new Set(found)];
 }
 
+/**
+ * 문장을 "덩어리" 목록으로 쪼갭니다.
+ * 今夜[こんや]チキン  →  [{t:'今夜', r:'こんや'}, {t:'チ'}, {t:'キ'}, {t:'ン'}]
+ */
+export function toParts(text: string): { t: string; r?: string }[] {
+  const parts: { t: string; r?: string }[] = [];
+  if (!text) return parts;
+
+  let last = 0;
+  const re = new RegExp(PATTERN.source, 'g');
+  let m: RegExpExecArray | null;
+  const pushPlain = (chunk: string) => { for (const ch of chunk) parts.push({ t: ch }); };
+
+  while ((m = re.exec(text))) {
+    pushPlain(text.slice(last, m.index));
+    parts.push({ t: m[1], r: m[2] ?? m[3] });
+    last = m.index + m[0].length;
+  }
+  pushPlain(text.slice(last));
+  return parts;
+}
+
 /** 한자 한 글자 → 획순 데이터 파일 이름 (예: 注 → 6ce8) */
 export function kanjiFileName(ch: string): string {
   return ch.codePointAt(0)!.toString(16).padStart(4, '0');

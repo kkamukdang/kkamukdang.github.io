@@ -11,7 +11,7 @@
 }
 .nav-inner{
   display:flex; align-items:center; gap:10px;
-  max-width:var(--page-max); margin:0 auto; padding:10px var(--page-pad);
+  max-width:var(--page-max); margin:0 auto; padding:16px var(--page-pad);
 }
 .nav-brand{
   font-size:15px; font-weight:800; letter-spacing:-.02em;
@@ -19,7 +19,7 @@
 }
 .nav-links{ display:flex; gap:2px; margin-left:auto; }
 .nav-link{
-  padding:7px 12px; font-size:13px; font-weight:600;
+  padding:4px 12px; font-size:13px; font-weight:600;
   color:var(--muted); text-decoration:none;
   border-radius:999px; white-space:nowrap;
   transition:color .15s ease, background .15s ease;
