@@ -28,14 +28,14 @@ body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
 .write-header .eyebrow{
     font-size: var(--fs-md); font-weight: 800;letter-spacing: .18em;
     color: var(--accent-ink); text-transform: uppercase;
-    margin-bottom: 16px; padding-bottom: 8px;
+    margin-bottom: 0; padding-bottom: 8px;
 }
 .write-header h1{
   font-size:var(--fs-2xl); font-weight:700; letter-spacing:-.02em;
-  margin:0; line-height:1.4;
+  margin:0;
 }
 .write-header .lead{
-  margin:1em 0 0; font-size: var(--fs-base); color:var(--text); line-height:1.6;
+  margin:0 0 -10px; font-size: var(--fs-base); color:var(--text); line-height:1.6;
 }
 
 /* ---- 단어 이동 바 ---- */

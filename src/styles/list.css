@@ -3,7 +3,7 @@
 .home-hero{
   padding:46px 0 22px; text-align:center;
 }
-.home-hero h1 {font-size:var(--fs-2xl);}
+.home-hero h1 {font-size:var(--fs-2xl); margin: 8px 0 0; }
 .home-hero h1.tagline-jp{
   font-family:var(--font-jp); font-size:var(--fs-xl);
   letter-spacing:0;
@@ -15,6 +15,7 @@
   .home-hero h1.tagline-jp{ font-size:29px; } 
 }
 .home-hero p {font-size: var(--fs-base);}
+.home-hero h1 ~ p {margin: 4px 0 2px;}
 
 /* ---- 검색 ---- */
 .search-field{ position:relative; }
