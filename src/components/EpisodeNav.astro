@@ -8,10 +8,11 @@ interface Props {
   prev?: { id: string } | null;
   next?: { id: string } | null;
   sticky?: boolean;
+  id?: string;
 }
-const { prev, next, sticky = false } = Astro.props;
+const { prev, next, sticky = false, id } = Astro.props;
 ---
-<div class={sticky ? 'ep-nav sticky' : 'ep-nav'} data-pagefind-ignore>
+<div id={id} class={sticky ? 'ep-nav sticky' : 'ep-nav'} data-pagefind-ignore>
   {prev
     ? <a class="pill" href={url(`/ep/${prev.id}/`)}>← 이전</a>
     : <span class="pill ghost">← 이전</span>}

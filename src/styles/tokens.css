@@ -4,119 +4,148 @@
      =========================================================== */
   :root{
     color-scheme: dark;
-
-    --bg:#06070a;
-    --bg-soft:#101218;
-    --card:#15171f;
+    --brand:#f5eee1;
+    --bg:#141414;
+    --bg-soft:#222;
+    --card:#1a1a1a;
     --glow-1:#1d1440;
     --glow-2:#241a12;
 
-    --text:#f4f2f7;
-    --muted:#b0aec0;
-    --muted-2:#979797;
+    --text:#f7eedf;
+    --muted:#908c84;
+    --muted-2:#666;
 
     /* 보라 = 구조 · 후리가나 / 옐로 = 강조 · CTA */
     /* --accent:red; */
-    --accent-ink:#35c8b5;
-    --accent-soft:rgba(180, 255, 244, 0.1);
+    --accent-ink:#75b593; 
+    --accent-soft:rgba(180, 255, 228, 0.1);
     --on-accent:#ffffff;
 
-    --hot:#ffd257;
-    --hot-ink:#efd89e;
-    --hot-soft:rgba(38, 39, 45, 0.9);
-    --on-hot:#06070a;
+    /* --hot:#ffd257; */
+    --hot:#ec8f3d;
+    --hot-ink:#e5d09a;
+    --hot-soft:rgba(44, 44, 44, 1);
+    --on-hot:#141414;
 
-    --ruby:#b79bff;
-    --ruby-alt:#ffecbe;
-
-    --wrong:#ea5d76;
-    --wrong-soft:rgba(255, 170, 114, 0.08);
+    --wrong:rgba(234, 93, 118, 1);
+    --wrong-line:rgba(234, 93, 118, .2);
+    --wrong-soft:rgba(234, 93, 118, 0.05);
     --right:#6ecfbc;
-    --right-soft:rgba(78,227,155,.08);
+    --right-soft:rgba(78, 227, 202, .1);
 
-    --line:rgba(255,255,255,.12);
+    --line:rgba(255,255,255,.08);
     --line-2:rgba(255,255,255,.22);
 
     /* 한자 밑그림 획 — 반드시 불투명한 색이어야 합니다.
        rgba 를 쓰면 획이 겹치는 지점만 진해져 얼룩처럼 보여요. */
     --sketch:#6a6f7a;
-    /* 시작점 화살표·점. 원래 디자인의 파란색입니다. */
+    /* 시작점 화살표·점. */
     --guide:#1a1c22;
+    --complete:#65c7b1;
 
-    /* --bubble-b:linear-gradient(135deg,#7f45ff,#6524e6); */
-    --bubble-b:#16af9b; 
-    /* --on-bubble:#1d0d2a;
-    --on-bubble-dim: #1d0d2a; */
-    /* --on-bubble-dim:rgba(255,255,255,.88); */
-    --bubble-rt:#09473a;
+    /* --bubble-b:linear-gradient(135deg,#f26f29,#c9441b); */
+    --bubble:#252525; 
+    --bubble-b:#77c6aa; 
+    /* 
+    --on-bubble-dim: #1d0d2a;
+    --on-bubble-dim:rgba(255,255,255,.88); */
+    --on-bubble-dim: #1d1d1c;
+    --bubble-rt:#1d1d1c;
     --sub-card-bg:linear-gradient(150deg,#1d1140 0%,#15171f 100%);
     --badge: rgba(255,255,255,.7);
     --shadow:0 4px 14px rgba(0,0,0,.5);
 
     --radius:18px;
 
+    --speak:rgba(255,255,255,.1);
+    --speak-b:rgba(0,0,0,.5);
+
     /* 페이지 최대 폭 — 본문·내비·푸터·한자 쓰기가 모두 이 값을 씁니다.
        화면이 넓어질수록 아래 미디어쿼리에서 함께 커져요. */
-    --page-max:480px;
+    --page-max:480px;   /* 목록·단어장·카드 — 넓을수록 좋음 */
+    --read-max:480px;   /* 회차 본문 — 읽기 좋은 폭에서 멈춤 */
     --page-pad:18px;
 
     /* 폰트 : 일본어는 Noto Sans JP 한 폰트에서만 뽑아 굵기 차이를 없앱니다. */
     --font-kr:"Pretendard Variable","Pretendard","Noto Sans KR",-apple-system,BlinkMacSystemFont,sans-serif;
     --font-jp:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",var(--font-kr);
+    
+    /* 폰트 사이즈 */
+    --fs-xs:12px; 
+    --fs-sm:13px;
+    --fs-md:14px;
+    --fs-base:15px;
+    --fs-lg:17px;
+    --fs-xl:21px;
+    --fs-2xl:27px;
+  }
+
+  @media (min-width:600px){
+    :root{ --fs-base:16px; --fs-lg:18px; --fs-xl:24px; --fs-2xl:32px; }
   }
 
   [data-theme="light"]{
     color-scheme: light;
-
-    --bg:#fdf9e5;
-    --bg-soft:#f8f7f4;
-    --card:#fffdf7;
+    --brand:#504747;
+    --bg:#fdfbef;
+    --bg-soft:#f2f0e5;
+    --card:#fbfaf0;
     --glow-1:#efe9ff;
     --glow-2:#fff3d6;
 
-    --text:#333;
-    --muted:#5f5d70;
-    --muted-2:#7e7e7e;
+    --text:#504747;
+    --muted:#78716c;
+    --muted-2:#8b7e77;
 
-    --accent:#a0a0a0;
-    --accent-ink:#007f54;
-    --accent-soft:rgba(48,140,255,.07);
+    /* --accent:#c57c0a; */
+    --accent-ink:#0c7671;
+    --accent-soft:rgba(48,201,255,.07);
     --on-accent:#ffffff;
 
-    --hot:#ec781b;
-    --hot-ink:#6a7f7a;
+    --hot:#ec5d3d;
+    --hot-ink:#8b7f51;
     --hot-soft:rgba(217,215,208,.20);
-    --on-hot:#fff;
+    --on-hot:#333;
 
     /* --ruby:#7090b9; */
     --ruby:#9658dd;
-    --ruby-alt:#6a7f7a;
+    /* --ruby-alt:#6a7f7a; */
 
-    --wrong:#ed6054;
+    --wrong:rgba(237, 96, 84, 1);
+    --wrong-line:rgba(237, 96, 84, .2);
     --wrong-soft:rgba(189,58,31,.08);
-    --right:#24706d;
-    --right-soft:rgba(23,121,74,.08);
+    --right:#2a6c5e;
+    --right-soft:rgba(23,121,74,.1);
 
-    --line:#e6e5ec;
-    --line-2:#d3d1dc;
+    --line:#dedcc5;
+    --line-2:#d3d0b7;
 
     --sketch:#c3c1cc;
     --guide:#1a1c22;
 
     /* --bubble-b:linear-gradient(135deg,#7231ff,#5a1ee0); */
-    --bubble-b:#007f76;
-    --on-bubble:#ffffff;
-    --on-bubble-dim:rgba(255,255,255,.92);
-    --bubble-rt:#beeadd;
+    --bubble-b:#c2e4d5;
+    --bubble:#f2efdd;
+    /*
+    --on-bubble-dim:rgba(255,255,255,.92); */
+    /* --bubble-rt:#beeadd; */
     --sub-card-bg:linear-gradient(150deg,#f3eeff 0%,#ffffff 100%);
     --badge: rgba(0,0,0,.7);
     --shadow:0 4px 16px rgba(20,10,60,.10);
+
+    --speak:rgba(255,255,255,.3);
+    --speak-b:rgba(255,255,255,.6);
   }
 
 /* 화면 크기별 폭. 여기 두 줄만 고치면 모든 페이지가 같이 따라옵니다. */
 @media (min-width:600px){
-  :root{ --page-max:640px; --page-pad:24px; }
+  :root{ --page-max:640px; --read-max:640px; --page-pad:24px; }
 }
 @media (min-width:900px){
-  :root{ --page-max:760px; --page-pad:30px; }
+  :root{ --page-max:820px; --read-max:720px; --page-pad:30px; }
 }
+@media (min-width:1200px){
+  :root{ --page-max:1024px; --read-max:780px; --page-pad:36px; }
+}
+
+.hide {display: none !important;}

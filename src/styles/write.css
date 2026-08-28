@@ -9,7 +9,7 @@
 body.write{
   margin:0; min-height:100%;
   background:var(--bg); color:var(--text);
-  font-family:var(--font-kr);
+  font-family:var(--font-kr); font-weight: 500;
 }
 
 /* 가운데 정렬은 body 가 아니라 이 래퍼가 맡습니다.
@@ -19,22 +19,23 @@ body.write{
 
 .write-wrap{
   display:flex; flex-direction:column; align-items:center;
-  gap:12px; max-width:var(--page-max); margin:0 auto; padding:14px var(--page-pad) 30px;
+  gap:12px; max-width:var(--page-max); margin:0 auto; padding:0 var(--page-pad) 30px;
 }
 body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
 
 /* 본문 hero 와 같은 결의 머리말 */
-.write-header{ text-align:center; padding:34px 0 6px; }
+.write-header{ text-align:center; padding:46px 0 22px;}
 .write-header .eyebrow{
-  font-size:11.5px; font-weight:700; letter-spacing:.14em;
-  color:var(--accent-ink); text-transform:uppercase; margin-bottom:9px;
+    font-size: var(--fs-md); font-weight: 800;letter-spacing: .18em;
+    color: var(--accent-ink); text-transform: uppercase;
+    margin-bottom: 16px; padding-bottom: 8px;
 }
 .write-header h1{
-  font-size:21px; font-weight:800; letter-spacing:-.02em;
+  font-size:var(--fs-2xl); font-weight:700; letter-spacing:-.02em;
   margin:0; line-height:1.4;
 }
 .write-header .lead{
-  margin:9px 0 0; font-size:13.5px; color:var(--muted); line-height:1.6;
+  margin:1em 0 0; font-size: var(--fs-base); color:var(--text); line-height:1.6;
 }
 
 /* ---- 단어 이동 바 ---- */
@@ -62,24 +63,28 @@ body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
 .spk{
   flex:none; width:28px; height:28px; padding:0; font-size:13px; line-height:1;
   cursor:pointer; color:var(--accent-ink);
-  background:var(--accent-soft); border:1px solid var(--line);
+  background:var(--hot-soft); border:1px solid var(--line);
   border-radius:50%; transition:transform .12s ease, border-color .12s ease;
 }
-.spk:hover{ border-color:var(--accent-ink); }
+.spk:hover{ border-color:var(--line-2); }
 .spk:active{ transform:scale(.9); }
-.spk.playing{ border-color:var(--accent-ink); animation:spk-pulse .8s ease infinite; }
+.spk.playing{ border-color:var(--hot-ink); animation:spk-pulse .8s ease infinite; }
 @keyframes spk-pulse{ 50%{ opacity:.5; } }
 
 /* ---- 단계 탭 ---- */
 .stages{ display:flex; gap:7px; margin: 16px;}
 .stg{
-  padding:6px 32px; font-size:14px; cursor:pointer;
+  padding:6px 16px; font-size:14px; cursor:pointer;
   color:var(--muted); background:transparent;
   border:1px solid var(--line); border-radius:999px;
   transition:all .15s ease; user-select:none;
 }
 .stg:hover{ border-color:var(--line-2); }
-.stg.on{ color:var(--on-hot); background:var(--hot); border-color:var(--hot); font-weight:700; }
+.stg.on{ color:var(--bg); background:var(--hot); border-color:var(--hot); font-weight:700; }
+
+@media (min-width: 900px) {
+  .stg {padding:6px 24px;}
+}
 
 /* ---- 글자 스트립 ---- */
 .strip{ display:flex; gap:7px; flex-wrap:wrap; justify-content:center; }
@@ -92,7 +97,7 @@ body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
 }
 .strip .cell.kana{ cursor:default; opacity:.45; border-style:dashed; }
 .strip .cell.now{ color:var(--text); border-color:var(--accent-ink); background:var(--accent-soft); }
-.strip .cell.done{ color:var(--right); border-color:var(--right); }
+.strip .cell.done{ color:var(--right); border-color:var(--accent-ink); }
 
 /* ---- 읽기 카드 ---- */
 .card{
@@ -104,7 +109,7 @@ body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
   display:flex; align-items:center; justify-content:center; gap:10px;
   font-size:40px; font-weight:700; letter-spacing:.02em;
 }
-.card .kana{ margin-top:7px; font-size:14px; color:var(--ruby); }
+.card .kana{ margin-top:7px; font-size:14px; color:var(--hot); }
 .card .ko{ margin-top:5px; font-size:15px; font-weight:600; color:var(--text); }
 .card .ex{
   display:flex; align-items:center; justify-content:center; gap:8px;
@@ -138,12 +143,12 @@ body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
 .stroke.rest{ stroke:var(--sketch); opacity:1; }
 
 #ghost{ opacity:.22; }
-.stroke.ghost{ stroke:var(--accent-ink); opacity:1; }
-.stroke.live{ stroke:var(--accent-ink); }
-.stroke.done{ stroke:var(--right); }
+.stroke.ghost{ stroke:var(--complete); opacity:1; }
+.stroke.live{ stroke:var(--complete); }
+.stroke.done{ stroke:var(--complete); }
 
 #runner{
-  stroke:var(--accent-ink); opacity:.85;
+  stroke:var(--complete); opacity:.85;
   animation:run 1.5s linear infinite;
 }
 @keyframes run{
@@ -167,7 +172,7 @@ body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
 .ripple{
   position:absolute; left:50%; top:45%; width:24px; height:24px;
   margin:-12px 0 0 -12px; border-radius:50%; opacity:0;
-  border:2px solid var(--right); pointer-events:none;
+  border:2px solid var(--complete); pointer-events:none;
 }
 .ripple.go{ animation:ring .85s ease-out; }
 .ripple.two.go{ animation:ring .85s ease-out .12s; }
@@ -206,33 +211,33 @@ body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
 
 /* ---- 안내문 · 버튼 ---- */
 #msg{
-  min-height:20px; font-size:13.5px; line-height:1.6;
+  min-height:20px; font-size:var(--fs-md); line-height:1.6;
   color:var(--muted); text-align:center;
 }
-#msg.ok{ color:var(--right); font-weight:600; }
+#msg.ok{ color:var(--accent-ink); font-weight:600; }
 
 .row{ display:flex; gap:8px; width:100%; max-width:var(--panel-max); }
 .row .wide{
-  flex:1; padding:13px 16px; font-size:14px; cursor:pointer;
-  font-family:var(--font-kr);
+  flex:1; padding:13px 16px; font-size:var(--fs-md); cursor:pointer;
+  font-family:var(--font-kr); font-weight: 500;
   color:var(--muted); background:var(--card);
   border:1px solid var(--line); border-radius:999px;
   transition:all .15s ease;
 }
 .row .wide:hover{ color:var(--text); border-color:var(--line-2); }
-.row .wide.primary{
+/* .row .wide.primary{
   color:var(--on-hot); background:var(--hot);
   border-color:var(--hot); font-weight:700;
-}
+} */
 
 /* ---- 하단 ---- */
 /* 목록·회차 이동 버튼과 같은 알약 모양을 씁니다. */
 .write-foot-nav{
   display:flex; align-items:center; justify-content:center;
-  gap:8px; margin-top:24px; flex-wrap:wrap;
+  gap:8px; flex-wrap:wrap;
 }
 .write-foot-nav .pill{
-  display:inline-block; padding:10px 24px;
+  display:inline-block; padding:10px 24px; margin-top: 24px;
   font-size:14px; font-weight:600; text-decoration:none;
   color:var(--muted); background:transparent;
   border:1px solid var(--line); border-radius:999px;
@@ -242,7 +247,7 @@ body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
 .write-foot-nav .pill:hover{ color:var(--text); border-color:var(--line-2); }
 
 @media (min-width:560px){
-  .write-header h1{ font-size:25px; }
+  /* .write-header h1{ font-size:25px; } */
   .card .big{ font-size:46px; }
 }
 
@@ -261,9 +266,9 @@ body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
 }
 .ep-picker select{
   flex:1; min-width:0; padding:13px 34px 13px 14px;
-  font-family:var(--font-kr); font-size:14px;
-  color:var(--text); background:var(--card);
-  border:1px solid var(--line); border-radius:999px;
+  font-family:var(--font-kr); font-size:var(--fs-md); font-weight: 500;
+  color:var(--text); background:var(--bg-soft);
+  border:1px solid var(--line-2); border-radius:999px;
   cursor:pointer; outline:none; appearance:none;
   background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),
                    linear-gradient(135deg,currentColor 50%,transparent 50%);
@@ -274,3 +279,4 @@ body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
 }
 .ep-picker select:hover{ border-color:var(--line-2); }
 .ep-picker select:focus{ border-color:var(--accent-ink); }
+.ep-picker select * {font-weight: 500;}

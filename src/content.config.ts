@@ -22,7 +22,13 @@ const episodes = defineCollection({
     emoji: z.string().default('📮'),
     description: z.string(),              // 목록·OG 태그에 쓰는 소개문
     tags: z.array(z.string()).default([]),
+    /**
+     * draft    : 페이지 자체를 만들지 않습니다. 아직 쓰는 중인 회차.
+     * unlisted : 페이지는 만들되 목록·검색·단어카드에서 숨깁니다.
+     *            주소를 아는 사람만 볼 수 있어요. 발행 전 점검용입니다.
+     */
     draft: z.boolean().default(false),
+    unlisted: z.boolean().default(false),
 
     /**
      * 지난 편 복습 한 줄. 본문 맨 위, SCENE 앞에 작게 붙습니다.

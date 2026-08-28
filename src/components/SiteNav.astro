@@ -4,8 +4,9 @@
  * 항목이 셋뿐이라 햄버거 메뉴로 감추기보다 그대로 보여주는 쪽이 빠릅니다.
  * (햄버거는 누르는 동작이 한 번 더 필요하고, 안에 뭐가 있는지 예측이 안 돼요.)
  */
-import { getCollection } from 'astro:content';
+import { getListed } from '../lib/episodes';
 import { SITE, url } from '../lib/site';
+import Logo from './Logo.astro';
 
 interface Props { current?: 'home' | 'words' | 'write' }
 const { current } = Astro.props;
@@ -14,20 +15,24 @@ const { current } = Astro.props;
  * "한자 쓰기" 는 목차를 거치지 않고 가장 최근 회차의 연습 화면으로 바로 갑니다.
  * 회차 이동은 그 화면 위쪽 콤보로 하면 되니 목차를 한 단계 더 둘 이유가 없어요.
  */
-const withKanji = (await getCollection('episodes', ({ data }) => !data.draft))
+// 내비는 공개된 회차만 가리킵니다. 점검용(unlisted) 회차로 데려가면 안 되니까요.
+const withKanji = (await getListed())
   .filter((ep) => ep.data.kanjiPractice.length > 0)
-  .sort((a, b) => b.data.no - a.data.no);
+  .reverse();
+  
 const writeHref = withKanji[0] ? url(`/ep/${withKanji[0].id}/write/`) : null;
 
 const links = [
   { key: 'home', href: url('/'), label: '에피소드' },
-  { key: 'words', href: url('/words/'), label: '단어장' },
+  { key: 'words', href: url('/cards/'), label: '단어 카드' },
   ...(writeHref ? [{ key: 'write', href: writeHref, label: '한자 쓰기' }] : []),
 ] as const;
 ---
 <nav class="site-nav" data-pagefind-ignore>
   <div class="nav-inner">
-    <a class="nav-brand" href={url('/')}>{SITE.name}</a>
+    <a class="nav-brand" href={url('/')}>
+      <Logo height={32} />
+    </a>
 
     <div class="nav-links">
       {links.map((l) => (

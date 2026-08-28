@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getPages } from '../../lib/episodes';
 import Base from '../../layouts/Base.astro';
 import Hero from '../../components/Hero.astro';
 import PrevCard from '../../components/PrevCard.astro';
@@ -17,9 +17,8 @@ import { toPlain } from '../../lib/furigana';
 import { SITE, url } from '../../lib/site';
 
 export async function getStaticPaths() {
-  const all = (await getCollection('episodes', ({ data }) => !data.draft)).sort(
-    (a, b) => a.data.no - b.data.no
-  );
+  const all = await getPages();
+  
   // 이전/다음 편은 회차 번호 순서로 자동 연결됩니다. 손으로 링크를 고칠 일이 없습니다.
   return all.map((ep, i) => ({
     params: { slug: ep.id },
@@ -38,21 +37,22 @@ const searchTexts = [
   ...d.compare.flatMap((c) => [c.bad.jp, c.good.jp]),
   ...d.apply.map((a) => a.jp),
 ];
-const kanjiChars = [...new Set(d.kanjiPractice.flatMap((w) => [...w.w]))]
-  .filter((c) => /[\u4E00-\u9FFF]/.test(c))
-  .join(' · ');
+// 글자 하나씩이 아니라 단어 단위로 보여줍니다.
+// 개수가 줄고, 무엇을 쓰게 되는지 바로 보여요.
+const kanjiWords = d.kanjiPractice.map((w) => w.w).join(' · ');
+
 ---
 <Base
   title={`${plainTitle} — ${SITE.name}`}
   description={d.description}
   ogTitle={`${plainTitle} — ${SITE.name}`}
 >
-  <div class="wrap" data-pagefind-body>
+  <div class="wrap reading" data-pagefind-body>
     <meta data-pagefind-meta={`no:${d.no}`} />
 
     <Hero emoji={d.emoji} title={d.title} subtitle={d.subtitle} />
 
-    <EpisodeNav prev={prev} next={next} />
+    <EpisodeNav prev={prev} next={next} id="navTop" />
 
     {d.recap && (
       <PrevCard
@@ -109,7 +109,8 @@ const kanjiChars = [...new Set(d.kanjiPractice.flatMap((w) => [...w.w]))]
 
     {hasKanji && (
       <a class="write-link" href={url(`/ep/${ep.id}/write/`)}>
-        {`✍️ 오늘의 한자 써보기 — ${kanjiChars}`}
+        <span>✍️ 오늘의 한자 써보기 —</span>
+        <span class="jp" lang="ja">{`${kanjiWords}`}</span>
       </a>
     )}
 
@@ -122,6 +123,21 @@ const kanjiChars = [...new Set(d.kanjiPractice.flatMap((w) => [...w.w]))]
 
     <EpisodeFooter keyPoints={d.keyPoints} />
 
-    <EpisodeNav prev={prev} next={next} sticky />
+    <EpisodeNav prev={prev} next={next} sticky id="navBottom" />
+    <script is:inline>
+      (function () {
+        var top = document.getElementById('navTop');
+        var bottom = document.getElementById('navBottom');
+        if (!top || !bottom) return;
+
+        if (!('IntersectionObserver' in window)) {
+          bottom.classList.add('show');
+          return;
+        }
+        new IntersectionObserver(function (entries) {
+          bottom.classList.toggle('show', !entries[0].isIntersecting);
+        }, { rootMargin: '-60px 0px 0px 0px' }).observe(top);
+      })();
+    </script>
   </div>
 </Base>

@@ -3,11 +3,11 @@ export const SITE = {
   name: '까먹당',
   tagline: '잘 까먹는 사람들의 일본어 모임',
   description:
-    '치킨 시킬 때, 주문 실수할 때. 일상에서 꼭 쓸 일본어 한 문장씩. 매주 목요일.',
+    '매주 목요일 일상에서 꼭 쓸 일본어 한 문장씩',
 
   /** 메일리 구독 페이지 주소로 바꿔주세요. */
   subscribeUrl: 'https://maily.so/kkamukdang',
-  subscribeNote: '주 1회 · 언제든 해지 가능 · 광고 NO',
+  subscribeNote: '주 1회 · 언제든 탈당 가능 · 회비 없음',
 
   email: 'kkamukdang@gmail.com',
 

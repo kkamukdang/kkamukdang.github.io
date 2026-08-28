@@ -7,16 +7,16 @@
  *  1. 연습 단어를 회차 YAML 에서 가져옵니다 — 페이지마다 목록을 손으로 적지 않습니다.
  *  2. 획순 데이터를 통째로 넣지 않고, 이 회차에 필요한 글자만 /kanji/ 에서 받아옵니다.
  */
-import { getCollection } from 'astro:content';
+import { getPages } from '../../../lib/episodes';
 import Base from '../../../layouts/Base.astro';
 import { kanjiFileName } from '../../../lib/furigana';
 import { url } from '../../../lib/site';
 import '../../../styles/write.css';
 
 export async function getStaticPaths() {
-  const all = (await getCollection('episodes', ({ data }) => !data.draft))
+  const all = (await getPages())
     .filter((ep) => ep.data.kanjiPractice.length > 0)
-    .sort((a, b) => b.data.no - a.data.no);
+    .reverse();
 
   // 회차 선택 콤보에 쓸 목록을 모든 페이지에 함께 넘겨줍니다.
   const options = all.map((e) => ({
@@ -48,21 +48,21 @@ const kanjiFiles = Object.fromEntries(chars.map((c) => [c, kanjiFileName(c)]));
 >
   <div class="write-wrap">
   <header class="write-header">
-    <div class="eyebrow">한자 쓰기</div>
-    <h1>{ep.data.subtitle}</h1>
+    <div class="eyebrow">까먹당 · 한자 쓰기</div>
+    <h1>쓰면서 외우기</h1>
     <p class="lead">{`읽고 → 따라 쓰고 → 혼자 써봅니다`}</p>
   </header>
 
   <div class="ep-picker">
-    <label for="epSelect">회차</label>
-    <select id="epSelect" aria-label="연습할 회차 고르기">
-      {options.map((o) => (
-        <option value={url(`/ep/${o.slug}/write/`)} selected={o.slug === ep.id}>
-          {`#${String(o.no).padStart(3, '0')} — ${o.subtitle}`}
-        </option>
-      ))}
-    </select>
-  </div>
+      <label for="epSelect">회차</label>
+      <select id="epSelect" aria-label="연습할 회차 고르기">
+        {options.map((o) => (
+          <option value={url(`/ep/${o.slug}/write/`)} selected={o.slug === ep.id}>
+            {`#${String(o.no).padStart(3, '0')} — ${o.subtitle}`}
+          </option>
+        ))}
+      </select>
+    </div>
 
   <div class="stages">
     <div class="stg on" data-s="0">읽기</div>
@@ -105,7 +105,7 @@ const kanjiFiles = Object.fromEntries(chars.map((c) => [c, kanjiFileName(c)]));
   <div id="msg"></div>
 
   <div class="row" id="readBtns">
-    <button class="wide primary" id="rGo" type="button">쓰기 시작</button>
+    
   </div>
 
   <div class="row hidden" id="writeBtns">

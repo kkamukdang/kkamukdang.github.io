@@ -1,13 +1,12 @@
 import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
+import { getListed } from '../lib/episodes';
 import { toKanji, toKana, toPlain, toParts } from '../lib/furigana';
 
 const norm = (s: string) =>
   s.replace(/[\s、。，．！？!?「」『』()（）·・…~〜\-]/g, '').toLowerCase();
 
 export const GET: APIRoute = async () => {
-  const episodes = (await getCollection('episodes', ({ data }) => !data.draft))
-    .sort((a, b) => b.data.no - a.data.no);
+  const episodes = (await getListed()).reverse();
 
   const docs = episodes.map((ep) => {
     const d = ep.data;

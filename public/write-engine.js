@@ -103,7 +103,7 @@ function pickChar(i){
   gRest.style.display = assist===0?'none':'';
   paintStrip();
   msg.className='';
-  msg.textContent = assist===2 ? '파란 선이 그어지는 방향 그대로 따라 그으세요'
+  msg.textContent = assist===2 ? '선이 그어지는 방향 그대로 따라 그으세요'
                                : '「'+chars[i].t+'」의 첫 획을 화면에 그어보세요';
   nextStroke();
 }
@@ -318,7 +318,7 @@ async function playAll(){
   gRest.style.display = assist===0?'none':'';
   idx=0; prog=0; miss=0; combo=0; nextStroke();
   msg.className='';
-  msg.textContent = assist===2 ? '파란 선이 그어지는 방향 그대로 따라 그으세요'
+  msg.textContent = assist===2 ? '선이 그어지는 방향 그대로 따라 그으세요'
                                : '「'+chars[pos].t+'」의 첫 획을 화면에 그어보세요';
 }
 

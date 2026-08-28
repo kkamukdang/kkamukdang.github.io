@@ -4,7 +4,7 @@
  * 같은 단어가 여러 회차에 나오면 하나로 합치고, 나온 회차를 전부 배지로 보여줍니다.
  * 배지를 누르면 그 회차 본문으로 이동해요.
  */
-import { getCollection } from 'astro:content';
+import { getListed } from '../lib/episodes';
 import Base from '../layouts/Base.astro';
 import Jp from '../components/Jp.astro';
 import Speak from '../components/Speak.astro';
@@ -12,9 +12,7 @@ import { SITE, url } from '../lib/site';
 import { toKanji } from '../lib/furigana';
 import '../styles/list.css';
 
-const episodes = (await getCollection('episodes', ({ data }) => !data.draft)).sort(
-  (a, b) => a.data.no - b.data.no
-);
+const episodes = await getListed();
 
 /**
  * 회차 안에서는 "🍗 야식 실전 표현", "⚾ 야구장 직관 실전 표현" 처럼

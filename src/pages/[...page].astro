@@ -6,10 +6,12 @@
  * 검색과 태그 필터는 페이지와 무관하게 전체를 대상으로 동작합니다.
  */
 import type { GetStaticPaths } from 'astro';
-import { getCollection } from 'astro:content';
+import { getListed } from '../lib/episodes';
 import Base from '../layouts/Base.astro';
 import Subscribe from '../components/Subscribe.astro';
 import { toPlain } from '../lib/furigana';
+import { SEASONAL, BONUS } from '../lib/taglines';
+import { toRuby } from '../lib/furigana';
 import { SITE, url } from '../lib/site';
 import '../styles/list.css';
 
@@ -18,16 +20,14 @@ const PER_PAGE = 12;
 const TAGS_SHOWN = 6;
 
 export const getStaticPaths = (async ({ paginate }) => {
-  const episodes = (await getCollection('episodes', ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.no - a.data.no
-  );
+  const episodes = (await getListed()).reverse();
   return paginate(episodes, { pageSize: 12 });
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
 
 // 태그 목록은 현재 페이지가 아니라 전체 회차에서 뽑습니다.
-const all = await getCollection('episodes', ({ data }) => !data.draft);
+const all = await getListed();
 const tagCount = new Map<string, number>();
 for (const ep of all) {
   for (const t of ep.data.tags) tagCount.set(t, (tagCount.get(t) ?? 0) + 1);
@@ -39,6 +39,19 @@ const tags = [...tagCount.entries()]
 
 const fmt = new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
 const isFirst = page.currentPage === 1;
+// 계절, 시간별 인삿말 추가
+const rubyize = (lines: { jp: string; ko: string }[]) =>
+  lines.map((l) => ({ jp: toRuby(l.jp), ko: l.ko }));
+
+const TAGLINES = {
+  seasonal: Object.fromEntries(
+    Object.entries(SEASONAL).map(([season, slots]) => [
+      season,
+      Object.fromEntries(Object.entries(slots).map(([slot, lines]) => [slot, rubyize(lines)])),
+    ])
+  ),
+  bonus: BONUS.map((b) => ({ id: b.id, lines: rubyize(b.lines) })),
+};
 ---
 <Base
   title={isFirst ? `${SITE.name} — ${SITE.tagline}` : `${SITE.name} — ${page.currentPage}페이지`}
@@ -47,9 +60,8 @@ const isFirst = page.currentPage === 1;
   <div class="wrap">
     {isFirst && (
       <div class="home-hero" data-pagefind-ignore>
-        <div class="hero-eyebrow">까먹당 · 일본어</div>
-        <h1>{SITE.tagline}</h1>
-        <p>{SITE.description}</p>
+        <h1 id="tagline">{SITE.tagline}</h1>
+        <p id="taglineKo">{SITE.description}</p>
       </div>
     )}
 
@@ -89,6 +101,7 @@ const isFirst = page.currentPage === 1;
               <span class="ep-no">{`#${String(ep.data.no).padStart(3, '0')}`}</span>
               <span class="ep-date">{fmt.format(ep.data.date)}</span>
             </div>
+
             <div class="ep-title" set:html={toPlain(ep.data.title)} />
             <div class="ep-sub">{ep.data.subtitle}</div>
             {ep.data.tags.length > 0 && (
@@ -119,8 +132,51 @@ const isFirst = page.currentPage === 1;
     {isFirst && <Subscribe />}
   </div>
 
-  <script is:inline define:vars={{ INDEX: url('/search.json'), FALLBACK: SITE.tagline }}>
+  <script is:inline define:vars={{ INDEX: url('/search.json'), TAGLINES }}>
     window.__INDEX__ = INDEX;
+
+    /* ---------- 시간대·계절 인사 ---------- */
+    (function () {
+      var el = document.getElementById('tagline');
+      var ko = document.getElementById('taglineKo');
+      if (!el) return;
+
+      var now = new Date(), h = now.getHours();
+      var m = now.getMonth() + 1, d = now.getDate(), w = now.getDay();
+
+      var season =
+        m >= 3 && m <= 5  ? 'spring' :
+        m >= 6 && m <= 8  ? 'summer' :
+        m >= 9 && m <= 11 ? 'autumn' : 'winter';
+
+      var slot =
+        h >= 5  && h < 11 ? 'morning' :
+        h >= 11 && h < 17 ? 'day' :
+        h >= 17 && h < 21 ? 'evening' : 'night';
+
+      var special =
+        (m === 1 && d === 1) ? 'newyear' :
+        (h >= 2 && h < 5)    ? 'lateNight' :
+        (w === 5 && h >= 17) ? 'fridayNight' :
+        (w === 1 && h < 11) ? 'monday' : null;
+
+      var pool = null;
+      if (special) {
+        var hit = TAGLINES.bonus.filter(function (b) { return b.id === special; })[0];
+        if (hit) pool = hit.lines;
+      }
+      if (!pool || !pool.length) pool = TAGLINES.seasonal[season][slot];
+      if (!pool || !pool.length) return;
+
+      // 날짜를 씨앗 삼아 고릅니다. 같은 날 여러 번 와도 같은 문구,
+      // 날이 바뀌면 다음 문구로 넘어가요.
+      var seed = Math.floor(now.getTime() / 86400000);   // 며칠째인가
+      var line = pool[seed % pool.length];
+
+      el.innerHTML = line.jp;
+      el.classList.add('tagline-jp');
+      if (ko) ko.textContent = line.ko;
+    })();
   </script>
 
   <script is:inline>
