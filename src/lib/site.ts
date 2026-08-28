@@ -19,6 +19,7 @@ export const SITE = {
    * false 로 두면 목록 페이지에만 나옵니다.
    */
   subscribeOnEpisodes: true,
+  subscribeOnHome: false, 
 } as const;
 
 /**

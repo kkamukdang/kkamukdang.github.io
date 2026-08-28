@@ -129,7 +129,7 @@ const TAGLINES = {
       </div>
     )}
 
-    {isFirst && <Subscribe />}
+    {isFirst && SITE.subscribeOnHome && <Subscribe />}
   </div>
 
   <script is:inline define:vars={{ INDEX: url('/search.json'), TAGLINES }}>
