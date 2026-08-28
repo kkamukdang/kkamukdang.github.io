@@ -60,8 +60,6 @@ const kanjiWords = d.kanjiPractice.map((w) => w.w).join(' · ');
         prev={prev ? { slug: prev.id, no: prev.data.no, subtitle: prev.data.subtitle } : null}
       />
     )}
-    
-    <EpisodeFooter keyPoints={d.keyPoints} />
 
     {d.scene.length > 0 && (
       <>
@@ -123,7 +121,7 @@ const kanjiWords = d.kanjiPractice.map((w) => w.w).join(' · ');
       />
     )}
 
-    
+    <EpisodeFooter keyPoints={d.keyPoints} />
 
     <EpisodeNav prev={prev} next={next} sticky id="navBottom" />
     <script is:inline>

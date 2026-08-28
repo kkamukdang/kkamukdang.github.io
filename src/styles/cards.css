@@ -19,7 +19,7 @@
   text-overflow:ellipsis;
 }
 .card-filters select:hover{ border-color:var(--line-2); }
-.card-filters select:focus{ border-color:var(--accent-ink); }
+.card-filters select:focus{ border-color:var(--muted-2); }
 .card-filters select * {font-weight: 500;}
 #fCat{ flex:1 1 0; }
 #fKnown{ flex:1 1 0; }
@@ -102,7 +102,7 @@
 .tally{
   flex:1; padding:9px 12px; text-align:center;
   font-size:14px; color:var(--muted);
-  background:var(--card); border:1px solid var(--line);
+  border:1px solid var(--line);
   border-radius:11px;
 }
 .tally b{ font-size:14px; margin-left:4px; font-variant-numeric:tabular-nums; }

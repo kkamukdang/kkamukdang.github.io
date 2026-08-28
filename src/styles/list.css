@@ -29,9 +29,9 @@
   font-family:var(--font-kr); outline:none;
   transition:border-color .15s ease, box-shadow .15s ease;
 }
-.search-box input:hover{ border-color:var(--accent-ink); }
+.search-box input:hover{ border-color:var(--hot); }
 .search-box input:focus{
-  border-color:var(--accent-ink);
+  border-color:var(--hot);
   box-shadow:0 0 0 4px var(--hot-soft);
 }
 .search-box input::placeholder{ color:var(--muted-2); }

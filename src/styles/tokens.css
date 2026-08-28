@@ -22,7 +22,7 @@
     --on-accent:#ffffff;
 
     /* --hot:#ffd257; */
-    --hot:#ec8f3d;
+    --hot:#eca83d;
     --hot-ink:#e5d09a;
     --hot-soft:rgba(44, 44, 44, 1);
     --on-hot:#141414;
@@ -98,12 +98,13 @@
     --muted-2:#8b7e77;
 
     /* --accent:#c57c0a; */
-    --accent-ink:#0c7671;
+    --accent-ink:#21827d;
     --accent-soft:rgba(48,201,255,.07);
     --on-accent:#ffffff;
 
-    --hot:#ec5d3d;
-    --hot-ink:#8b7f51;
+    --hot: #ec773d;
+    /* --hot:#ec5d3d; */
+    --hot-ink:#8d8875;
     --hot-soft:rgba(217,215,208,.20);
     --on-hot:#333;
 

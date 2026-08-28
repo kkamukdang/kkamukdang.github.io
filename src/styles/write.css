@@ -278,5 +278,5 @@ body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
   text-overflow:ellipsis;
 }
 .ep-picker select:hover{ border-color:var(--line-2); }
-.ep-picker select:focus{ border-color:var(--accent-ink); }
+.ep-picker select:focus{ border-color:var(--muted-2); }
 .ep-picker select * {font-weight: 500;}
