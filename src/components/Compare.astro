@@ -16,7 +16,7 @@ const { title, bad, good, tip } = Astro.props;
     <div class="mark">{bad.mark}</div>
     <div class="txt">
       <Jp text={bad.jp} />
-      {bad.aside && <span style="color:var(--muted)">({bad.aside})</span>}
+      {bad.aside && <span class="exp">({bad.aside})</span>}
     </div>
     <Speak text={bad.jp} />
   </div>

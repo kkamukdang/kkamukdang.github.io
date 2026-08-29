@@ -1,7 +1,7 @@
 /* 목록·검색·단어장 화면. 색과 반지름은 tokens.css 의 값을 그대로 씁니다. */
 
 .home-hero{
-  padding:18px 0 22px; text-align:center;
+  padding:18px 0 14px; text-align:center;
 }
 .home-hero h1 {font-size:var(--fs-2xl); margin: 8px 0 0; }
 .home-hero h1.tagline-jp{
@@ -10,9 +10,10 @@
   word-break:keep-all; line-height:1.35; margin:8px 0 10px;
 }
 .home-hero h1.tagline-jp rt{ font-size:.4em; color:var(--mute-2); font-weight:400; }
-.home-hero h1.tagline-jp + p{ color:var(--text); font-family: "Gowun Dodum", sans-serif; font-size:var(--fs-lg); margin:0;}
+.home-hero h1.tagline-jp + p{ color:var(--text); font-family: "Gowun Dodum", sans-serif; font-size:15px; margin:0;}
 @media (min-width:900px){ 
   .home-hero h1.tagline-jp{ font-size:29px; } 
+  .home-hero h1.tagline-jp + p {font-size: 18px;}
 }
 .home-hero p {font-size: var(--fs-base);}
 .home-hero h1 ~ p {margin: 4px 0 2px;}
@@ -24,7 +25,7 @@
   font-size:15px; opacity:.5; pointer-events:none; z-index:1;
 }
 .search-box input{
-  width:100%; padding:19px 16px 19px 46px; font-size:15px;
+  width:100%; padding: 14px 14px 14px 46px;font-size:15px;
   color:var(--text); background:var(--bg-soft);
   border:1.5px solid var(--line-2); border-radius:999px;
   font-family:var(--font-kr); outline:none;
@@ -37,7 +38,7 @@
 }
 .search-box input::placeholder{ color:var(--muted-2); }
 .search-box input::-webkit-search-cancel-button{ cursor:pointer; }
-.search-status{ font-size:14px; color:var(--muted-2); margin:36px 2px 0; text-align: center;}
+.search-status{ font-size:14px; color:var(--muted-2); margin:16px 2px 0; text-align: center;}
 
 .results{ display:none; margin-top:28px; }
 .result{
@@ -89,7 +90,7 @@
 .ep-card{
   position: relative;
   display:flex; gap:14px; align-items:center; flex-basis: 100%;
-  text-decoration:none; gap: 14px; padding:16px; 
+  text-decoration:none; gap: 14px; padding:19px; 
   background:var(--card); border:1px solid var(--line);
   border-radius:var(--radius); box-shadow:var(--shadow);
   transition:border-color .15s ease, transform .15s ease;
@@ -286,5 +287,7 @@
 
 /* ===== 반응형: 태블릿 (600px~) ===== */
   @media (min-width: 600px){
-    .home-hero {padding-top: 46px;}
+    .home-hero {padding: 46px 0 18px;}
+    .search-status {margin-top: 32px;}
+    .search-box input {padding:19px 16px 19px 46px; }
   }

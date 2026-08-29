@@ -81,7 +81,7 @@
   font-family:var(--font-jp); font-size:32px; font-weight:700;
   line-height:1.45; word-break:keep-all;
 }
-.fc-jp rt{ font-size:.42em; color:var(--ruby); font-weight:400; }
+.fc-jp rt{ font-size:.42em;}
 .fc-hint{ font-size:14px; color:var(--muted-2); margin-top:10px; }
 
 .fc-mean{ font-size:24px; font-weight:700; line-height:1.45; }
@@ -91,7 +91,7 @@
 }
 .fc-note b{ color:var(--text); }
 .fc-src{
-  font-size:14px; font-weight:700; color:var(--hot-ink);
+  font-size:var(--fs-md); font-weight:700; color:var(--hot-ink);
   text-decoration:none; margin-top: 24px;
 }
 

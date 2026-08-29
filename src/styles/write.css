@@ -24,7 +24,7 @@ body.write{
 body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
 
 /* 본문 hero 와 같은 결의 머리말 */
-.write-header{ text-align:center; padding:46px 0 22px;}
+.write-header{ text-align:center; padding:18px 0 22px;}
 .write-header .eyebrow{
     font-size: var(--fs-md); font-weight: 800;letter-spacing: .18em;
     color: var(--accent-ink); text-transform: uppercase;
@@ -283,5 +283,5 @@ body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
 
 /* ===== 반응형: 태블릿 (600px~) ===== */
   @media (min-width: 600px){
-    .write-header {padding-top: 18px;}
+    .write-header {padding-top: 46px;}
   }
