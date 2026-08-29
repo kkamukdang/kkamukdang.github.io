@@ -123,7 +123,7 @@
   .bubble-row.b .who{text-align:right; color:var(--on-bubble-dim);}
   .jp-row{display:flex; align-items:center; margin-bottom:4px;}
   .jp{font-family:var(--font-jp); font-size:var(--fs-lgp);}
-  .jp ruby rt{font-size:11px; font-weight:700; opacity: .9;}
+  .jp ruby rt{font-size:10px; font-weight:700; opacity: .9;}
   .bubble-row.b .jp ruby rt{color:var(--on-hot);}
   .kr{font-size:14px; color:var(--muted); font-style:normal;}
   .bubble-row.b .kr{color:var(--on-bubble-dim); font-weight:600;}
@@ -253,7 +253,6 @@ position: relative;}
     .phone{padding:26px 20px;}
     .bubble{max-width:78%; padding:14px 18px; font-size:17px;}
     /* .jp{font-size:19px;} */
-    .jp ruby rt{font-size:12px;}
     .kr{font-size:15px;}
     .spk{width:34px; height:34px; font-size:16px;}
     .word-card{padding:16px 18px;}
@@ -284,8 +283,6 @@ position: relative;}
     /* .sec-title h2{font-size:22px;} */
     .phone{padding:30px 26px; border-radius:32px;}
     .bubble{padding:16px 20px; font-size:18.5px; border-radius:20px;}
-    /* .jp{font-size:24px;} */
-    .jp ruby rt{font-size:var(--fs-xs);}
     .kr{font-size:16px;}
     .word-list{gap:12px;}
     .word-card{padding:18px 22px; border-radius:18px;}
