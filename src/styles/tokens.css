@@ -76,12 +76,13 @@
     --fs-md:14px;
     --fs-base:15px;
     --fs-lg:17px;
+    --fs-lgp:19px;
     --fs-xl:21px;
     --fs-2xl:27px;
   }
 
   @media (min-width:600px){
-    :root{ --fs-base:16px; --fs-lg:18px; --fs-xl:24px; --fs-2xl:32px; }
+    :root{ --fs-base:16px; --fs-lg:18px; --fs-lgp:21px; --fs-xl:24px; --fs-2xl:32px; }
   }
 
   [data-theme="light"]{

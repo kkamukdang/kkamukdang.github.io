@@ -10,18 +10,25 @@
   border-bottom:1px solid var(--line);
 }
 .nav-inner{
-  display:flex; align-items:center; gap:10px;
-  max-width:var(--page-max); margin:0 auto; padding:16px var(--page-pad);
+  display:flex; align-items:center; gap:16px;
+  max-width:var(--page-max); margin:0 auto; padding:14px var(--page-pad);
 }
 .nav-brand{
   font-size:15px; font-weight:800; letter-spacing:-.02em;
   display:flex; align-items:center; color:var(--brand);
-  text-decoration:none;
+  text-decoration:none; height: 22px;
 }
-/* .nav-brand svg { color: var(--text) } */
+.nav-brand svg { height: 100%; }
+.nav-brand svg path:not(:last-child) {display: none;}
+
+@media (min-width:600px) {
+  .nav-brand {height: 24px;}
+  .nav-brand svg path:not(:last-child) {display: block;}
+}
+
 .nav-links{ display:flex; gap:2px; margin-left:auto; }
 .nav-link{
-  padding:4px 12px; font-size:13px; font-weight:600;
+  padding:4px 12px; font-size:var(--fs-md); font-weight:600;
   color:var(--muted); text-decoration:none;
   border-radius:6px; white-space:nowrap;
   transition:color .15s ease, background .15s ease;
@@ -29,7 +36,7 @@
 .nav-link:hover{ color:var(--text); }
 .nav-link.on{ color:var(--text); background:var(--bubble); font-weight:700; }
 @media (min-width:600px) {
-  .nav-links {gap: 12px;}
+  .nav-links {gap: 6px;}
 }
 
 /* 테마 버튼은 내비 안으로 들어옵니다 (기존 fixed 스타일 덮어쓰기) */
@@ -41,9 +48,9 @@
 .site-nav .theme-toggle .t-ico{ font-size:14px; }
 
 @media (max-width:420px){
-  .nav-inner{ padding:9px 12px; gap:6px; }
+  .nav-inner{ padding:8px 12px; gap:6px; }
   .nav-brand{ font-size:14px; }
-  .nav-link{ padding:6px 9px; font-size:12.5px; }
+  .nav-link{ padding:4px 8px;}
 }
 
 /* ===========================================================

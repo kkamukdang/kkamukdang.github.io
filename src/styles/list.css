@@ -89,7 +89,7 @@
 .ep-card{
   position: relative;
   display:flex; gap:14px; align-items:center; flex-basis: 100%;
-  text-decoration:none; gap: 14px; padding:21px; 
+  text-decoration:none; gap: 14px; padding:16px; 
   background:var(--card); border:1px solid var(--line);
   border-radius:var(--radius); box-shadow:var(--shadow);
   transition:border-color .15s ease, transform .15s ease;
@@ -97,17 +97,17 @@
 .ep-card:hover{ border-color:var(--line-2); transform:translateY(-1px); }
 .ep-body{ flex:1; min-width:0; }
 .ep-emoji{
-  flex:none; position: absolute; right: 24px; top: 32px;
-  font-size:20px; line-height:1; opacity:.9;
+  flex:none; position: absolute; right: 16px; top: 18px;
+  font-size:16px; line-height:1; opacity:.9;
 }
 .ep-meta{ display:flex; gap:8px; align-items:center; margin-bottom:8px; }
 .ep-no{ font-size:13px; font-weight:700; color:var(--accent-ink); letter-spacing:.04em; }
 .ep-date{ font-size:13px; color:var(--muted-2);}
 .ep-title{
-  font-family:var(--font-jp); font-size:21px; font-weight:700;
+  font-family:var(--font-jp); font-size:var(--fs-lgp); font-weight:700;
   color:var(--text); line-height:1.45; margin-bottom:8px;
 }
-.ep-sub{ font-size:15px; color:var(--muted); line-height:1.6; }
+.ep-sub{ font-size:var(--fs-md); color:var(--muted); line-height:1.6; }
 .ep-tags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
 .ep-tags span{ font-size:var(--fs-sm); color:var(--hot-ink); }
 
@@ -131,8 +131,9 @@
   color:var(--accent-ink); font-size:13.5px; font-weight:700; text-decoration:none;
 } */
 
-@media (min-width:560px){
-  /* .home-hero h1{ font-size:32px; } */
+@media (min-width:600px){
+  .ep-card {padding: 24px;}
+  .ep-emoji {right: 24px; top: 24px; font-size:20px;}
 }
 
 @media (min-width:900px) {
@@ -141,6 +142,7 @@
 @media (min-width:1200px) {
   .ep-card {padding:32px; flex-basis: calc(50% - 8px); align-items: start;}
   .ep-list {flex-direction:row; flex-wrap: wrap; gap:16px;}
+  .ep-emoji {right: 24px; top: 32px; font-size:20px;}
 }
 
 /* 단어장 — 그 단어가 나온 회차 배지 */

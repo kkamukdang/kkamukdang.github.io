@@ -122,8 +122,8 @@
   .who{font-size:var(--fs-xs); color:var(--muted); margin-bottom:4px; font-weight:800; letter-spacing:.05em;}
   .bubble-row.b .who{text-align:right; color:var(--on-bubble-dim);}
   .jp-row{display:flex; align-items:center; margin-bottom:4px;}
-  .jp{font-family:var(--font-jp); font-size:var(--fs-xl);}
-  .jp ruby rt{font-size:11px; color:var(--muted); font-weight:700;}
+  .jp{font-family:var(--font-jp); font-size:var(--fs-lgp);}
+  .jp ruby rt{font-size:11px; font-weight:700; opacity: .9;}
   .bubble-row.b .jp ruby rt{color:var(--on-hot);}
   .kr{font-size:14px; color:var(--muted); font-style:normal;}
   .bubble-row.b .kr{color:var(--on-bubble-dim); font-weight:600;}
@@ -139,7 +139,7 @@
   }
   .word-card.term{border-color:var(--line);}
   .word-jp-row{display:flex; align-items:center; flex-shrink:0;}
-  .word-jp{font-family:var(--font-jp); font-size:var(--fs-xl); font-weight:700; color:var(--hot-ink); white-space:nowrap; letter-spacing: -.5pt;}
+  .word-jp{font-family:var(--font-jp); font-size:var(--fs-lgp); font-weight:700; color:var(--hot-ink); white-space:nowrap; letter-spacing: -.5pt;}
   .word-card.term .word-jp{color:var(--hot-ink);}
   .word-jp ruby rt{font-size:10.5px; font-weight:700;}
   .word-card.term .word-jp ruby rt{color:var(--hot-ink);}
@@ -228,7 +228,7 @@ position: relative;}
     text-align:center; font-size:var(--fs-md); color:var(--muted); margin-top:24px;
     padding:34px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
   }
-  .footer-note b{color:var(--text); font-size: var(--fs-base); font-weight:800;}
+  .footer-note b{color:var(--text); font-size: var(--fs-md); font-weight:800;}
   .footer-note ruby {font-family: var(--font-jp);}
   .footer-note b rt {font-size: 10px;}
   .no-tts{
