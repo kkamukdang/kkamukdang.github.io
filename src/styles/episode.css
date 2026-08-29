@@ -43,7 +43,7 @@
     position:relative;
     overflow:hidden;
   }
-  .hero-emoji{font-size:32px; display:block; margin-bottom:10px; filter:drop-shadow(0 4px 12px rgba(0,0,0,.22));}
+  .hero-emoji{font-size:30px; display:block; margin-bottom:10px; filter:drop-shadow(0 4px 12px rgba(0,0,0,.22));}
   [data-theme="light"] .hero-emoji {filter: none;}
   .hero-eyebrow{
     font-size:var(--fs-md); letter-spacing:.18em; color:var(--accent-ink); 

@@ -15,8 +15,8 @@
   .home-hero h1.tagline-jp{ font-size:29px; } 
   .home-hero h1.tagline-jp + p {font-size: 18px;}
 }
-.home-hero p {font-size: var(--fs-md);}
-.home-hero h1 ~ p {margin: 4px 0 2px;}
+.home-hero p {font-size: var(--fs-md); opacity: .7;}
+.home-hero h1 ~ p {margin: 4px 0 6px;}
 
 /* ---- 검색 ---- */
 .search-field{ position:relative; }
