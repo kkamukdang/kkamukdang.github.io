@@ -15,12 +15,13 @@ interface Props {
   title: string;
   description?: string;
   ogTitle?: string;
-  /** 페이지별 body 클래스. 한자 쓰기 페이지가 'write' 를 씁니다. */
   bodyClass?: string;
   /** 상단 내비게이션에서 어느 항목을 켜둘지 */
   nav?: 'home' | 'words' | 'write';
   /** 검색엔진에서 빼고 싶을 때 */
   noindex?: boolean;
+  /** 공유 썸네일 주소. 회차 페이지가 자기 이미지를 넘겨줍니다. */
+  ogImage?: string;
 }
 const {
   title,
@@ -29,7 +30,10 @@ const {
   bodyClass,
   nav,
   noindex = false,
+  ogImage, 
 } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://example.com');
+const ogUrl = new URL(ogImage ?? '/og-default.png', canonical);
 ---
 <!DOCTYPE html>
 <html lang="ko">
@@ -41,6 +45,13 @@ const {
   <meta property="og:title" content={ogTitle} />
   <meta property="og:description" content={description} />
   <meta property="og:type" content="article" />
+  <meta property="og:url" content={canonical.href} />
+  <meta property="og:image" content={ogUrl.href} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content={SITE.name} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href={canonical.href} />
   {noindex && <meta name="robots" content="noindex" />}
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
