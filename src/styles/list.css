@@ -1,7 +1,7 @@
 /* 목록·검색·단어장 화면. 색과 반지름은 tokens.css 의 값을 그대로 씁니다. */
 
 .home-hero{
-  padding:46px 0 22px; text-align:center;
+  padding:18px 0 22px; text-align:center;
 }
 .home-hero h1 {font-size:var(--fs-2xl); margin: 8px 0 0; }
 .home-hero h1.tagline-jp{
@@ -286,5 +286,5 @@
 
 /* ===== 반응형: 태블릿 (600px~) ===== */
   @media (min-width: 600px){
-    .home-hero {padding-top: 18px;}
+    .home-hero {padding-top: 46px;}
   }
