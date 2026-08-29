@@ -124,6 +124,7 @@
   .jp-row{display:flex; align-items:center; margin-bottom:4px;}
   .jp{font-family:var(--font-jp); font-size:var(--fs-lg);}
   .jp ruby rt{font-size:10px; font-weight:700; opacity: .9;}
+   .bubble-row .jp {line-height: 1.9;}
   .bubble-row.b .jp ruby rt{color:var(--on-hot);}
   .kr{font-size:14px; color:var(--muted); font-style:normal;}
   .bubble-row.b .kr{color:var(--on-bubble-dim); font-weight:600;}
