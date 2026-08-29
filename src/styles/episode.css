@@ -134,8 +134,8 @@
     background:var(--card);
     border:1px solid var(--line);
     border-radius:14px;
-    padding:12px 14px;
-    display:flex; gap:10px; align-items:flex-start;
+    padding:16px;
+    display:flex; flex-direction: column; gap:10px; align-items:flex-start;
   }
   .word-card.term{border-color:var(--line);}
   .word-jp-row{display:flex; align-items:center; flex-shrink:0;}
@@ -322,27 +322,21 @@ position: relative;}
     body{font-size:17px;}
     .hero {padding:38px 18px 0;}
     .hero-emoji{font-size:46px;}
-    /* .hero-eyebrow{font-size:13.5px;} */
     .hero h1 ruby rt{font-size:var(--fs-sm);}
-    /* .hero p{font-size:16px;} */
     .hero-hint{font-size:13.5px; padding:8px 16px;}
     .prev-tag{font-size:13.5px;}
-    /* .sec-title h2{font-size:20px;} */
     .sec-title .badge{font-size:14px; padding:5px 13px;}
-    /* .sub-label{font-size:16px;} */
     .phone{padding:26px 20px;}
     .bubble{max-width:80%; padding:14px 18px; font-size:17px;}
-    /* .jp{font-size:19px;} */
     .kr{font-size:15px;}
     .spk{width:34px; height:34px; font-size:16px;}
-    .word-card{padding:16px 18px;}
+    .word-card{padding:16px 18px; flex-direction: row;}
     .word-jp ruby rt{font-size:12px;}
     .footer-note span {display: inline-block;}
     .footer-note .exp {display: block;}
     .word-note{font-size:14.5px;}
     .compare{padding:18px;}
     .cline{font-size:17px; padding:9px 0;}
-    /* .cline .txt ruby rt{font-size:12px;} */
     .cline .txt .exp {display: inline-block;}
     .tip{font-size:15px; padding:11px 13px;}
     .apply-card{padding:16px 18px;}
@@ -359,17 +353,13 @@ position: relative;}
 
   /* ===== 반응형: PC (900px~) ===== */
   @media (min-width: 900px){
-    /* .hero{padding:56px 20px 0;} */
     .hero-emoji{font-size:54px;}
     .sec-title{margin:56px 0 18px;}
-    /* .sec-title h2{font-size:22px;} */
     .phone{padding:30px 26px; border-radius:32px;}
     .bubble{padding:16px 20px; font-size:18.5px; border-radius:20px;}
     .kr{font-size:16px;}
     .word-card{padding:18px 22px; border-radius:18px;}
-    /* .word-jp{font-size:21px;} */
     .word-jp ruby rt{font-size:11px;}
-    /* .word-mean{font-size:18px;} */
     .word-note{font-size:15px;}
     .compare{padding:22px; border-radius:20px;}
     .cline{font-size:19px;}
