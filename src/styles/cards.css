@@ -6,7 +6,7 @@
 }
 /* 회차 이름이 길어서 잘리기 쉬우므로 셀렉트마다 폭 비중을 다르게 줍니다. */
 .card-filters select{
-  flex:1 1 0; min-width:0; padding:10px 32px 10px 14px;
+  flex:1 1 0; min-width:0; padding:11px 32px 11px 14px;
   font-family:var(--font-kr); font-size:var(--fs-md); font-weight: 500;
   color:var(--text); background:var(--bg-soft);
   border:1px solid var(--line-2); border-radius:999px;

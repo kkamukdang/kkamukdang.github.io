@@ -28,7 +28,7 @@
 
 .nav-links{ display:flex; gap:12px; margin-left:auto; }
 .nav-link{
-  padding:4px 12px; font-size:var(--fs-md); font-weight:600;
+  padding:4px 10px; font-size:var(--fs-sm); font-weight:600;
   color:var(--muted); text-decoration:none;
   border-radius:6px; white-space:nowrap;
   transition:color .15s ease, background .15s ease;
@@ -48,7 +48,7 @@
 .site-nav .theme-toggle .t-ico{ font-size:14px; }
 
 @media (max-width:420px){
-  .nav-inner{ padding:8px 12px; gap:6px; }
+  /* .nav-inner{ padding:8px 12px; gap:6px; } */
   .nav-brand{ font-size:14px; }
   .nav-link{ padding:4px 8px;}
 }
@@ -60,7 +60,7 @@
   display:inline-block; padding:10px 18px;
   font-size:var(--fs-md); font-weight:600; text-decoration:none;
   color:var(--muted); background:transparent;
-  border:1px solid var(--line); border-radius:999px;
+  border:1px solid var(--line-2); border-radius:999px;
   transition:color .15s ease, border-color .15s ease;
   white-space:nowrap;
 }
