@@ -218,6 +218,7 @@ const TAGLINES = {
       var pager = document.getElementById('pager');
       var docs = null;
       var timer = null;
+      var emptyTimer = null;
 
       function norm(s) {
         return s.replace(/[\s、。，．！？!?「」『』()（）·・…~〜\-]/g, '').toLowerCase();
@@ -359,9 +360,17 @@ const TAGLINES = {
 
         found.sort(function (a, b) { return b.score - a.score || b.doc.no - a.doc.no; });
 
-        status.textContent = found.length
-          ? found.length + '개 에피소드에서 찾았어요'
-          : '결과가 없어요. 다른 말로 찾아보세요.';
+        // 타이핑 중에는 "결과 없음" 을 띄우지 않습니다.
+        // 한글·일본어는 글자를 조합하며 입력해서, 중간 단계마다 메시지가 깜빡이거든요.
+        clearTimeout(emptyTimer);
+        if (found.length) {
+          status.textContent = found.length + '개 에피소드에서 찾았어요';
+        } else {
+          status.textContent = '';
+          emptyTimer = setTimeout(function () {
+            status.textContent = '결과가 없어요. 다른 말로 찾아보세요.';
+          }, 600);
+        }
 
         results.innerHTML = found.slice(0, 12).map(function (f) {
           var rows = f.hits.slice(0, 4).map(function (e) {
