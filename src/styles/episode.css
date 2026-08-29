@@ -208,8 +208,8 @@ position: relative;}
   .quiz-opt-btn:disabled{cursor:default;}
   .quiz-opt-btn.wrong ruby rt {color: var(--wrong);}
   .quiz-feedback{margin-top:10px; font-size:13.5px; font-weight:800; min-height:18px;}
-  .quiz-feedback.ok{color:var(--text);}
-  .quiz-feedback.no{color:var(--text);}
+  .quiz-feedback.ok{color:var(--right);}
+  .quiz-feedback.no{color:var(--wrong);}
 
   /* Next preview */
   .next-card{
@@ -217,7 +217,7 @@ position: relative;}
     padding:14px 16px; margin-top:16px;
   }
   .next-label{
-    display:inline-block; color:var(--hot);
+    display:inline-block; color:var(--accent-ink);
     font-size:var(--fs-sm); font-weight:800; letter-spacing:.1em;
     padding:3px 9px 3px 2px; margin-bottom:8px;
   }
