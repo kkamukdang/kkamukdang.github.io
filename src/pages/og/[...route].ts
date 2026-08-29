@@ -19,9 +19,10 @@ export const { getStaticPaths, GET } = await OGImageRoute({
   getImageOptions: (_path, page) => ({
     title: page.title,
     description: page.description,
-    bgGradient: [[6, 7, 10], [16, 18, 24]],
-    border: { color: [53, 200, 181], width: 14, side: 'inline-start' },
-    padding: 72,
+    bgGradient: [[26, 26, 26], [18, 18, 18]],
+    logo: { path: './public/og-logo.png', size: [120] },
+    border: { color: [238, 132, 40], width: 14, side: 'inline-start' },
+    padding: 80,
     /**
      * families 를 지정하지 않으면 기본값이 'Noto Sans' 라서
      * 두 번째 폰트가 무시되고 한글이 빈 네모로 나옵니다.
