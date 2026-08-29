@@ -284,4 +284,7 @@
 /* 방금 상태를 바꾼 카드는 잠깐 강조해서, 목록에서 사라져도 뭘 눌렀는지 알 수 있게 */
 .word-tile.just-changed{ border-color:var(--accent-ink); }
 
-/* 외움 여부는 위 탭에서 이미 고른 상태라 타일에 따로 표시하지 않습니다. */
+/* ===== 반응형: 태블릿 (600px~) ===== */
+  @media (min-width: 600px){
+    .home-hero {padding-top: 18px;}
+  }

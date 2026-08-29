@@ -26,7 +26,7 @@
   .nav-brand svg path:not(:last-child) {display: block;}
 }
 
-.nav-links{ display:flex; gap:2px; margin-left:auto; }
+.nav-links{ display:flex; gap:12px; margin-left:auto; }
 .nav-link{
   padding:4px 12px; font-size:var(--fs-md); font-weight:600;
   color:var(--muted); text-decoration:none;
@@ -36,7 +36,7 @@
 .nav-link:hover{ color:var(--text); }
 .nav-link.on{ color:var(--text); background:var(--bubble); font-weight:700; }
 @media (min-width:600px) {
-  .nav-links {gap: 6px;}
+  /* .nav-links {gap: 6px;} */
 }
 
 /* 테마 버튼은 내비 안으로 들어옵니다 (기존 fixed 스타일 덮어쓰기) */

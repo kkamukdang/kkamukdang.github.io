@@ -280,3 +280,8 @@ body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
 .ep-picker select:hover{ border-color:var(--line-2); }
 .ep-picker select:focus{ border-color:var(--muted-2); }
 .ep-picker select * {font-weight: 500;}
+
+/* ===== 반응형: 태블릿 (600px~) ===== */
+  @media (min-width: 600px){
+    .write-header {padding-top: 18px;}
+  }
