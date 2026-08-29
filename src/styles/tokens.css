@@ -27,9 +27,9 @@
     --hot-soft:rgba(44, 44, 44, 1);
     --on-hot:#141414;
 
-    --wrong:rgba(234, 93, 118, 1);
-    --wrong-line:rgba(234, 93, 118, .2);
-    --wrong-soft:rgba(234, 93, 118, 0.05);
+    --wrong:rgba(241, 120, 147, 1);
+    --wrong-line:rgba(241, 120, 147, .2);
+    --wrong-soft:rgba(241, 120, 147, 0.05);
     --right:#6ecfbc;
     --right-soft:rgba(78, 227, 202, .1);
 
