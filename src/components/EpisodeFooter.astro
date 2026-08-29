@@ -6,7 +6,7 @@ const { keyPoints } = Astro.props;
 ---
 {keyPoints.length > 0 && (
   <div class="footer-note" data-pagefind-ignore>
-    오늘의 핵심: <span set:html={keyPoints.map((k) => `<b>${toRubyRich(k)}</b>`).join(' · ')} /><br />
-    🔊 아이콘을 누르면 일본어 발음을 들을 수 있어요
+    오늘의 핵심: <span set:html={keyPoints.map((k) => `<b>${toRubyRich(k)}</b>`).join(' · ')} />
+    <span class="exp">🔊 아이콘을 누르면 일본어 발음을 들을 수 있어요</span>
   </div>
 )}

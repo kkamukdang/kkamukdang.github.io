@@ -40,7 +40,7 @@
 .search-box input::-webkit-search-cancel-button{ cursor:pointer; }
 .search-status{ font-size:14px; color:var(--muted-2); margin:16px 2px 0; text-align: center;}
 
-.results{ display:none; margin-top:28px; }
+.results{ display:none; margin-top:14px; }
 .result{
   display:block; padding:21px; margin-bottom:12px; text-decoration:none;
   background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
@@ -290,4 +290,5 @@
     .home-hero {padding: 46px 0 18px;}
     .search-status {margin-top: 32px;}
     .search-box input {padding:19px 16px 19px 46px; }
+    .results {margin-top: 28px;}
   }

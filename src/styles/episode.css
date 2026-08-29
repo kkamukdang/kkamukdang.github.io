@@ -228,7 +228,8 @@ position: relative;}
     text-align:center; font-size:var(--fs-md); color:var(--muted); margin-top:24px;
     padding:34px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
   }
-  .footer-note b{color:var(--accent-ink); font-size: var(--fs-md); font-weight:800;}
+  .footer-note span {display: block;}
+  .footer-note b{color:var(--accent-ink); font-size: var(--fs-md); font-weight:800; font-family: var(--font-jp);}
   .footer-note ruby {font-family: var(--font-jp);}
   .footer-note b rt {font-size: 10px;}
   .no-tts{
@@ -336,6 +337,8 @@ position: relative;}
     .spk{width:34px; height:34px; font-size:16px;}
     .word-card{padding:16px 18px;}
     .word-jp ruby rt{font-size:12px;}
+    .footer-note span {display: inline-block;}
+    .footer-note .exp {display: block;}
     .word-note{font-size:14.5px;}
     .compare{padding:18px;}
     .cline{font-size:17px; padding:9px 0;}
