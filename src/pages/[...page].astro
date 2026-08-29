@@ -306,6 +306,17 @@ const TAGLINES = {
         results.style.display = on ? 'none' : 'block';
       }
 
+      var composing = false;
+
+      // 한글·일본어는 글자를 조합해가며 입력합니다 (ㅂ → 배 → 배달).
+      // 조합 중에 검색하면 중간 단계마다 "결과 없어요" 가 깜빡여요.
+      input.addEventListener('compositionstart', function () { composing = true; });
+      input.addEventListener('compositionend', function () {
+        composing = false;
+        clearTimeout(timer);
+        timer = setTimeout(run, 140);
+      });
+
       input.addEventListener('input', function () {
         clearTimeout(timer);
         timer = setTimeout(run, 140);
@@ -320,6 +331,10 @@ const TAGLINES = {
 
         var q = norm(raw);
         if (!q) { showList(true); return; }
+
+        // ㅂ, ㅏ 같은 낱자만 남았으면 아직 찾을 때가 아닙니다.
+        if (/^[\u3131-\u318E]+$/.test(q)) { showList(true); status.textContent = ''; return; }
+
         showList(false);
 
         var found = [];
@@ -350,12 +365,14 @@ const TAGLINES = {
 
         results.innerHTML = found.slice(0, 12).map(function (f) {
           var rows = f.hits.slice(0, 4).map(function (e) {
-            return '<div class="hit">' +
-                    '<span class="hit-kind">' + esc(e.kind) + '</span>' +
-                    '<span class="hit-jp">' + markParts(e.p, q) + '</span>' +
-                    '<span class="hit-mean">' + markText(e.mean, q) + '</span>' +
-                    '</div>';
-            }).join('');
+            return '<div class="hit" data-kind="' + esc(e.kind) + '">' +
+                  '<span class="hit-kind">' + esc(e.kind) + '</span>' +
+                   '<div class="hit-body">' +
+                      '<span class="hit-jp">' + markParts(e.p, q) + '</span>' +
+                      '<span class="hit-mean">' + markText(e.mean, q) + '</span>' +
+                    '</div>' +
+                  '</div>';
+          }).join('');
           var more = f.hits.length > 4
             ? '<div class="hit-more">외 ' + (f.hits.length - 4) + '개</div>' : '';
 

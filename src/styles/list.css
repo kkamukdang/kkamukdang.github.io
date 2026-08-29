@@ -42,7 +42,7 @@
 
 .results{ display:none; margin-top:14px; }
 .result{
-  display:block; padding:21px; margin-bottom:12px; text-decoration:none;
+  display:block; padding:21px; margin-bottom:16px; text-decoration:none;
   background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
 }
 .result:hover{ border-color:var(--line-2); }
@@ -59,13 +59,19 @@
 .result-title mark{ background:var(--accent-soft); color:var(--accent-ink); box-decoration-break:clone;
   -webkit-box-decoration-break:clone;}
 
-.hit{
+/* .hit{
   display:flex; align-items:baseline; gap:8px;
   padding:6px 0; font-size:var(--fs-md); line-height:1.55;
   border-top:1px solid var(--bg-soft);
+} */
+
+.hit{
+  display:grid; grid-template-columns:38px 1fr; gap:0 8px;
+  padding:5px 0; border-top:1px solid var(--bg-soft);
 }
+.hit-body{ display:flex; flex-wrap:wrap; gap:2px 8px; align-items:baseline; }
 .hit-kind{ flex:none; min-width:30px; font-size:13px; color:var(--muted-2); }
-.hit-jp{ font-family:var(--font-jp); color:var(--text); font-weight:600; }
+.hit-jp{ font-family:var(--font-jp); font-size: var(--fs-md); font-weight:600; color:var(--text); }
 /* .hit-kana{
   margin-left:6px; font-size:11.5px; font-weight:400;
   color:var(--ruby);
@@ -291,4 +297,11 @@
     .search-status {margin-top: 32px;}
     .search-box input {padding:19px 16px 19px 46px; }
     .results {margin-top: 28px;}
+    /* 대화·비교는 문장과 설명이 둘 다 길어서, 좁은 화면에서는 줄을 나눕니다.
+       단어는 짧으니 한 줄로 두는 편이 훑어보기 좋아요. */
+    .hit[data-kind="대화"] .hit-body,
+    .hit[data-kind="비교"] .hit-body{
+      flex-direction:column;
+      gap:3px;
+    }
   }
