@@ -2,7 +2,6 @@
 import { getPages } from '../../lib/episodes';
 import Base from '../../layouts/Base.astro';
 import Hero from '../../components/Hero.astro';
-import PrevCard from '../../components/PrevCard.astro';
 import EpisodeNav from '../../components/EpisodeNav.astro';
 import SectionTitle from '../../components/SectionTitle.astro';
 import Scene from '../../components/Scene.astro';
@@ -45,7 +44,7 @@ const kanjiWords = d.kanjiPractice.map((w) => w.w).join(' · ');
 <Base
   title={`${plainTitle} — ${SITE.name}`}
   description={d.description}
-  ogTitle={`${d.subtitle} — ${SITE.name}`}
+  ogTitle={`${SITE.brand} — ${d.subtitle}`}
   ogImage={`/og/${ep.id}.png`}
 >
   <div class="wrap reading" data-pagefind-body>

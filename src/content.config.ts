@@ -16,6 +16,12 @@ const episodes = defineCollection({
   schema: z.object({
     // --- 기본 정보 ---
     no: z.number(),                       // 회차 번호. 정렬과 이전/다음 연결에 씁니다.
+    season: z.number(),                   // 시즌 번호. 표현 ID 앞자리와 일치해야 합니다.
+    /**
+     * 그 회차를 떠올리게 하는 장면. 화면에는 나오지 않습니다.
+     * 복습 문항의 "시간 맥락 한 줄" 을 만들 때 씁니다.
+     */
+    memoryScene: z.string(),
     date: z.date(),
     title: jp,                            // 예: 今夜[こんや]チキン頼[たの]んでもいい?
     subtitle: z.string(),                 // 한국어 한 줄 설명
@@ -29,12 +35,6 @@ const episodes = defineCollection({
      */
     draft: z.boolean().default(false),
     unlisted: z.boolean().default(false),
-
-    /**
-     * 지난 편 복습 한 줄. 본문 맨 위, SCENE 앞에 작게 붙습니다.
-     * 비워두면 아예 나타나지 않아요. 인라인 HTML 과 후리가나 표기를 쓸 수 있습니다.
-     */
-    recap: z.string().optional(),
 
     // --- SCENE : 대화 ---
     scene: z.array(
@@ -110,7 +110,42 @@ const episodes = defineCollection({
     ).default([]),
 
     // --- 마무리 ---
-    keyPoints: z.array(jp).default([]),   // 푸터의 "오늘의 핵심"
+    /**
+     * 이번 편에서 딱 3개.
+     * wordGroups 와는 별개의 목록입니다. 단어·문법이 섞여도 되고,
+     * 기준은 "그 장면에서 실제로 입에서 나와야 하는 말" 입니다.
+     * 여기 뽑았다고 해서 wordGroups 에서 빼지 않습니다.
+     */
+    keyPoints: z.array(
+      z.object({
+        id: z.string().regex(/^s\d{2}e\d{2}-[a-z]+$/, '표현 ID 형식이 맞지 않습니다'),
+        jp,
+        kr: z.string(),
+        note: z.string().optional(),      // 표현 옆 한 줄 설명
+        /** 마땅한 항목이 없으면 생략합니다. 억지로 붙이지 않아요. */
+        compareIndex: z.number().optional(),
+        applyIndex: z.number().optional(),
+      })
+    ).default([]),
+
+    /**
+     * 이 회차 뉴스레터 최상단에 낼 복습 문항.
+     * 사이트에서는 렌더링하지 않고 메일 작성에만 씁니다.
+     * 화면에 안 나오므로 오타를 npm run check 가 잡아줍니다.
+     */
+    reviewTargets: z.array(
+      z.object({
+        id: z.string(),
+        scene: z.string(),
+        cloze: z.string(),
+        answer: z.string(),
+      })
+    ).default([]),
+
+    /** 정정 이력. /corrections 페이지가 모아 보여줍니다. */
+    corrections: z.array(
+      z.object({ date: z.string(), text: z.string() })
+    ).default([]),
     nextPreview: z.string().optional(),   // NEXT 카드 본문 (HTML 허용)
   }),
 });

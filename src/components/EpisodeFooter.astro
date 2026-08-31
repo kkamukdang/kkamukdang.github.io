@@ -1,11 +1,13 @@
 ---
 /** 회차 본문 마무리. 저작권·라이선스는 페이지 공통 푸터가 맡습니다. */
 import { toRubyRich } from '../lib/furigana';
-interface Props { keyPoints: string[]; }
+interface KeyPoint { id: string; jp: string; kr: string; note?: string }
+interface Props { keyPoints: KeyPoint[]; }
 const { keyPoints } = Astro.props;
 ---
 {keyPoints.length > 0 && (
   <div class="footer-note" data-pagefind-ignore>
-    📌 오늘의 핵심 : <span set:html={keyPoints.map((k) => `<b>${toRubyRich(k)}</b>`).join(' · ')} />
+    오늘의 핵심: <span set:html={keyPoints.map((k) => `<b>${toRubyRich(k.jp)}</b>`).join(' · ')} /><br />
+    🔊 아이콘을 누르면 일본어 발음을 들을 수 있어요
   </div>
 )}

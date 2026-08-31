@@ -43,6 +43,12 @@ const RISKY = {
 };
 
 const KANJI_RE = /[\u4E00-\u9FFF\u3005]/;
+
+/** 장면 태그는 이 다섯 개만 씁니다. tags 의 1번째 자리. */
+const SCENE_TAGS = ['부탁하기', '실수 수습', '상황 설명', '리액션', '거절·미루기'];
+
+/** 표현 ID 형식: s01e01-temoii */
+const EXPR_ID_RE = /^s(\d{2})e(\d{2})-[a-z]+$/;
 // 대괄호 하나짜리 표기만 잡습니다 (두 개짜리는 이미 교정된 것)
 const SINGLE_RE = /([\u4E00-\u9FFF\u3005]+)(?<!\])\[(?!\[)([^\]]+)\]/g;
 
@@ -140,6 +146,23 @@ for (const ep of episodes) {
   seenNo.set(ep.data.no, ep.file);
 }
 
+// ── 표현 ID 전수 수집 (중복 검사 + reviewTargets 실재 확인) ──
+const allExpr = new Map();
+for (const ep of episodes) {
+  for (const kp of ep.data.keyPoints ?? []) {
+    if (!kp?.id) continue;
+    if (allExpr.has(kp.id)) {
+      console.log(
+        c.red(`✗ 표현 ID 중복: ${kp.id}`) +
+          c.dim(`  #${allExpr.get(kp.id).no} 와 #${ep.data.no}`)
+      );
+      problems++;
+    } else {
+      allExpr.set(kp.id, { no: ep.data.no, jp: kp.jp });
+    }
+  }
+}
+
 // ── 회차별 점검 ──
 const past = { words: new Map(), sentences: new Map() };
 
@@ -221,7 +244,74 @@ for (const ep of episodes) {
       }
     }
 
-    // ④ 내용 형식
+    // ④ 표현 ID · 연결 인덱스
+    const kps = ep.data.keyPoints ?? [];
+    if (kps.length !== 3) {
+      lines.push(c.red('  표현 개수  ') + `keyPoints 가 ${kps.length}개입니다 (3개여야 해요)`);
+      problems++;
+    }
+    for (const kp of kps) {
+      const m = EXPR_ID_RE.exec(kp.id ?? '');
+      if (!m) {
+        lines.push(c.red('  표현 ID    ') + `${kp.id} — s01e01-temoii 형식이어야 합니다`);
+        problems++;
+        continue;
+      }
+      // 시즌·회차 번호가 파일 내용과 어긋나면 복습 편성이 틀어집니다.
+      if (Number(m[1]) !== ep.data.season || Number(m[2]) !== ep.data.no) {
+        lines.push(
+          c.red('  표현 ID    ') +
+            `${kp.id} — season ${ep.data.season} / no ${ep.data.no} 와 맞지 않습니다`
+        );
+        problems++;
+      }
+      if (kp.compareIndex != null && !(ep.data.compare ?? [])[kp.compareIndex]) {
+        lines.push(c.red('  연결 오류  ') + `${kp.id} 의 compareIndex ${kp.compareIndex} 가 범위 밖입니다`);
+        problems++;
+      }
+      if (kp.applyIndex != null && !(ep.data.apply ?? [])[kp.applyIndex]) {
+        lines.push(c.red('  연결 오류  ') + `${kp.id} 의 applyIndex ${kp.applyIndex} 가 범위 밖입니다`);
+        problems++;
+      }
+    }
+
+    // ⑤ 장면 태그
+    const sceneTag = (ep.data.tags ?? [])[0];
+    if (!sceneTag) {
+      lines.push(c.red('  태그       ') + '장면 태그가 없습니다 (tags 의 1번째 자리)');
+      problems++;
+    } else if (!SCENE_TAGS.includes(sceneTag)) {
+      lines.push(
+        c.red('  태그       ') + `"${sceneTag}" 는 장면 태그가 아닙니다` +
+          c.dim(`  → ${SCENE_TAGS.join(' / ')}`)
+      );
+      problems++;
+    }
+
+    // ⑥ 필수 항목
+    if (ep.data.season == null) { lines.push(c.red('  누락       ') + 'season 이 없습니다'); problems++; }
+    if (!ep.data.memoryScene)   { lines.push(c.red('  누락       ') + 'memoryScene 이 없습니다'); problems++; }
+
+    // ⑦ 복습 문항 — 사이트에 안 나오므로 여기서 못 잡으면 메일 발송 후에야 드러납니다
+    for (const rt of ep.data.reviewTargets ?? []) {
+      const src = allExpr.get(rt.id);
+      if (!src) {
+        lines.push(c.red('  복습 대상  ') + `${rt.id} — 어느 회차에도 없는 표현입니다`);
+        problems++;
+      } else if (src.no > ep.data.no) {
+        lines.push(
+          c.red('  복습 시점  ') + `${rt.id} 는 #${String(src.no).padStart(3, '0')} 의 표현입니다` +
+            c.dim('  아직 나오지 않은 것을 복습할 수 없어요')
+        );
+        problems++;
+      }
+      if (!/_{3,}/.test(rt.cloze ?? '')) {
+        lines.push(c.yellow('  복습 문항  ') + `${rt.id} 의 cloze 에 빈칸(______)이 없습니다`);
+        notes++;
+      }
+    }
+
+    // ⑧ 내용 형식
     for (const [i, q] of (ep.data.quiz ?? []).entries()) {
       const right = (q.options ?? []).filter((o) => o.correct).length;
       if (right !== 1) {
