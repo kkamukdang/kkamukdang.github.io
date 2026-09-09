@@ -1,0 +1,73 @@
+/* ===========================================================
+   총복습호
+   =========================================================== */
+.weeks{
+  margin-bottom:22px; padding:18px 20px;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius);
+}
+.weeks-h{
+  margin:0 0 4px; font-size:var(--fs-md); font-weight:800;
+}
+.week{ padding:13px 0; border-top:1px solid var(--line); }
+.week:first-of-type{ border-top:none; }
+.week-t{ font-size:var(--fs-base); font-weight:700; }
+.week-k{
+  margin-top:4px; font-family:var(--font-jp);
+  font-size:var(--fs-sm); color:var(--muted);
+}
+
+/* 완주 */
+.done-card,
+.finish-card{
+  margin-top:16px; padding:26px 20px; text-align:center;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius);
+}
+.finish-card{ border-style:dashed; }
+.done-eyebrow{ font-size:var(--fs-xs); color:var(--muted-2); }
+.done-title{
+  margin:8px 0 6px; font-size:var(--fs-xl); font-weight:800; letter-spacing:-.02em;
+}
+.done-sub{ margin:0 0 4px; font-size:var(--fs-sm); color:var(--muted); }
+.done-card .cta-btn{ margin-top:16px; }
+
+.finish-code{
+  margin:10px 0 18px; font-size:var(--fs-sm); color:var(--muted);
+}
+.finish-code b{
+  margin-left:4px; font-family:var(--font-jp);
+  font-size:var(--fs-lg); color:var(--hot-ink); letter-spacing:.06em;
+}
+.finish-btns{ display:flex; gap:8px; }
+.finish-btns .pill{ flex:1 1 0; text-align:center; }
+.finish-btns .primary{
+  color:var(--on-hot); background:var(--hot); border-color:var(--hot); font-weight:700;
+}
+
+.done-note{
+  margin:12px 0 0; font-size:var(--fs-xs); line-height:1.7; color:var(--muted-2);
+}
+
+/* 아직 안 읽은 편 안내 */
+.missing{ margin-top:8px; }
+.missing-text{
+  margin:0 0 12px; font-size:var(--fs-sm); color:var(--muted);
+}
+.missing-list{ display:flex; flex-wrap:wrap; gap:7px; justify-content:center; }
+.missing-chip{
+  padding:10px 16px; text-decoration:none;
+  font-size:var(--fs-sm); font-weight:700;
+  color:var(--hot-ink); background:var(--hot-soft);
+  border:1px solid var(--line); border-radius:999px;
+}
+.missing-chip:hover{ border-color:var(--hot); }
+
+/* 카드 안에 들어간 도장판 — 바깥 여백을 카드에 맞춥니다 */
+.done-card .stampboard,
+.finish-card .stampboard{
+  margin:18px 0 0; padding:0; background:none; border:none;
+}
+.done-card .stamp-head,
+.finish-card .stamp-head{ display:none; }
+.done-card .cta-btn{ margin-top:18px; }

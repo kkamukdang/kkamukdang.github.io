@@ -1,0 +1,39 @@
+---
+/**
+ * 더 파보기 (기본 접힘)
+ * -------------------------------------------------------------
+ * 접는 버튼은 페이지에 하나뿐입니다. 여러 개면 "몇 개나 더 있지" 하는
+ * 부담이 생겨서, 하나로 묶고 안에서 소제목으로 나눴습니다.
+ */
+interface Props { summary: string; }
+const { summary } = Astro.props;
+---
+<details class="later">
+  <summary>
+    <span class="later-title">더 파보기</span>
+    <span class="later-count">{summary}</span>
+  </summary>
+  <div class="later-body">
+    <slot />
+  </div>
+</details>
+
+<script is:inline>
+  /* 주소에 #later-… 가 붙어 오면 상자를 열고 그 자리로 내려갑니다.
+     한자 쓰기에서 「본문으로」로 돌아올 때 쓰여요. */
+  (function () {
+    function openFor(hash) {
+      if (!hash || hash.indexOf('#later-') !== 0) return;
+      var box = document.querySelector('details.later');
+      var target = document.querySelector(hash);
+      if (!box || !target) return;
+      box.open = true;
+      // 상자가 펼쳐진 뒤에 위치를 잡아야 정확합니다
+      requestAnimationFrame(function () {
+        target.scrollIntoView({ block: 'start' });
+      });
+    }
+    openFor(location.hash);
+    window.addEventListener('hashchange', function () { openFor(location.hash); });
+  })();
+</script>

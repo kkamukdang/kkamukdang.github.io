@@ -7,7 +7,7 @@
 import '../styles/tokens.css';
 import '../styles/episode.css';
 import '../styles/nav.css';
-import { SITE } from '../lib/site';
+import { SITE, url } from '../lib/site';
 import SiteNav from '../components/SiteNav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 
@@ -15,9 +15,10 @@ interface Props {
   title: string;
   description?: string;
   ogTitle?: string;
+  /** 페이지별 body 클래스. 한자 쓰기 페이지가 'write' 를 씁니다. */
   bodyClass?: string;
   /** 상단 내비게이션에서 어느 항목을 켜둘지 */
-  nav?: 'home' | 'words' | 'write';
+  nav?: 'episode' | 'again';
   /** 검색엔진에서 빼고 싶을 때 */
   noindex?: boolean;
   /** 공유 썸네일 주소. 회차 페이지가 자기 이미지를 넘겨줍니다. */
@@ -30,8 +31,10 @@ const {
   bodyClass,
   nav,
   noindex = false,
-  ogImage, 
+  ogImage,
 } = Astro.props;
+
+// 공유 썸네일과 표준 주소는 전체 주소여야 합니다 (상대 경로는 안 먹혀요).
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://example.com');
 const ogUrl = new URL(ogImage ?? '/og-default.png', canonical);
 ---
@@ -55,13 +58,8 @@ const ogUrl = new URL(ogImage ?? '/og-default.png', canonical);
   {noindex && <meta name="robots" content="noindex" />}
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+JP:wght@400;500;700;800&family=Stylish&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&display=swap" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
-  {import.meta.env.PROD && (
-    <script
-      data-goatcounter="https://kkamukdang.goatcounter.com/count"
-      async src="//gc.zgo.at/count.js"></script>
-  )}
   <script is:inline>
     // 깜빡임 방지: 저장된 테마를 페인트 전에 적용합니다.
     try {
@@ -71,6 +69,9 @@ const ogUrl = new URL(ogImage ?? '/og-default.png', canonical);
   </script>
 </head>
 <body class={bodyClass}>
+  {/* 기록 저장소는 모든 화면이 씁니다. 여기서 한 번만 불러와요. */}
+  <script src={url('/kkmd.js')} is:inline></script>
+
   <SiteNav current={nav} />
 
   <div class="no-tts" id="noTtsWarning">⚠️ 이 브라우저는 음성 재생을 지원하지 않아요.</div>

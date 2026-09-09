@@ -3,14 +3,28 @@
  * 모든 페이지 맨 아래에 붙는 공통 푸터.
  * 예전에는 회차 본문에만 있어서 목록·단어장에는 저작권 표기가 없었어요.
  */
-import { SITE } from '../lib/site';
+import { SITE, url } from '../lib/site';
+import { getListed } from '../lib/episodes';
+
 const year = new Date().getFullYear();
 const span = year > SITE.since ? `${SITE.since}–${year}` : `${SITE.since}`;
+
+const episodes = await getListed();
+const allCorr = episodes
+  .flatMap((ep) => ep.data.corrections)
+  .sort((a, b) => (a.date < b.date ? 1 : -1));
+const lastCorr = allCorr[0];
+const corrLabel = lastCorr
+  ? `바로잡은 기록 (최근 ${Number(lastCorr.date.split('-')[1])}월 ${Number(lastCorr.date.split('-')[2])}일)`
+  : '바로잡은 기록';
 ---
-<footer class="site-footer" data-pagefind-ignore>
-  <p>AI 도구로 초안을 잡고 사람이 다듬어요.</p>
+<footer class="site-footer">
   <p>
-    이상한 부분을 발견하면 <a href={`mailto:${SITE.email}`}>알려주세요</a> — 다음 편에서 정정합니다.
+    <span>AI 도구로 초안을 잡고 사람이 다듬어요. </span>
+    <span>이상한 부분을 발견하면 <a href={`mailto:${SITE.email}`}>알려주세요🚨</span></a>
+  </p>
+  <p class="foot-corr">
+    <a href={url('/corrections/')}>{corrLabel}</a>
   </p>
   <p class="foot-license">
     획순 데이터: <a href="https://kanjivg.tagaini.net/" target="_blank" rel="noopener">KanjiVG</a> (CC BY-SA 3.0)

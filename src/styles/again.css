@@ -1,0 +1,402 @@
+/* ===========================================================
+   다시 만나기
+   =========================================================== */
+
+.again-head{ padding:40px 0 22px; text-align:center; }
+.again-head h1{
+  margin:8px 0 8px; font-size:var(--fs-2xl); font-weight:800; letter-spacing:-.02em;
+}
+.again-head p{ margin:0; font-size:var(--fs-md); line-height:1.7; color:var(--muted); }
+
+.slot{ min-height:200px; }
+
+/* ---------- 퀴즈 카드 ---------- */
+.quizcard{
+  padding:26px 20px 20px;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius); box-shadow:var(--shadow);
+  text-align:center;
+}
+
+/* 머리줄 — 왼쪽에 맥락, 오른쪽에 진행 표시.
+   진행 표시는 정답 전후로 자리가 바뀌지 않게 여기 고정합니다. */
+.q-top{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:10px; margin-bottom:18px;
+}
+.q-scene{
+  display:inline-block; padding:6px 13px;
+  font-size:12.5px; color:var(--muted);
+  background:var(--bg-soft); border-radius:999px;
+}
+.q-progress{
+  flex:none; font-size:12px; color:var(--muted-2);
+  font-variant-numeric:tabular-nums;
+}
+
+/* 질문 아래 고정 문구 — 무엇을 떠올려야 하는지 알려줍니다 */
+.q-prompt{
+  margin-top:9px; font-size:var(--fs-md); color:var(--muted-2);
+}
+
+/* 질문은 한국어입니다. "이 상황에서 뭐라고 하지?" 를 떠올리게 해요. */
+.q-ask{
+  font-size:19px; line-height:1.65;
+  word-break:keep-all;
+}
+
+/* 빈칸형 문항을 쓸 때를 위해 남겨둡니다 */
+.cloze-blank{
+  display:inline-block; min-width:74px;
+  color:var(--hot); letter-spacing:.04em;
+  border-bottom:2px solid var(--hot);
+}
+
+.q-reveal{
+  display:block; width:100%; margin-top:22px; padding:14px;
+  font-family:var(--font-kr); font-size:14.5px; font-weight:700;
+  color:var(--on-hot); background:var(--hot);
+  border:none; border-radius:14px; cursor:pointer;
+}
+.q-reveal:active{ transform:scale(.99); }
+
+/* ---------- 정답 ---------- */
+/* 「정답 보기」가 사라진 자리에 그대로 들어옵니다 */
+.q-answer{
+  margin:16px 0 32px; padding:24px;
+  background-color: var(--bg-soft); border-radius: 16px;
+}
+.q-ans-jp{
+  font-family:var(--font-jp); font-size:var(--fs-xl); font-weight: 700;
+  line-height:1.7; word-break:keep-all; color: var(--hot-ink);
+}
+.q-ans-jp rt{ font-size:.45em; color:var(--ruby); font-weight:400; }
+.q-ans-kr{ font-size:var(--fs-md); font-weight:500; color:var(--muted); }
+/* 정답은 크게 하나만 보여줍니다. 설명은 그 편에서 보게 해요. */
+.q-ans-src{
+  display:inline-block; margin-top:18px;
+  font-size:12.5px; font-weight:700; color:var(--accent-ink); text-decoration:none;
+}
+
+/* ---------- 상태 버튼 ---------- */
+.q-grade{ display:flex; gap:7px; margin-top:20px; }
+.g-btn{
+  flex:1 1 0; display:flex; flex-direction:column; align-items:center; gap:5px;
+  padding:13px 6px;
+  font-family:var(--font-kr); cursor:pointer;
+  background:var(--card); border:1px solid var(--line); border-radius:14px;
+  transition:border-color .15s ease, background .15s ease;
+}
+.g-emoji{ font-size:22px; line-height:1; }
+.g-label{ font-size:12px; font-weight:600; color:var(--muted); }
+.g-btn:hover{ border-color:var(--line-2); background:var(--bg-soft); }
+/* .g-btn.ok:hover{ border-color:var(--accent-ink); }
+.g-btn.lost:hover{ border-color:var(--hot); } */
+
+/* ---------- 쉬는 카드 ---------- */
+.restcard{
+  display:flex; flex-direction:column; align-items:center; gap:14px;
+  padding:44px 24px; text-align:center;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius);
+}
+.rest-emoji{ font-size:36px; line-height:1; }
+.rest-emoji img{ width:90px; height:90px; object-fit:contain; }
+.rest-text{ font-size:var(--fs-lg); font-weight:600; line-height:1.7; }
+.restcard .pill{ cursor:pointer; font-family:var(--font-kr); }
+
+/* ---------- 하단 ---------- */
+.again-bottom{ margin-top:12px; }
+
+.counters{ display:flex; gap:9px; }
+.counter{
+  flex:1 1 0; display:flex; flex-direction:column; align-items:center; gap:3px;
+  padding:16px 10px;
+  background:var(--card); border:1px solid var(--line); border-radius:14px;
+}
+.c-num{
+  font-size:24px; font-weight:800; color:var(--accent-ink);
+  font-variant-numeric:tabular-nums;
+}
+.c-label{ font-size:var(--fs-sm); color:var(--muted-2); }
+
+.again-links{
+  display:flex; gap:8px; justify-content:center; margin-top:16px;
+}
+.again-links .pill {padding: 8px 24px;}
+
+/* 한 손 조작 — 상태 버튼은 화면 아래쪽 절반에 오도록 여백을 둡니다 */
+.q-grade .g-btn{ min-height:56px; }
+
+@media (min-width:600px){
+  .q-ask{ font-size:var(--fs-xl); }
+}
+
+/* ===========================================================
+   골라 풀기
+   =========================================================== */
+.pick-filters{ display:flex; gap:7px; margin-bottom:12px; }
+.pick-filters select{
+  min-width:0; padding:11px 32px 11px 14px;
+  font-family:var(--font-kr); font-size:13px;
+  color:var(--text); background:var(--card);
+  border:1px solid var(--line); border-radius:999px;
+  cursor:pointer; outline:none; appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),
+                   linear-gradient(135deg,currentColor 50%,transparent 50%);
+  background-position:calc(100% - 17px) 51%, calc(100% - 12px) 51%;
+  background-size:5px 5px, 5px 5px; background-repeat:no-repeat;
+  text-overflow:ellipsis;
+}
+.pick-filters select:first-child {
+  flex: 2 1 0;
+}
+
+.pick-filters select:nth-child(2) {
+  flex: 1 1 0;
+}
+.pick-filters .pill{ flex:none; cursor:pointer; font-family:var(--font-kr); }
+
+/* 화살표는 진행 표시 양옆 (§7-5) */
+.pick-nav{
+  display:flex; align-items:center; justify-content:center;
+  gap:16px; margin-top:16px;
+}
+.pick-nav .arrow{
+  width:44px; height:44px; font-size:22px; line-height:1;
+  color:var(--muted); background:var(--card);
+  border:1px solid var(--line); border-radius:50%; cursor:pointer;
+}
+.pick-nav .arrow:hover{ color:var(--text); border-color:var(--line-2); }
+.pick-count{
+  font-size:13px; color:var(--muted-2);
+  font-variant-numeric:tabular-nums; min-width:60px; text-align:center;
+}
+.pick-empty{ padding:40px 0; text-align:center; font-size:14px; color:var(--muted-2); }
+
+/* ===========================================================
+   추억 보관함
+   =========================================================== */
+.arch-block{ margin-bottom:30px; }
+.arch-h{
+  margin:0 0 8px; font-size:var(--fs-base); letter-spacing:-.01em;
+}
+.arch-note{ margin:0 0 8px; font-size:var(--fs-sm); line-height:1.7; color:var(--muted-2); }
+.arch-empty{
+  padding:22px 0; margin-top: 0; text-align:center; 
+  font-size:var(--fs-md); 
+  background: var(--card); color:var(--muted-2); 
+  border: 1px solid var(--line); border-radius: 14px;
+}
+
+/* 졸업 칩 */
+.chips{ display:flex; flex-wrap:wrap; gap:7px; }
+.chip{
+  padding:9px 14px; text-decoration:none;
+  font-family:var(--font-jp); font-size:15px; font-weight:600;
+  color:var(--right); background:var(--right-soft);
+  border:1px solid var(--right); border-radius:999px;
+}
+.chip rt{ font-size:.45em; color:var(--ruby); font-weight:400; }
+
+/* 또 만날 표현 */
+.duelist{ display:flex; flex-direction:column; gap:8px; }
+.due{
+  display:flex; align-items:center; gap:16px;
+  padding:13px 15px; text-decoration:none;
+  background:var(--card); border:1px solid var(--line); border-radius:13px;
+}
+.due:hover{ border-color:var(--line-2); }
+.due-jp{
+  font-family:var(--font-jp); font-size:var(--fs-base); font-weight:700; 
+  color:var(--point-ink);
+}
+.due-jp rt{ font-size:.45em; color:var(--ruby); font-weight:400; }
+.due-kr{ font-size:var(--fs-md); color:var(--muted); }
+.due-right{
+  margin-left:auto; display:flex; align-items:center; gap:12px; flex:none;
+}
+.due-dots{ font-size:10px; letter-spacing:2px; color:var(--accent-ink); }
+.due-date{ font-size:var(--fs-sm); color:var(--muted-2); }
+
+#dueMore{ margin-top:10px; cursor:pointer; font-family:var(--font-kr); }
+
+/* 쉬는 카드의 보조 문구 */
+.rest-sub{
+  display:block; margin-top:8px;
+  font-size:var(--fs-sm); font-weight:400; color:var(--accent-ink);
+}
+.rest-sub.dim{ 
+  font-size:var(--fs-xs);
+  background: var(--bg); color:var(--muted); 
+  padding: 6px 20px; border-radius: 30px;  
+}
+
+/* 정답 아래 — 오늘 챙길 표현을 작게 한 번 더 */
+.q-ans-expr{
+  display:flex; align-items:baseline; justify-content:center;
+  gap:9px; flex-wrap:wrap; margin-top:16px;
+}
+.q-ans-expr .jp{
+  font-family:var(--font-jp); font-size:var(--fs-lg); font-weight:700;
+  color:var(--muted);
+}
+.q-ans-expr .jp rt{ font-size:.45em; font-weight:400; }
+
+/* 채점 피드백 — 버튼이 있던 자리에 잠깐 */
+.q-feedback{
+  margin-top:20px; padding:15px;
+  text-align:center; font-size:var(--fs-base); font-weight:600;
+  border-radius:14px;
+  animation:fb-in .22s ease both;
+}
+.q-feedback.ok{    color:var(--right); background:var(--right-soft); }
+.q-feedback.vague{ color:var(--hot-ink); background:var(--hot-soft); }
+.q-feedback.lost{  color:var(--muted); background:var(--bg-soft); }
+
+@keyframes fb-in{
+  from{ opacity:0; transform:translateY(4px); }
+  to  { opacity:1; transform:none; }
+}
+@media (prefers-reduced-motion:reduce){
+  .q-feedback{ animation:none; }
+}
+
+/* ---------- 골라 풀기 ---------- */
+.pick-chips{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+.pick-chips .tag-chip{ 
+  padding: 7px 13px;
+  font-size: var(--fs-md);
+  cursor: pointer;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  font-family: var(--font-kr);
+  font-weight: 500;
+}
+.pick-chips .tag-chip.on {
+    color: var(--on-hot);
+    background: var(--hot);
+    border-color: var(--hot);
+    font-weight: 700;
+}
+.pick-chips b{ margin-left:4px; font-variant-numeric:tabular-nums; opacity:.75; }
+
+/* 카드 안 맨 위 — 화살표가 진행 표시 양옆 */
+.quizcard.pick{ padding-top:16px; }
+.quizcard.pick .pick-nav{ margin:0 0 16px; }
+
+.q-from{
+  font-size:var(--fs-xs); color:var(--muted-2); letter-spacing:.02em;
+}
+.q-scene-line{
+  margin-top:6px; font-size:var(--fs-sm); color:var(--muted);
+}
+
+.pick-unread{
+  margin-top:10px; padding:13px 15px;
+  font-size:var(--fs-sm); color:var(--muted-2); text-align:center;
+  border:1px dashed var(--line-2); border-radius:13px;
+}
+.pick-unread a{ color:var(--accent-ink); font-weight:600; text-decoration:none; }
+
+/* ---------- 골라 풀기 (뒤집기) ---------- */
+.wordcard{
+  perspective:1200px; cursor:pointer;
+  height:260px; margin:16px 0;
+}
+.wordcard:focus-visible{
+  outline:2px solid var(--accent-ink); outline-offset:4px; border-radius:var(--radius);
+}
+.wc-inner{
+  position:relative; width:100%; height:100%;
+  transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,.2,.2,1);
+}
+.wc-inner.flip{ transform:rotateY(180deg); }
+
+.wc-face{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:11px; padding:26px 22px; text-align:center;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius); box-shadow:var(--shadow);
+  backface-visibility:hidden; -webkit-backface-visibility:hidden;
+}
+.wc-back{ transform:rotateY(180deg); background:var(--bg-soft); }
+
+.wc-meta{ font-size:var(--fs-xs); color:var(--muted-2); }
+.wc-jp{
+  font-family:var(--font-jp); font-size:var(--fs-2xl); font-weight:700;
+  line-height:1.45; word-break:keep-all;
+}
+.wc-jp rt{ font-size:.42em; font-weight:400; }
+.wc-hint{ margin-top:4px; font-size:var(--fs-sm); color:var(--muted); }
+
+.wc-mean{ font-size:var(--fs-xl); font-weight:700; line-height:1.45; }
+.wc-note{
+  font-size:var(--fs-md); line-height:1.75; color:var(--muted);
+  max-height:120px; overflow:auto;
+}
+.wc-note b{ color:var(--text); }
+
+@media (prefers-reduced-motion:reduce){
+  .wc-inner{ transition:none; }
+}
+
+/* 총복습호로 가는 길 — 시즌 회차를 다 읽었을 때만 나옵니다 */
+.review-link{
+  display:block; margin-top:10px; padding:14px;
+  text-align:center; text-decoration:none;
+  font-size:var(--fs-sm); font-weight:700; color:var(--hot-ink);
+  background:var(--hot-soft); border:1px solid var(--line); border-radius:14px;
+}
+.review-link:hover{ border-color:var(--hot); }
+
+/* ===========================================================
+   메일 버튼 도착 화면
+   =========================================================== */
+.arrive{
+  padding:34px 22px 22px; text-align:center;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius); box-shadow:var(--shadow);
+}
+.ar-emoji{ font-size:38px; line-height:1; }
+.ar-title{
+  margin:12px 0 8px; font-size:var(--fs-xl); font-weight:600; letter-spacing:-.02em;
+}
+.ar-jp{
+  font-family:var(--font-jp); font-size:var(--fs-lg); font-weight:700; color:var(--muted);
+}
+.ar-jp rt{ font-size:.45em; font-weight:400; }
+
+/* 졸업 — 시즌 도장과는 별개로, 표현 하나가 끝났다는 표시 */
+.ar-grad{
+  display:flex; align-items:center; justify-content:center; gap:9px;
+  flex-wrap:wrap; margin-top:16px; padding:13px 15px;
+  background:var(--right-soft); border:1px solid var(--right); border-radius:13px;
+}
+.ar-grad-badge{
+  padding:3px 10px; font-size:var(--fs-xs); font-weight:800;
+  color:var(--on-hot); background:var(--right); border-radius:999px;
+}
+.ar-grad-text{ font-size:var(--fs-sm); color:var(--right); }
+
+.ar-next{ margin-top:16px; font-size:var(--fs-sm); color:var(--accent-ink); font-weight:600; }
+.ar-note{
+  margin:10px 0 0; font-size:var(--fs-sm); color:var(--muted-2);
+}
+
+.ar-btns{ display:flex; gap:8px; margin-top:22px; }
+.ar-btns .pill{ flex:1 1 0; text-align:center; cursor:pointer; font-family:var(--font-kr); }
+.ar-btns .primary{
+  color:var(--on-hot); background:var(--hot); border-color:var(--hot); font-weight:700;
+}
+
+/* 기록 보관 안내 — 로그인이 없으니 한 번은 알려둡니다 */
+.storage-note{
+  margin:14px 0 0; padding:0 4px;
+  font-size:var(--fs-sm); line-height:1.7; color:var(--muted-2);
+  text-align:center;
+}

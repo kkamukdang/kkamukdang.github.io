@@ -179,6 +179,7 @@ keyPoints:
   - id: s01e06-ashitakara
     jp: また〜から
     kr: 또 ~부터
+    sceneIndex: 0
     note: また가 붙는 순간 처음이 아니라는 자백이 됩니다.
     compareIndex: 4
     applyIndex: 0
@@ -186,12 +187,14 @@ keyPoints:
   - id: s01e06-majide
     jp: マジで
     kr: 진짜로
+    sceneIndex: 2
     note: 친구 사이 캐주얼 표현. 상사에게는 本当に 쪽이 안전해요.
     compareIndex: 0
 
   - id: s01e06-toriaezu
     jp: とりあえず
     kr: 일단, 우선
+    sceneIndex: 4
     note: 나중 일은 미뤄두고 지금 할 것부터 정할 때.
     compareIndex: 5
     applyIndex: 2

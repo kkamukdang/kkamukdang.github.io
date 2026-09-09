@@ -1,0 +1,10 @@
+---
+/** 「더 파보기」 안의 소제목. id 는 목차·복귀 앵커로 씁니다. */
+interface Props { title: string; note?: string; id?: string; }
+const { title, note, id } = Astro.props;
+---
+<section class="later-part" id={id}>
+  <h3 class="later-h">{title}</h3>
+  {note && <p class="later-note">{note}</p>}
+  <slot />
+</section>

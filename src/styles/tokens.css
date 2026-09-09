@@ -5,36 +5,40 @@
   :root{
     color-scheme: dark;
     --brand:#f5eee1;
-    --bg:#141414;
-    --bg-soft:#222;
-    --card:#1a1a1a;
+    --bg:#01040b;
+    --bg-soft:#171b27;
+    --card:#11141d;
     --glow-1:#1d1440;
     --glow-2:#241a12;
 
-    --text:#f7eedf;
-    --muted:#908c84;
-    --muted-2:#666;
+    --text:#fef7e7;
+    --muted:#848890;
+    --muted-2:#5c5e61;
 
     /* 보라 = 구조 · 후리가나 / 옐로 = 강조 · CTA */
     /* --accent:red; */
-    --accent-ink:#75b593; 
+    --accent-ink:#00acb0; 
     --accent-soft:rgba(180, 255, 228, 0.1);
     --on-accent:#ffffff;
 
+    /* --point-ink:#83baba; */
+    --point-ink:#b2dad9;
+
     /* --hot:#ffd257; */
-    --hot:#eca83d;
-    --hot-ink:#e5d09a;
+    --hot:#daaf4d;
+    --hot-ink:#f3d39a;
     --hot-soft:rgba(44, 44, 44, 1);
     --on-hot:#141414;
 
-    --wrong:rgba(241, 120, 147, 1);
+    --wrong:rgba(227, 143, 67, 1);
     --wrong-line:rgba(241, 120, 147, .2);
     --wrong-soft:rgba(241, 120, 147, 0.05);
-    --right:#6ecfbc;
+    --right:#6ecf96;
     --right-soft:rgba(78, 227, 202, .1);
 
     --line:rgba(255,255,255,.08);
     --line-2:rgba(255,255,255,.22);
+    --line-3:rgba(255,255,255,.44);
 
     /* 한자 밑그림 획 — 반드시 불투명한 색이어야 합니다.
        rgba 를 쓰면 획이 겹치는 지점만 진해져 얼룩처럼 보여요. */
@@ -44,21 +48,22 @@
     --complete:#65c7b1;
 
     /* --bubble-b:linear-gradient(135deg,#f26f29,#c9441b); */
-    --bubble:#252525; 
-    --bubble-b:#77c6aa; 
-    /* 
-    --on-bubble-dim: #1d0d2a;
-    --on-bubble-dim:rgba(255,255,255,.88); */
-    --on-bubble-dim: #1d1d1c;
+    --bubble:#1b1e2a; 
+    --bubble-b:#163848; 
+    --on-bubble-dim: #9aaba7;
     --bubble-rt:#1d1d1c;
     --sub-card-bg:linear-gradient(150deg,#1d1140 0%,#15171f 100%);
     --badge: rgba(255,255,255,.7);
     --shadow:0 4px 14px rgba(0,0,0,.5);
 
+    --stamp:#e0cdab;
+
     --radius:18px;
+    --space-1:4px;
+    --space-2:8px;
 
     --speak:rgba(255,255,255,.1);
-    --speak-b:rgba(0,0,0,.5);
+    --speak-b:rgba(0,0,0,.2);
 
     /* 페이지 최대 폭 — 본문·내비·푸터·한자 쓰기가 모두 이 값을 씁니다.
        화면이 넓어질수록 아래 미디어쿼리에서 함께 커져요. */
@@ -82,36 +87,41 @@
   }
 
   @media (min-width:600px){
-    :root{ --fs-base:16px; --fs-lg:18px; --fs-lgp:21px; --fs-xl:24px; --fs-2xl:32px; }
+    :root{ 
+      --fs-base:16px; 
+      --fs-lg:18px; 
+      --fs-lgp:21px; 
+      --fs-xl:24px; 
+      --fs-2xl:32px; }
   }
 
   [data-theme="light"]{
     color-scheme: light;
     --brand:#504747;
-    --bg:#fdfbef;
-    --bg-soft:#f2f0e5;
-    --card:#fbfaf0;
+    /* --bg:#f9f8f2; */
+    --bg: #fafafa;
+    --bg-soft:#f3f5f0;
+    --card:#fffefc;
     --glow-1:#efe9ff;
     --glow-2:#fff3d6;
 
-    --text:#504747;
-    --muted:#78716c;
-    --muted-2:#8b7e77;
+    --text:#3b3d43;
+    --muted:#878787;
+    --muted-2:#ac9f98;
 
-    /* --accent:#c57c0a; */
-    --accent-ink:#17817a;
+    /* --accent-ink:#34a2b2; */
     --accent-soft:rgba(48,255,247,.07);
     --on-accent:#ffffff;
 
-    --hot: #ec773d;
-    /* --hot:#ec5d3d; */
-    --hot-ink:#7e7865;
-    --hot-soft:rgba(217,215,208,.20);
-    --on-hot:#333;
+    --point-ink:#90996c;
 
-    /* --ruby:#7090b9; */
-    --ruby:#9658dd;
-    /* --ruby-alt:#6a7f7a; */
+    /* --hot:#ec5d3d; */
+    --hot:#eb8c34;
+    --hot-ink:#819365;
+    --hot-soft:rgba(217,215,208,.20);
+    --on-hot:#fdfbef;
+
+    /* --ruby:#ab9e7b; */
 
     --wrong:rgba(237, 96, 84, 1);
     --wrong-line:rgba(237, 96, 84, .2);
@@ -120,14 +130,16 @@
     --right-soft:rgba(23,121,74,.1);
 
     --line:#dedcc5;
-    --line-2:#d3d0b7;
+    --line-2:#c5c3b2;
+    --line-3:#9f9d89;
 
     --sketch:#c3c1cc;
     --guide:#1a1c22;
 
     /* --bubble-b:linear-gradient(135deg,#7231ff,#5a1ee0); */
-    --bubble-b:#c2e4d5;
-    --bubble:#f2efdd;
+    --bubble:#f6f6f4;
+    --bubble-b:#d7e8e8;
+    --on-bubble-dim: #657170;
     /*
     --on-bubble-dim:rgba(255,255,255,.92); */
     /* --bubble-rt:#beeadd; */
@@ -137,17 +149,40 @@
 
     --speak:rgba(255,255,255,.3);
     --speak-b:rgba(255,255,255,.6);
+
+    --stamp:#77807f;
   }
 
 /* 화면 크기별 폭. 여기 두 줄만 고치면 모든 페이지가 같이 따라옵니다. */
 @media (min-width:600px){
-  :root{ --page-max:640px; --read-max:640px; --page-pad:24px; }
+  :root{ 
+    --page-max:640px; 
+    --read-max:640px; 
+    --page-pad:24px; 
+
+    --space-1:12px;
+    --space-2:16px;
+  }
 }
 @media (min-width:900px){
-  :root{ --page-max:820px; --read-max:720px; --page-pad:30px; }
+  :root{ 
+    --page-max:820px; 
+    --read-max:720px; 
+    --page-pad:30px; 
+
+    --space-1:12px;
+    --space-2:16px;
+  }
 }
 @media (min-width:1200px){
-  :root{ --page-max:1024px; --read-max:780px; --page-pad:36px; }
+  :root{ 
+    --page-max:1024px; 
+    --read-max:780px; 
+    --page-pad:36px; 
+
+    --space-1:16px;
+    --space-2:24px;
+  }
 }
 
-.hide {display: none !important;}
+[hidden]{ display:none !important; }

@@ -1,8 +1,14 @@
 ---
 import Jp from './Jp.astro';
 import Speak from './Speak.astro';
-interface Props { lines: { who: string; side: 'a' | 'b'; jp: string; kr: string }[]; }
-const { lines } = Astro.props;
+import { toRubyMarked } from '../lib/furigana';
+
+interface Props {
+  lines: { who: string; side: 'a' | 'b'; jp: string; kr: string }[];
+  /** 「딱 3개」에서 뽑은 조각 목록. 조각이 전부 들어 있는 문장에만 밑줄이 붙습니다. */
+  specs?: string[][];
+}
+const { lines, specs = [] } = Astro.props;
 ---
 <div class="phone">
   {lines.map((l) => (
@@ -10,7 +16,9 @@ const { lines } = Astro.props;
       <div class="bubble">
         <div class="who">{l.who}</div>
         <div class="jp-row">
-          <Jp text={l.jp} class="jp" />
+          {specs.length > 0
+            ? <span class="jp" set:html={toRubyMarked(l.jp, specs)} />
+            : <Jp text={l.jp} class="jp" />}
           <Speak text={l.jp} />
         </div>
         <div class="kr">{l.kr}</div>

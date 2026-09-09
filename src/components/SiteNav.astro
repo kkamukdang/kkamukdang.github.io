@@ -1,34 +1,42 @@
 ---
 /**
- * 상단 고정 내비게이션.
- * 항목이 셋뿐이라 햄버거 메뉴로 감추기보다 그대로 보여주는 쪽이 빠릅니다.
- * (햄버거는 누르는 동작이 한 번 더 필요하고, 안에 뭐가 있는지 예측이 안 돼요.)
+ * 상단 고정 내비게이션 — 2칸.
+ * 할 일은 둘뿐입니다. 새로 읽거나, 다시 만나거나.
+ *
+ * 단어 카드와 한자 쓰기는 메뉴에서 내렸어요.
+ *   단어 카드 → 「다시 만나기」 하단에서 들어갑니다
+ *   한자 쓰기 → 에피소드의 「더 파보기」 안에서
  */
 import { getListed } from '../lib/episodes';
 import { SITE, url } from '../lib/site';
 import Logo from './Logo.astro';
 
-interface Props { current?: 'home' | 'words' | 'write' }
+interface Props { current?: 'episode' | 'again' }
 const { current } = Astro.props;
 
 /**
- * "한자 쓰기" 는 목차를 거치지 않고 가장 최근 회차의 연습 화면으로 바로 갑니다.
- * 회차 이동은 그 화면 위쪽 콤보로 하면 되니 목차를 한 단계 더 둘 이유가 없어요.
+ * 「에피소드」는 목록이 아니라 **최신 회차 본문**으로 갑니다.
+ * 이 서비스에서 에피소드의 기본 행동은 훑기가 아니라 읽기예요.
+ * 매주 새 편이 나오면 자동으로 그쪽을 가리켜 "이번 주 편 보기" 처럼 동작합니다.
+ *
+ * "안 읽은 최신 편" 으로 보내지 않습니다. 기록이 없는 기기에서는 1편으로 끌려가고,
+ * 같은 메뉴가 사람마다 다른 곳으로 가면 예측이 어려워져요.
+ *
+ * 목록으로 가는 길은 홈과, 에피소드 상세의 「전체 에피소드」 버튼 두 곳입니다.
  */
-// 내비는 공개된 회차만 가리킵니다. 점검용(unlisted) 회차로 데려가면 안 되니까요.
-const withKanji = (await getListed())
-  .filter((ep) => ep.data.kanjiPractice.length > 0)
-  .reverse();
-  
-const writeHref = withKanji[0] ? url(`/ep/${withKanji[0].id}/write/`) : null;
+const episodes = await getListed();
+const latest = episodes[episodes.length - 1];
 
 const links = [
-  { key: 'home', href: url('/'), label: '에피소드' },
-  { key: 'words', href: url('/cards/'), label: '단어 카드' },
-  ...(writeHref ? [{ key: 'write', href: writeHref, label: '한자 쓰기' }] : []),
+  {
+    key: 'episode',
+    href: latest ? url(`/ep/${latest.id}/`) : url('/'),
+    label: '에피소드',
+  },
+  { key: 'again', href: url('/again/'), label: '다시 만나기' },
 ] as const;
 ---
-<nav class="site-nav" data-pagefind-ignore>
+<nav class="site-nav">
   <div class="nav-inner">
     <a class="nav-brand" href={url('/')}>
       <Logo height={32} />

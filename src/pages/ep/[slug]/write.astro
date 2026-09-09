@@ -16,7 +16,7 @@ import '../../../styles/write.css';
 export async function getStaticPaths() {
   const all = (await getPages())
     .filter((ep) => ep.data.kanjiPractice.length > 0)
-    .reverse();
+    .sort((a, b) => b.data.no - a.data.no);
 
   // 회차 선택 콤보에 쓸 목록을 모든 페이지에 함께 넘겨줍니다.
   const options = all.map((e) => ({
@@ -50,19 +50,20 @@ const kanjiFiles = Object.fromEntries(chars.map((c) => [c, kanjiFileName(c)]));
   <header class="write-header">
     <div class="eyebrow">까먹당 · 한자 쓰기</div>
     <h1>쓰면서 외우기</h1>
-    <p class="lead">{`한자를 읽고 → 따라 쓰고 → 혼자 써봅니다`}</p>
+    {/*<h1>{ep.data.subtitle}</h1>*/}
+    <p class="lead">{`읽고 → 따라 쓰고 → 혼자 써봅니다`}</p>
   </header>
 
   <div class="ep-picker">
-      <label for="epSelect">회차</label>
-      <select id="epSelect" aria-label="연습할 회차 고르기">
-        {options.map((o) => (
-          <option value={url(`/ep/${o.slug}/write/`)} selected={o.slug === ep.id}>
-            {`#${String(o.no).padStart(3, '0')} — ${o.subtitle}`}
-          </option>
-        ))}
-      </select>
-    </div>
+    <label for="epSelect">회차</label>
+    <select id="epSelect" aria-label="연습할 회차 고르기">
+      {options.map((o) => (
+        <option value={url(`/ep/${o.slug}/write/`)} selected={o.slug === ep.id}>
+          {`#${String(o.no).padStart(3, '0')} · ${o.count}자 — ${o.subtitle}`}
+        </option>
+      ))}
+    </select>
+  </div>
 
   <div class="stages">
     <div class="stg on" data-s="0">읽기</div>
@@ -75,8 +76,13 @@ const kanjiFiles = Object.fromEntries(chars.map((c) => [c, kanjiFileName(c)]));
   <div class="card jp" id="read">
     <div class="nav">
       <button class="arrow" id="prev" type="button" aria-label="이전 단어">‹</button>
-        <div class="cnt" id="navCnt"></div>
-        <button class="arrow" id="next" type="button" aria-label="다음 단어">›</button>
+      <div class="now">
+        {/*<span class="wd jp" id="navWord"></span>
+        <span class="rd jp" id="navKana"></span>
+        <button class="spk" id="navSpk" type="button" aria-label="발음 듣기">🔊</button>*/}
+        <span class="cnt" id="navCnt"></span>
+      </div>
+      <button class="arrow" id="next" type="button" aria-label="다음 단어">›</button>
     </div>
     <div class="big"><span id="rWord"></span><button class="spk" id="rSpk" type="button" aria-label="발음 듣기">🔊</button></div>
     <div class="kana" id="rKana"></div>
@@ -104,17 +110,18 @@ const kanjiFiles = Object.fromEntries(chars.map((c) => [c, kanjiFileName(c)]));
 
   <div id="msg"></div>
 
-  <div class="row" id="readBtns">
-    
+  <div class="row" id="readBtns" hidden>
+    <button class="wide primary" id="rGo" type="button">쓰기 시작</button>
   </div>
 
   <div class="row hidden" id="writeBtns">
     <button class="wide" id="demo" type="button">전체 획순 보기</button>
-    <button class="wide again" id="reset" type="button">다시 쓰기</button>
+    <button class="wide" id="reset" type="button">다시 쓰기</button>
   </div>
 
   <div class="write-foot-nav">
-    <a class="pill" href={url(`/ep/${ep.id}/`)}>← 에피소드 보기</a>
+    {/* 왔던 자리(더 파보기 > 한자 쓰기)로 돌아갑니다 */}
+    <a class="pill" href={url(`/ep/${ep.id}/#later-kanji`)}>← 에피소드 보기</a>
   </div>
   </div>
 

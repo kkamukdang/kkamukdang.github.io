@@ -1,0 +1,171 @@
+---
+/**
+ * 추억 보관함 (3층)
+ * -------------------------------------------------------------
+ * 개발지시서 §7-4
+ *
+ * 블록: 졸업한 표현 / 또 만날 표현 / 마지막 만난 표현 / 시즌 기록
+ * 「또 만날 표현」은 3개 상한이 없습니다. 5개까지 보이고 나머지는 더 보기.
+ * 진행 표시는 ●○ 3칸 (streak).
+ */
+import Base from '../../layouts/Base.astro';
+import StampBoard from '../../components/StampBoard.astro';
+import { SITE, url } from '../../lib/site';
+import '../../styles/again.css';
+---
+<Base
+  title={`추억 보관함 — ${SITE.name}`}
+  description="지금까지 만난 표현들이 여기에 쌓입니다."
+  nav="again"
+>
+  <div class="wrap reading">
+    <div class="again-head">
+      <div class="hero-eyebrow">까먹당 · 다시 만나기</div>
+      <h1>추억 보관함</h1>
+      <p id="archLead">불러오는 중…</p>
+    </div>
+
+    <section class="arch-block">
+      <h2 class="arch-h">졸업한 표현</h2>
+      <p class="arch-note">세 번 연속으로 기억해낸 표현이에요. 이제 물어보지 않아요.</p>
+      <div class="chips" id="gradList"></div>
+      <div class="arch-empty" id="gradEmpty" hidden>
+        <p><img src={url('/cha-correct.webp')}></p>
+        아직 없어요. 천천히 쌓입니다.
+      </div>
+    </section>
+
+    <section class="arch-block">
+      <h2 class="arch-h">또 만날 표현</h2>
+      {/*<p class="arch-note">가까운 순서대로예요.</p>*/}
+      <div class="duelist" id="dueList"></div>
+      <button class="pill" id="dueMore" type="button" hidden>더 보기</button>
+      <div class="arch-empty" id="dueEmpty" hidden>
+        <p><img src={url('/cha-correct.webp')}></p>
+        아직 없어요. 에피소드를 한 편 읽어보세요.</div>
+    </section>
+
+    <section class="arch-block" id="lastBlock" hidden>
+      <h2 class="arch-h">마지막 만난 표현</h2>
+      <div class="duelist" id="lastList"></div>
+    </section>
+
+    <section class="arch-block">
+      <h2 class="arch-h">시즌 1 기록</h2>
+      <StampBoard season={1} />
+
+      {/* 시즌이 끝난 뒤 다시 찾아올 자리입니다. 1년 뒤 정주행해도 여기서 들어가요. */}
+      <a class="review-link" id="reviewLink" href={url('/review/s1/')} hidden>
+        시즌 1 총복습호 · 18개를 한 번에 →
+      </a>
+    </section>
+
+    <div class="again-links">
+      <a class="pill" href={url('/again/')}>← 다시 만나기</a>
+    </div>
+  </div>
+
+
+  <script is:inline define:vars={{ SRC: url('/expressions.json'), EP: url('/ep/') }}>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      var byId = {};
+      var SHOWN = 5;
+      var expanded = false;
+
+      fetch(SRC).then(function (r) { return r.json(); }).then(function (list) {
+        list.forEach(function (e) { byId[e.id] = e; });
+        paint();
+      });
+
+      function esc(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+
+      /** ●○○ — streak 3칸 */
+      function dots(streak) {
+        var out = '';
+        for (var i = 0; i < 3; i++) out += i < (streak || 0) ? '●' : '○';
+        return out;
+      }
+
+      function fmt(ymd) {
+        if (!ymd) return '';
+        var p = String(ymd).split('-');
+        return Number(p[1]) + '월 ' + Number(p[2]) + '일';
+      }
+
+      function row(id, data, right) {
+        var e = byId[id];
+        if (!e) return '';
+        return '<a class="due" href="' + EP + e.slug + '/">' +
+               '<span class="due-jp jp">' + e.jp + '</span>' +
+               '<span class="due-kr">' + esc(e.kr) + '</span>' +
+               '<span class="due-right">' + right + '</span>' +
+               '</a>';
+      }
+
+      function paint() {
+        var all = Kkmd.allExpr().filter(function (e) { return byId[e.id]; });
+
+        // ---- 졸업 ----
+        var grad = all.filter(function (e) { return e.data.graduated; });
+        $('gradEmpty').hidden = grad.length > 0;
+        $('gradList').innerHTML = grad.map(function (e) {
+          return '<a class="chip" href="' + EP + byId[e.id].slug + '/">' +
+                 byId[e.id].jp + '</a>';
+        }).join('');
+
+        // ---- 또 만날 표현 (가까운 순, 상한 없음) ----
+        var due = all.filter(function (e) { return !e.data.graduated; });
+        due.sort(function (a, b) {
+          return a.data.nextDue < b.data.nextDue ? -1 : a.data.nextDue > b.data.nextDue ? 1 : 0;
+        });
+        $('dueEmpty').hidden = due.length > 0;
+
+        var slice = expanded ? due : due.slice(0, SHOWN);
+        $('dueList').innerHTML = slice.map(function (e) {
+          return row(e.id, e.data,
+            '<span class="due-dots">' + dots(e.data.streak) + '</span>' +
+            '<span class="due-date">' + fmt(e.data.nextDue) + '</span>');
+        }).join('');
+        $('dueMore').hidden = expanded || due.length <= SHOWN;
+        $('dueMore').textContent = '더 보기 (' + Math.max(0, due.length - SHOWN) + ')';
+
+        // ---- 마지막 만난 표현 ----
+        var seen = all.filter(function (e) { return e.data.lastSeen; });
+        seen.sort(function (a, b) { return a.data.lastSeen < b.data.lastSeen ? 1 : -1; });
+        if (seen.length) {
+          $('lastBlock').hidden = false;
+          $('lastList').innerHTML = row(seen[0].id, seen[0].data,
+            '<span class="due-date">' + fmt(seen[0].data.lastSeen) + '</span>');
+        }
+
+        // ---- 도장판 ----
+        var s = Kkmd.getStamps(1);
+        document.querySelectorAll('.stamp-cell[data-no]').forEach(function (cell) {
+          cell.classList.toggle('on', s.episodes.indexOf(Number(cell.dataset.no)) >= 0);
+        });
+        var fin = document.querySelector('.stamp-cell[data-final]');
+        if (fin) fin.classList.toggle('on', !!s.completed);
+
+        var link = $('reviewLink');
+        if (link) {
+          link.hidden = !((s.episodes || []).length >= 6);
+        }
+
+        var prog = document.querySelector('[data-progress]');
+        if (prog) {
+          prog.textContent = (s.episodes.length + (s.completed ? 1 : 0)) + ' / 7';
+        }
+
+        var c = Kkmd.getCounter();
+        $('archLead').textContent = all.length === 0
+          ? '아직 만난 표현이 없어요.'
+          : '지금까지 ' + all.length + '개를 만났어요 · 다시 만남 ' + (c.reunions || 0) + '번';
+      }
+
+      $('dueMore').addEventListener('click', function () { expanded = true; paint(); });
+    })();
+  </script>
+</Base>

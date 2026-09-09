@@ -40,7 +40,7 @@ body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
 
 /* ---- 단어 이동 바 ---- */
 .nav{
-  display:flex; align-items:center; justify-content: center; gap:10px;
+  display:flex; align-items:center; justify-content: space-between; gap:10px;
   width:100%; max-width:var(--panel-max); padding:9px 10px;
   /* background:var(--card); border:1px solid var(--line); 
   border-radius:var(--radius); box-shadow:var(--shadow);*/
@@ -91,13 +91,13 @@ body.write .jp, .write-wrap .jp{ font-family:var(--font-jp); }
 .strip .cell{
   width:42px; height:42px; display:grid; place-items:center;
   font-size:23px; cursor:pointer;
-  color:var(--muted); background:var(--card);
+  color:var(--muted); background:var(--bg);
   border:1px solid var(--line); border-radius:12px;
   transition:all .15s ease;
 }
 .strip .cell.kana{ cursor:default; opacity:.45; border-style:dashed; }
 .strip .cell.now{ color:var(--text); border-color:var(--accent-ink); background:var(--accent-soft); }
-.strip .cell.done{ color:var(--right); border-color:var(--accent-ink); }
+.strip .cell.done{ color:var(--accent-ink); border-color:var(--accent-ink); }
 
 /* ---- 읽기 카드 ---- */
 .card{

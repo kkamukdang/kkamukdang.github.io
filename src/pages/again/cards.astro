@@ -1,0 +1,225 @@
+---
+/**
+ * 골라 풀기 (2층)
+ * -------------------------------------------------------------
+ * 예전 「골라 풀기」를 이 자리로 옮겼습니다.
+ *
+ * 1층과 방향이 반대입니다.
+ *   다시 만나기 : 한국어 상황 → 일본어    (말하기)
+ *   골라 풀기   : 일본어 → 뜻             (뜻 확인)
+ *
+ * 채점하지 않습니다. 복습 기록을 읽지도 쓰지도 않아요.
+ * 1층이 다루지 않는 단어·문법 전부가 여기 있습니다.
+ */
+import Base from '../../layouts/Base.astro';
+import { SITE, url } from '../../lib/site';
+import '../../styles/again.css';
+---
+<Base
+  title={`골라 풀기 — ${SITE.name}`}
+  description="복습 일정에는 반영되지 않는 자유 연습이에요."
+  nav="again"
+>
+  <div class="wrap reading">
+    <div class="again-head">
+      <div class="hero-eyebrow">까먹당 · 다시 만나기</div>
+      <h1>골라 풀기</h1>
+      <p>다시 만날 약속에는 반영되지 않는 자유 연습이에요</p>
+    </div>
+
+    <div class="pick-filters">
+      <select id="fEp" aria-label="에피소드 고르기">
+        <option value="">전체 에피소드</option>
+      </select>
+      <select id="fSeason" aria-label="시즌 고르기">
+        <option value="">전체 시즌</option>
+      </select>
+      <button class="pill" id="shuffle" type="button">🔀 섞기</button>
+    </div>
+
+    <div class="pick-chips">
+      <button class="tag-chip on" data-read="">전체 <b id="cAll">0</b></button>
+      <button class="tag-chip" data-read="yes">읽은 편 <b id="cRead">0</b></button>
+      <button class="tag-chip" data-read="no">아직 안 읽은 편 <b id="cUnread">0</b></button>
+    </div>
+
+    <div class="pick-nav">
+      <button class="arrow" id="prev" type="button" aria-label="이전">‹</button>
+      <span class="pick-count" id="count"></span>
+      <button class="arrow" id="next" type="button" aria-label="다음">›</button>
+    </div>
+
+    {/* 눌러서 뒤집는 카드 */}
+    <div class="wordcard" id="card" role="button" tabindex="0" aria-label="카드 뒤집기">
+      <div class="wc-inner" id="inner">
+        <div class="wc-face wc-front">
+          <div class="wc-meta" id="wcFrom"></div>
+          <div class="wc-jp jp" id="wcJp"></div>
+          <button class="spk" id="wcSpk" type="button" aria-label="발음 듣기">🔊</button>
+          <div class="wc-hint">뜻을 떠올린 뒤 눌러서 확인</div>
+        </div>
+        <div class="wc-face wc-back">
+          <div class="wc-mean" id="wcMean"></div>
+          <div class="wc-note" id="wcNote"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pick-unread" id="unread" hidden>
+      아직 안 읽은 편이에요 ·
+      <a id="unreadLink" href="#">에피소드 먼저 보기 →</a>
+    </div>
+
+    <p class="pick-empty" id="empty" hidden>조건에 맞는 카드가 없어요.</p>
+
+    <div class="again-links">
+      <a class="pill" href={url('/again/')}>← 다시 만나기</a>
+    </div>
+  </div>
+
+
+  <script is:inline define:vars={{ SRC: url('/words.json'), EP: url('/ep/') }}>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      var all = [], deck = [], pos = 0;
+      var readFilter = '';
+      var readSet = {};
+
+      fetch(SRC).then(function (r) { return r.json(); }).then(function (list) {
+        all = list;
+
+        // 읽은 편은 도장 기록으로 판단합니다 (복습 기록은 건드리지 않아요)
+        var stamps = window.Kkmd ? Kkmd.getStamps(1) : { episodes: [] };
+        (stamps.episodes || []).forEach(function (n) { readSet[n] = true; });
+
+        var seenEp = {};
+        list.forEach(function (e) {
+          if (seenEp[e.no]) return;
+          seenEp[e.no] = true;
+          var o = document.createElement('option');
+          o.value = String(e.no);
+          o.textContent = '#' + String(e.no).padStart(3, '0') + ' ' + e.subtitle;
+          $('fEp').appendChild(o);
+        });
+
+        // 장면 태그는 쓰지 않습니다. 단어는 회차에 속하지 장면에 속하지 않아요.
+        // (頼む 가 「부탁하기」 편에 나왔다고 부탁 전용 단어는 아니니까요)
+        var seenSeason = {};
+        list.forEach(function (e) {
+          if (seenSeason[e.season]) return;
+          seenSeason[e.season] = true;
+          var o = document.createElement('option');
+          o.value = String(e.season);
+          o.textContent = '시즌 ' + e.season;
+          $('fSeason').appendChild(o);
+        });
+
+        build();
+      });
+
+      function base() {
+        var no = $('fEp').value, season = $('fSeason').value;
+        return all.filter(function (e) {
+          return (!no || String(e.no) === no) && (!season || String(e.season) === season);
+        });
+      }
+
+      function build() {
+        var b = base();
+        var read = b.filter(function (e) { return readSet[e.no]; });
+        $('cAll').textContent = b.length;
+        $('cRead').textContent = read.length;
+        $('cUnread').textContent = b.length - read.length;
+
+        deck = b.filter(function (e) {
+          if (readFilter === 'yes') return readSet[e.no];
+          if (readFilter === 'no') return !readSet[e.no];
+          return true;
+        });
+        pos = 0;
+        render();
+      }
+
+      function shuffle() {
+        for (var i = deck.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = deck[i]; deck[i] = deck[j]; deck[j] = t;
+        }
+        pos = 0;
+        render();
+      }
+
+      function render() {
+        var has = deck.length > 0;
+        $('card').hidden = !has;
+        $('empty').hidden = has;
+        document.querySelector('.pick-nav').hidden = !has;
+        if (!has) { $('unread').hidden = true; return; }
+
+        var e = deck[pos];
+        $('inner').classList.remove('flip');
+
+        $('wcFrom').textContent =
+          '#' + String(e.no).padStart(3, '0') + (e.group ? ' · ' + e.group : '');
+        $('wcJp').innerHTML = e.jp;
+        $('wcSpk').setAttribute('data-jp', e.speak);
+        $('wcMean').textContent = e.mean;
+        $('wcNote').innerHTML = e.note || '';
+        $('count').textContent = (pos + 1) + ' / ' + deck.length;
+
+        var unread = !readSet[e.no];
+        $('unread').hidden = !unread;
+        $('unreadLink').href = EP + e.slug + '/';
+      }
+
+      function move(step) {
+        if (!deck.length) return;
+        pos = (pos + step + deck.length) % deck.length;
+        render();
+      }
+
+      function flip(e) {
+        // 발음 버튼은 카드를 뒤집지 않습니다
+        if (e && e.target && e.target.closest('.spk')) return;
+        $('inner').classList.toggle('flip');
+      }
+
+      $('card').addEventListener('click', flip);
+      $('card').addEventListener('keydown', function (ev) {
+        if (ev.key === ' ' || ev.key === 'Enter') { ev.preventDefault(); flip(); }
+      });
+      $('prev').addEventListener('click', function () { move(-1); });
+      $('next').addEventListener('click', function () { move(1); });
+      $('fEp').addEventListener('change', build);
+      $('fSeason').addEventListener('change', build);
+      $('shuffle').addEventListener('click', shuffle);
+
+      document.querySelectorAll('[data-read]').forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          readFilter = chip.dataset.read;
+          document.querySelectorAll('[data-read]').forEach(function (c) {
+            c.classList.toggle('on', c === chip);
+          });
+          build();
+        });
+      });
+
+      document.addEventListener('keydown', function (ev) {
+        if (ev.target.tagName === 'SELECT') return;
+        if (ev.key === 'ArrowLeft') move(-1);
+        if (ev.key === 'ArrowRight') move(1);
+      });
+
+      var x0 = null;
+      $('card').addEventListener('touchstart', function (ev) {
+        x0 = ev.touches[0].clientX;
+      }, { passive: true });
+      $('card').addEventListener('touchend', function (ev) {
+        if (x0 == null) return;
+        var dx = ev.changedTouches[0].clientX - x0;
+        if (Math.abs(dx) > 60) move(dx < 0 ? 1 : -1);
+        x0 = null;
+      }, { passive: true });
+    })();
+  </script>
+</Base>

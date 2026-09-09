@@ -122,6 +122,12 @@ const episodes = defineCollection({
         jp,
         kr: z.string(),
         note: z.string().optional(),      // 표현 옆 한 줄 설명
+        /**
+         * 이 표현이 실제로 나온 대화 줄 번호 (scene 배열의 인덱스).
+         * 「이번 편에서 딱 3개」 카드가 그 문장을 그대로 다시 보여주고,
+         * 대화에서도 해당 부분을 표시합니다.
+         */
+        sceneIndex: z.number().optional(),
         /** 마땅한 항목이 없으면 생략합니다. 억지로 붙이지 않아요. */
         compareIndex: z.number().optional(),
         applyIndex: z.number().optional(),
@@ -144,7 +150,11 @@ const episodes = defineCollection({
 
     /** 정정 이력. /corrections 페이지가 모아 보여줍니다. */
     corrections: z.array(
-      z.object({ date: z.string(), text: z.string() })
+      z.object({
+        date: z.string(),
+        text: z.string(),
+        note: z.string().optional(), 
+      })
     ).default([]),
     nextPreview: z.string().optional(),   // NEXT 카드 본문 (HTML 허용)
   }),

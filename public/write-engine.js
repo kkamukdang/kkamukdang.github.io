@@ -74,8 +74,10 @@ function loadWord(i, silent){
   word=WORDS[wi];
   chars=[...word.w].map(t=>({t,ok:false}));
   pos=-1; combo=0; busy=false;
-  $('rWord').textContent=word.w; $('rKana').textContent=word.kana;
-  $('rKo').textContent=word.ko; $('rEx').textContent=word.ex; $('rExKo').textContent=word.exko;
+  setText('rWord', word.w);  setText('rKana', word.kana);
+  setText('rKo', word.ko);   setText('rEx', word.ex);   setText('rExKo', word.exko);
+  // $('rWord').textContent=word.w; $('rKana').textContent=word.kana;
+  // $('rKo').textContent=word.ko; $('rEx').textContent=word.ex; $('rExKo').textContent=word.exko;
   if(stage===0){ showRead(true); msg.textContent=''; }
   paintNav(); paintStrip();
   // 페이지에 들어오자마자 소리가 나면 곤란하니, 첫 로딩은 조용히 띄웁니다.

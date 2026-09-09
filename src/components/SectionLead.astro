@@ -1,0 +1,6 @@
+---
+/** 블록 제목 아래 설명 한 줄. "왜 이걸 보는지" 를 짧게 알려줍니다. */
+interface Props { text: string; }
+const { text } = Astro.props;
+---
+<p class="sec-lead">{text}</p>

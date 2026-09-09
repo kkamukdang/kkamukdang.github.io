@@ -1,0 +1,49 @@
+---
+/**
+ * 홈의 「다시 만나기」 안내 블록
+ * -------------------------------------------------------------
+ * 상태에 따라 **문구만** 바뀝니다.
+ *
+ *   ① 만기 있음        지난번에 만난 표현, 기억나세요?
+ *   ② 만기 없음·읽음    오늘은 까먹은 게 없어요
+ *   ③ 기록 없음        에피소드를 읽으면 여기서 다시 만나요  (링크 아님)
+ *
+ * 개수도 날짜도 쓰지 않습니다.
+ *   · 최대 3개로 고정이라 개수는 알려줄 것이 거의 없고
+ *   · 새 에피소드를 읽으면 예정일이 당겨지는데 그 변화를 여기서는 볼 수 없어
+ *     날짜를 적으면 오히려 헷갈립니다. 날짜는 「다시 만나기」 안에서만.
+ */
+import { url } from '../lib/site';
+---
+<div class="again-entry" id="againEntry">
+  <a class="ae-card" id="aeLink" href={url('/again/')}>
+    <span class="ae-title">다시 만나기</span>
+    <span class="ae-sub" id="aeSub">지난번에 만난 표현, 기억나세요?</span>
+  </a>
+</div>
+
+<script is:inline>
+  (function () {
+    var box = document.getElementById('againEntry');
+    var link = document.getElementById('aeLink');
+    var sub = document.getElementById('aeSub');
+    if (!box || !window.Kkmd) return;
+
+    var all = Kkmd.allExpr();
+    var today = Kkmd.today();
+    var due = all.filter(function (e) {
+      return !e.data.graduated && Kkmd.onOrBefore(e.data.nextDue, today);
+    });
+
+    if (all.length === 0) {
+      // 첫 방문자에게도 숨기지 않습니다. 대신 무엇을 하는 곳인지 알려줘요.
+      sub.textContent = '에피소드를 읽으면 여기서 다시 만나요';
+      link.removeAttribute('href');
+      link.classList.add('is-plain');
+      return;
+    }
+    sub.textContent = due.length > 0
+      ? '지난번에 만난 표현, 기억나세요?'
+      : '오늘은 까먹은 게 없어요';
+  })();
+</script>

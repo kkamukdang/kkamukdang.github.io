@@ -46,16 +46,16 @@
   .hero-emoji{font-size:30px; display:block; margin-bottom:10px; filter:drop-shadow(0 4px 12px rgba(0,0,0,.22));}
   [data-theme="light"] .hero-emoji {filter: none;}
   .hero-eyebrow{
-    font-size:var(--fs-md); letter-spacing:.18em; color:var(--accent-ink); 
+    font-size:var(--fs-xs); letter-spacing:.18em; color:var(--accent-ink); 
     text-transform:uppercase; font-weight:800; margin-bottom:0; padding-bottom: 0;
   }
   .hero h1{
     font-family:var(--font-jp);
-    font-size:var(--fs-2xl); margin:0 0 8px; font-weight:700; color:var(--text);
+    font-size:var(--fs-xl); margin:16px 0 8px; font-weight:700; color:var(--text);
     letter-spacing:-.01em; line-height:1.35;
   }
-  .hero h1 ruby rt{font-size:12px; color:var(--text); font-weight:700;}
-  .hero p{color:var(--text); font-size:var(--fs-base); margin:0 0 14px; opacity: 0.7;}
+  .hero h1 ruby rt{font-size:11px; color:var(--text); font-weight:700;}
+  .hero p{color:var(--text); font-size:var(--fs-sm); margin:0 0 14px; opacity: 0.5;}
   /* .hero-hint{
     display:inline-flex; align-items:center; gap:6px;
     font-size:12.5px; color:var(--text); background:var(--accent-soft);
@@ -73,9 +73,10 @@
     color:var(--text); font-weight:800; font-size:12.5px; border: 1px solid var(--badge);;
     padding:4px 11px; border-radius:100px; letter-spacing:.02em;
   }
-  .sec-title h2{font-size:var(--fs-xl); margin:0; color:var(--text); font-weight:800;}
+  .sec-title h2{font-size:var(--fs-lgp); margin:0; color:var(--text); font-weight:800;}
   .sub-label{
-    font-size:var(--fs-base); color:var(--accent-ink); font-weight:800; letter-spacing:.06em;
+    font-size:var(--fs-sm); font-weight: 700;
+    color:var(--accent-ink); letter-spacing:.06em;
     margin:26px 0 12px;
   }
 
@@ -114,7 +115,7 @@
     font-weight:600; border-bottom-left-radius:4px; color:var(--text);
   }
   .bubble-row.b .bubble{
-    background:var(--bubble-b); color:var(--on-hot);
+    background:var(--bubble-b); color:var(--text);
     font-weight:600; border-bottom-right-radius:4px;
   }
   html[data-theme="light"] .phone {background-color: var(--card);}
@@ -122,11 +123,11 @@
   .who{font-size:var(--fs-xs); color:var(--muted); margin-bottom:4px; font-weight:800; letter-spacing:.05em;}
   .bubble-row.b .who{text-align:right; color:var(--on-bubble-dim);}
   .jp-row{display:flex; align-items:center; margin-bottom:4px;}
-  .jp{font-family:var(--font-jp); font-size:var(--fs-lg);}
+  .jp{font-family:var(--font-jp);}
   .jp ruby rt{font-size:10px; font-weight:700; opacity: .9;}
-   .bubble-row .jp {line-height: 1.6;}
-  .bubble-row.b .jp ruby rt{color:var(--on-hot);}
-  .kr{font-size:14px; color:var(--muted); font-style:normal;}
+  .bubble-row .jp {line-height: 2.1;}
+  .bubble-row.b .jp ruby rt{color:var(--text);}
+  .kr{font-size:var(--fs-sm); color:var(--muted); font-style:normal;}
   .bubble-row.b .kr{color:var(--on-bubble-dim); font-weight:600;}
 
   /* Word cards */
@@ -145,8 +146,8 @@
   .word-jp ruby rt{font-size:10.5px; font-weight:700;}
   .word-card.term .word-jp ruby rt{color:var(--hot-ink);}
   .word-body{flex:1;}
-  .word-mean{font-weight:800; font-size: var(--fs-lg); color:var(--text); margin-bottom:2px;}
-  .word-note{font-size:var(--fs-md); color:var(--muted);}
+  .word-mean{font-weight:700; font-size: var(--fs-md); color:var(--text); margin-bottom:2px;}
+  .word-note{font-size:var(--fs-sm); color:var(--muted);}
   .word-note b{color:var(--text);}
   .word-note ruby {font-family: var(--font-jp);}
   .word-note ruby rt{font-size:11px; color:var(--muted);}
@@ -154,9 +155,9 @@
   /* Right/Wrong compare */
   .compare{
     background:var(--card); border:1px solid var(--line); border-radius:16px;
-    padding:14px; margin-bottom:12px;
+    padding:16px; margin-bottom:12px;
   }
-  .compare-title{font-size:var(--fs-base); color:var(--hot-ink); font-weight:800; margin-bottom:8px;
+  .compare-title{font-size:var(--fs-md); color:var(--hot-ink); font-weight: 700; margin-bottom:8px;
 position: relative;}
   .compare-title::after {content: ''; display: inline-block; width: 100%; height: 1px; background-color: var(--muted); opacity: 0.2;}
   .cline{display:flex; gap:8px; align-items:baseline; padding:7px 0; font-size:15px;}
@@ -164,25 +165,25 @@ position: relative;}
   .cline.no .mark{color:var(--wrong);}
   .cline.ok .mark{color:var(--right);}
   .cline .txt{flex:1; font-family:var(--font-jp);}
-  .cline .txt span {font-size: var(--fs-lg);}
-  .cline .txt .exp {font-size: var(--fs-md); color: var(--muted); display: block;}
+  .cline .txt span {font-size: var(--fs-base);}
+  .cline .txt .exp {font-size: var(--fs-sm); color: var(--muted); display: block;}
   .cline .txt ruby rt{font-size:10px; font-weight:700; opacity: .9;}
   .tip{
-    margin-top:8px; font-size:13.5px; color:var(--muted); background:var(--bg-soft);
+    margin-top:8px; font-size:var(--fs-sm); color:var(--muted); background:var(--bg-soft);
     padding:9px 11px; border-radius:10px;
   }
-  .tip b{color:var(--text); font-weight:800;}
+  .tip b{color:var(--text);}
 
   /* Applied sentences */
   .apply-card{
     background:var(--card); border:1px solid var(--line); border-radius:14px;
-    padding:12px 14px; margin-bottom:12px;
+    padding:16px; margin-bottom:12px;
   }
-  .apply-situ{font-size:var(--fs-md); color:var(--muted-2); margin-bottom:8px; font-weight:700;}
+  .apply-situ{font-size:var(--fs-xs); color:var(--muted); margin-bottom:8px; font-weight:700;}
   .apply-jp-row{display:flex; align-items:center;}
-  .apply-jp{font-family:var(--font-jp); font-size:16px; color:var(--text); font-weight:700;}
+  .apply-jp{font-family:var(--font-jp); font-size:var(--fs-md); color:var(--text);}
   .apply-jp ruby rt{font-size:10px; font-weight:700; opacity: .9;}
-  .apply-kr{font-size:13.5px; color:var(--muted); margin-top:3px;}
+  .apply-kr{font-size:var(--fs-sm); color:var(--muted); margin-top:3px;}
 
   /* Quiz */
   .quiz-card{
@@ -214,23 +215,23 @@ position: relative;}
 
   /* Next preview */
   .next-card{
-    background:var(--card); border:1px dashed var(--line-2); border-radius:16px;
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
     padding:14px 16px; margin-top:16px;
   }
   .next-label{
-    display:inline-block; color:var(--accent-ink);
+    display:inline-block; color:var(--hot-ink);
     font-size:var(--fs-sm); font-weight:800; letter-spacing:.1em;
     padding:3px 9px 3px 2px; margin-bottom:8px;
   }
-  .next-text{font-size:14px; color:var(--muted);}
+  .next-text{font-size:var(--fs-xs); color:var(--muted);}
   .next-text b{font-weight:700; /*color: var(--text);*/}
 
   .footer-note{
-    text-align:center; font-size:var(--fs-md); color:var(--muted); margin-top:24px;
+    text-align:center; font-size:var(--fs-base); color:var(--muted); margin-top:24px;
     padding:24px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
   }
   .footer-note span {display: block;}
-  .footer-note b{color:var(--text); font-size: var(--fs-md); font-weight:800; font-family: var(--font-jp);}
+  .footer-note b{color:var(--text); font-size: var(--fs-md); font-family: var(--font-jp);}
   .footer-note ruby {font-family: var(--font-jp);}
   .footer-note b rt {font-size: 10px;}
   .no-tts{
@@ -267,7 +268,7 @@ position: relative;}
     transition:border-color .15s, background .15s;
   }
   .write-link .jp{
-    font-size:var(--fs-base); font-family:var(--font-jp); font-weight: 700;
+    font-size:var(--fs-sm); font-family:var(--font-jp); font-weight: 700;
     letter-spacing:.02em;
   }
   .write-link:hover{border-color:var(--line-2);}
@@ -317,10 +318,18 @@ position: relative;}
   clip:rect(0 0 0 0); white-space:nowrap; border:0;
 }
 
+/* 에피소드 하단 · 푸터에서 이 페이지로 오는 길 */
+.corr-link{
+  display:block; padding:13px;
+  text-align:center; text-decoration:none;
+  font-size:var(--fs-sm); color:var(--muted);
+  border-radius:13px;
+}
+.corr-link:hover{ color:var(--text); border-color:var(--line-2); }
+
 
   /* ===== 반응형: 태블릿 (600px~) ===== */
   @media (min-width: 600px){
-    body{font-size:17px;}
     .hero {padding:38px 18px 0;}
     .hero-emoji{font-size:46px;}
     .hero h1 ruby rt{font-size:var(--fs-sm);}
@@ -335,18 +344,13 @@ position: relative;}
     .word-jp ruby rt{font-size:12px;}
     .footer-note span {display: inline-block;}
     .footer-note .exp {display: block;}
-    .word-note{font-size:14.5px;}
-    .compare{padding:18px;}
+    /* .compare{padding:18px;} */
     .cline{font-size:17px; padding:9px 0;}
-    .cline .txt .exp {display: inline-block;}
-    .tip{font-size:15px; padding:11px 13px;}
-    .apply-card{padding:16px 18px;}
-    .apply-jp{font-size:18px;}
-    .apply-kr{font-size:15px;}
+    .cline .txt .exp {display: inline-block; font-size: var(--fs-md);}
+    /* .apply-card{padding:16px 18px;} */
     .quiz-card{padding:20px;}
     .quiz-opt-btn{font-size:16px; padding:14px 16px;}
     .quiz-feedback{font-size:15px;}
-    .next-text{font-size:15px;}
     .no-tts{font-size:14px; padding:12px 16px;}
     .theme-toggle .t-ico{font-size:15px;}
     .write-link span {display: inline-block;}
@@ -355,24 +359,35 @@ position: relative;}
   /* ===== 반응형: PC (900px~) ===== */
   @media (min-width: 900px){
     .hero-emoji{font-size:54px;}
+    .hero h1{font-size:var(--fs-2xl);}
+    .hero-eyebrow{font-size: var(--fs-sm);}
     .sec-title{margin:56px 0 18px;}
     .phone{padding:30px 26px; border-radius:32px;}
     .bubble{padding:16px 20px; font-size:18.5px; border-radius:20px;}
     .kr{font-size:16px;}
+    /* .jp {font-size: var(--fs-lgp);} */
+    .sec-title h2{font-size:var(--fs-xl);}
+    .bubble-row .jp {line-height: 1.8; font-size: var(--fs-lgp);}
     .word-card{padding:18px 22px; border-radius:18px;}
     .word-jp ruby rt{font-size:11px;}
-    .word-note{font-size:15px;}
-    .compare{padding:22px; border-radius:20px;}
+    .compare{border-radius:20px;}
     .cline{font-size:19px;}
-    .tip{font-size:16px;}
-    .apply-card{padding:18px 22px; border-radius:18px;}
-    .apply-jp{font-size:20px;}
-    .apply-kr{font-size:16px;}
+    .apply-card{border-radius:18px;}
     .quiz-card{padding:24px; border-radius:20px;}
     .quiz-opt-btn{padding:15px 18px; border-radius:12px;}
     .prev-card {padding:18px 22px;}
     .next-card {padding:18px 22px;}
     .no-tts{font-size:15px;}
+    .word-mean,
+    .apply-jp,
+    .cline .txt span,
+    .write-link .jp {font-size: var(--fs-base);}
+    .word-note,
+    .tip,
+    .apply-kr,
+    .compare-title {font-size: var(--fs-md);}
+    .apply-situ,
+    .next-text {font-size: var(--fs-sm);}
   }
 
   @media (min-width: 1200px){

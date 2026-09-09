@@ -1,0 +1,57 @@
+---
+/**
+ * 시즌 도장판 (7칸 = 회차 6 + 완주 1)
+ * -------------------------------------------------------------
+ * 여러 화면이 같은 컴포넌트를 씁니다. 쓰임은 두 가지예요.
+ *
+ *   찍는 곳  : 에피소드 상세. markNo 를 주면 그 칸이 찍히는 순간을 보여줍니다
+ *   보는 곳  : 다시 만나기 · 추억 보관함. 이미 찍힌 결과만 조용히 보여줍니다
+ *
+ * 도장은 에피소드를 읽거나 총복습호를 마쳤을 때만 찍힙니다.
+ * 이 컴포넌트를 놓았다고 해서 도장이 찍히지는 않아요.
+ *
+ * 찍는 판단은 브라우저에서 합니다. 서버는 빈 판만 그려요.
+ */
+import { SITE, url } from '../lib/site';
+import Stamp from './Stamp.astro';
+import '../styles/stampboard.css';
+
+interface Props {
+  season: number;
+  /** 시즌의 회차 수 */
+  total?: number;
+  /** 에피소드에서 쓸 때, 이 회차 번호를 넘기면 그 칸이 찍힙니다 */
+  markNo?: number;
+  /** 큐에 등록할 표현 ID 목록 (에피소드에서만) */
+  exprIds?: string[];
+  note?: string;
+}
+const { season, total = 6, markNo, exprIds = [], note } = Astro.props;
+const cells = Array.from({ length: total }, (_, i) => i + 1);
+---
+<div
+  class="stampboard"
+  data-season={season}
+  data-mark={markNo}
+  data-exprs={exprIds.join(',')}
+>
+  <div class="stamp-head">
+    <span class="stamp-title">{`시즌 ${season} · 어디까지 왔나?`}</span>
+    <span class="stamp-progress" data-progress></span>
+  </div>
+
+  <div class="stamp-row">
+    {cells.map((n) => (
+      <div class="stamp-cell" data-no={n}>
+        <Stamp class="stamp-mark" height={60} />
+        <span class="stamp-label">{n}</span>
+      </div>
+    ))}
+    <div class="stamp-cell final" data-final>
+      <span class="stamp-mark" aria-hidden="true">★</span>
+      <span class="stamp-label">완주</span>
+    </div>
+  </div>
+  {note && <p class="stamp-note">{note}</p>}
+  <p class="stamp-said" hidden></p>
+</div>

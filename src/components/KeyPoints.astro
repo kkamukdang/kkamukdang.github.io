@@ -1,0 +1,59 @@
+---
+/**
+ * 이번 편에서 딱 3개
+ * -------------------------------------------------------------
+ * 표제(패턴) → 뜻 → 대화에 실제로 나왔던 문장 → 그 문장의 한국어.
+ *
+ * 「다시 만나기」의 복습이 "상황 → 문장 회상" 형태라,
+ * 본문에서도 문장을 통째로 보여줘야 나중에 떠올릴 실마리가 생깁니다.
+ * 비교·응용은 접힌 영역에 그대로 있으니 여기서는 덜어냈어요.
+ */
+import Jp from './Jp.astro';
+import Rich from './Rich.astro';
+import Speak from './Speak.astro';
+import { toChunks, toRubyMarked } from '../lib/furigana';
+
+interface KeyPoint {
+  id: string;
+  jp: string;
+  kr: string;
+  note?: string;
+  sceneIndex?: number;
+}
+interface SceneLine { who: string; jp: string; kr: string }
+
+interface Props { points: KeyPoint[]; scene: SceneLine[]; }
+const { points, scene } = Astro.props;
+---
+<div class="keypoints">
+  {points.map((p, n) => {
+    const line = p.sceneIndex == null ? undefined : scene[p.sceneIndex];
+    return (
+      <article class="kp" data-expr={p.id}>
+        <div class="kp-top">
+          <span class="kp-no">{n + 1}</span>
+          <Jp text={p.jp} class="kp-jp" />
+          <Speak text={p.jp} />
+        </div>
+        <div class="kp-kr">{p.kr}</div>
+        {p.note && <Rich class="kp-note" text={p.note} />}
+
+        {line && (
+          <div class="kp-line">
+            <div class="kp-line-jp">
+              {/* 표현에 해당하는 부분만 표시가 붙습니다 */}
+              <span class="jp" set:html={toRubyMarked(line.jp, [toChunks(p.jp)])} />
+              <Speak text={line.jp} />
+            </div>
+            <div class="kp-line-kr">{line.kr}</div>
+          </div>
+        )}
+
+        {/* 누르면 이 표현만 먼저 등록하고 내일 다시 만납니다 (2-B 에서 연결) */}
+        <button class="kp-unsure" type="button" data-unsure={p.id}>
+          자신 없어요
+        </button>
+      </article>
+    );
+  })}
+</div>

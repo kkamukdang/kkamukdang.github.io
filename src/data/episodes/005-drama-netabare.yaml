@@ -20,8 +20,12 @@ scene:
     kr: 봤지 봤지! 마지막에 있잖아, 범인이 알고 보니 오빠였어!
   - who: 나
     side: a
-    jp: えっ、ちょっと!ネタバレやめてよ!まだ見[み]てないのに!
-    kr: 야 잠깐! 스포 하지 마! 나 아직 안 봤단 말이야!
+    jp: えっ、ちょっと!ネタバレやめてよ!
+    kr: 야 잠깐! 스포 하지 마!
+  - who: 나
+    side: a
+    jp: まだ見[み]てないのに!
+    kr: 나 아직 안 봤단 말이야!
   - who: 친구
     side: b
     jp: あ…ごめん、うっかり言[い]っちゃった。
@@ -173,6 +177,7 @@ keyPoints:
   - id: s01e05-noni
     jp: 〜のに
     kr: ~는데 (억울함)
+    sceneIndex: 3
     note: 문장 끝에 붙여 항의·서운함을 냅니다. のに가 없으면 그냥 사실 전달이에요.
     compareIndex: 1
     applyIndex: 2
@@ -180,6 +185,7 @@ keyPoints:
   - id: s01e05-chatta
     jp: 〜ちゃった
     kr: ~해버렸다
+    sceneIndex: 4
     note: 〜てしまった의 회화 축약형. 후회·실수에 씁니다.
     compareIndex: 0
     applyIndex: 0
@@ -187,6 +193,7 @@ keyPoints:
   - id: s01e05-yamete
     jp: やめて
     kr: 하지 마 / 그만해
+    sceneIndex: 2
     note: 이미 시작된 걸 멈추라는 말. 친구 사이엔 しないでください보다 이쪽이 자연스러워요.
     compareIndex: 2
 

@@ -1,0 +1,354 @@
+---
+/**
+ * 총복습호 (7주차 전용)
+ * -------------------------------------------------------------
+ * 개발지시서 §4-4 · §5 · 시안 7
+ *
+ * 여기서만 3개 상한을 적용하지 않습니다.
+ * 시즌의 표현 18개를 한 번에 훑어요 — 전원이 도장을 한 칸씩 채울 기회입니다.
+ *
+ * 흐름은 1층과 같습니다 (장면 → 정답 → 상태). 기록도 그대로 남아요.
+ * 다만 만기가 아닌 표현도 나오고, 중간에 그만둬도 거기까지는 기록됩니다.
+ */
+import { getListed } from '../../lib/episodes';
+import Base from '../../layouts/Base.astro';
+import StampBoard from '../../components/StampBoard.astro';
+import { toKanji } from '../../lib/furigana';
+import { SITE, url } from '../../lib/site';
+import '../../styles/again.css';
+import '../../styles/review.css';
+
+export async function getStaticPaths() {
+  const all = await getListed();
+  const seasons = [...new Set(all.map((ep) => ep.data.season))];
+
+  return seasons.map((season) => {
+    const list = all.filter((ep) => ep.data.season === season);
+    return {
+      params: { season: `s${season}` },
+      props: {
+        season,
+        weeks: list.map((ep) => ({
+          no: ep.data.no,
+          slug: ep.id,
+          subtitle: ep.data.subtitle,
+          keys: ep.data.keyPoints.map((k) => toKanji(k.jp)).join(' · '),
+        })),
+        total: list.reduce((n, ep) => n + ep.data.keyPoints.length, 0),
+      },
+    };
+  });
+}
+
+const { season, weeks, total } = Astro.props;
+---
+<Base
+  title={`다시 만나는 ${weeks.length}주 — ${SITE.name}`}
+  description={`시즌 ${season} 총복습. 신규는 없어요. 그동안 만난 ${total}개를 한 번에.`}
+  nav="again"
+>
+  <div class="wrap reading">
+    <div class="again-head">
+      <div class="hero-eyebrow">{`시즌 ${season} · 마지막 주`}</div>
+      <h1>{`다시 만나는 ${weeks.length}주`}</h1>
+      {/* "신규는 없다" 를 먼저 말해 부담을 없앱니다 */}
+      <p>{`신규는 없어요. 그동안 만난 ${total}개를 한 번에.`}</p>
+    </div>
+
+    {/* ---------- 6주를 한 줄로 ---------- */}
+    <section class="weeks">
+      <h2 class="weeks-h">{`${weeks.length}주를 한 줄로`}</h2>
+      {weeks.map((w) => (
+        <div class="week">
+          <div class="week-t">{`#${String(w.no).padStart(3, '0')} ${w.subtitle}`}</div>
+          <div class="week-k jp">{w.keys}</div>
+        </div>
+      ))}
+    </section>
+
+    {/* ---------- 연속 복습 ---------- */}
+    <article class="quizcard" id="card">
+      <div class="q-top">
+        <span class="q-scene"><span id="qEmoji"></span> 지난번에 만난 표현이에요</span>
+      </div>
+
+      <div class="q-ask" id="qAsk"></div>
+      <div class="q-prompt" id="qPrompt">일본어로 뭐라고 했더라?</div>
+
+      <button class="q-reveal" id="qReveal" type="button">정답 보기</button>
+
+      {/* 상한이 없다는 것을 여기서 알려줍니다 */}
+      <div class="q-progress" id="qProgress"></div>
+
+      <div class="q-answer" id="qAnswer" hidden>
+        <div class="q-ans-jp jp" id="qAnsJp"></div>
+        <div class="q-ans-expr">
+          <span class="jp" id="qAnsExpr"></span>
+          <span class="q-ans-kr" id="qAnsKr"></span>
+        </div>
+      </div>
+
+      <div class="q-feedback" id="qFeedback" hidden></div>
+
+      <div class="q-grade" id="qGrade" hidden>
+        <button class="g-btn ok" data-r="ok" type="button">
+          <span class="g-emoji">😎</span><span class="g-label">기억나요</span>
+        </button>
+        <button class="g-btn vague" data-r="vague" type="button">
+          <span class="g-emoji">🤔</span><span class="g-label">가물가물</span>
+        </button>
+        <button class="g-btn lost" data-r="lost" type="button">
+          <span class="g-emoji">🫠</span><span class="g-label">낯설어요</span>
+        </button>
+      </div>
+    </article>
+
+    {/* ---------- 다 끝냈을 때 ---------- */}
+    <section class="done-card" id="done" hidden>
+      <div class="done-eyebrow">시즌을 닫는 도장</div>
+      <h2 class="done-title">{`${weeks.length}주 다 지나오셨네요`}</h2>
+      <p class="done-sub" id="doneSub"></p>
+
+      {/* 문장 바로 아래에 도장판을 둡니다.
+          "6주 다 지나오셨네요" 와 도장판이 한 덩어리로 읽혀야 자연스러워요. */}
+      <StampBoard season={season} total={weeks.length} />
+
+      {/* 에피소드 도장이 다 모였을 때만 누를 수 있습니다 */}
+      <button class="cta-btn" id="finish" type="button" hidden>완주 도장 받기</button>
+      <p class="done-note" id="finishNote" hidden>
+        퀴즈를 다 풀지 않아도 누를 수 있어요. 마감도 없습니다.
+      </p>
+
+      {/* 아직 안 읽은 편이 있을 때 — 어디로 가야 할지 함께 알려줍니다 */}
+      <div class="missing" id="missing" hidden>
+        <p class="missing-text" id="missingText"></p>
+        <div class="missing-list" id="missingList"></div>
+      </div>
+    </section>
+
+    {/* ---------- 도장을 누른 뒤 ---------- */}
+    <section class="finish-card" id="after" hidden>
+      <h2 class="done-title">{`시즌 ${season} 완주 🎉`}</h2>
+      <p class="done-sub" id="afterSub"></p>
+
+      <StampBoard season={season} total={weeks.length} />
+
+      <p class="finish-code">완주 코드 <b id="code"></b></p>
+      <div class="finish-btns">
+        <a class="pill" id="summary" href={SITE.subscribeUrl} target="_blank" rel="noopener">
+          요약본 받기
+        </a>
+        <a class="pill primary" id="vote" href={SITE.subscribeUrl} target="_blank" rel="noopener">
+          다음 시즌 주제 투표
+        </a>
+      </div>
+    </section>
+
+    <div class="again-links">
+      <a class="pill" href={url('/again/')}>← 다시 만나기</a>
+    </div>
+  </div>
+
+  <script is:inline define:vars={{ SRC: url('/expressions.json'), SEASON: season, WEEKS: weeks, EP: url('/ep/') }}>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      var deck = [], pos = 0, revealed = false, moving = false;
+      var known = 0, gradCount = 0;
+
+      fetch(SRC).then(function (r) { return r.json(); }).then(function (list) {
+        // 이 시즌의 표현 전부. 만기 여부를 따지지 않습니다.
+        deck = list.filter(function (e) { return e.season === SEASON; });
+        render();
+      });
+
+      var FEEDBACK = {
+        ok:    '오! 아직 안 까먹었네요 👏',
+        vague: '이럴 때가 있죠. 한 번 더 만나봐요',
+        lost:  '괜찮아요. 다시 만나면 되니까요',
+      };
+
+      function render() {
+        if (pos >= deck.length) { finish(); return; }
+        var e = deck[pos];
+
+        revealed = false;
+        $('qReveal').hidden = false;
+        $('qPrompt').hidden = false;
+        $('qAnswer').hidden = true;
+        $('qGrade').hidden = true;
+        $('qFeedback').hidden = true;
+
+        $('qEmoji').textContent = e.emoji || '📮';
+        $('qAsk').textContent = e.ask;
+        $('qAnsJp').innerHTML = e.sentence || e.jp;
+        $('qAnsExpr').innerHTML = e.jp;
+        $('qAnsKr').textContent = e.kr;
+
+        // 상한이 없다는 것을 끝이 보이게 알려줍니다
+        $('qProgress').textContent =
+          (pos + 1) + ' / ' + deck.length + ' · 오늘은 상한 없이 끝까지';
+      }
+
+      /**
+       * 퀴즈를 끝까지 풀었을 때.
+       * 카드를 접는 대신 처음으로 되돌립니다 — 총복습호는 몇 번이고 돌 수 있어야 해요.
+       * (기록은 같은 날 두 번 반영되지 않으니 여러 바퀴 돌아도 안전합니다)
+       */
+      function finish() {
+        pos = 0;
+        render();
+        paintFinish();
+      }
+
+      /**
+       * 완주 도장은 에피소드 도장이 다 모였을 때만 받을 수 있습니다.
+       * 퀴즈를 다 풀었는지는 따지지 않아요 — 그건 검증하지 않는 것이 원칙입니다.
+       */
+      function paintFinish() {
+        if (!window.Kkmd) return;
+        var s = Kkmd.getStamps(SEASON);
+        var read = s.episodes || [];
+        var missing = WEEKS.filter(function (w) { return read.indexOf(w.no) < 0; });
+        var ready = missing.length === 0;
+
+        // 이미 완주했다면 완주 카드 대신 마지막 화면을 둡니다
+        var c0 = Kkmd.getCounter();
+        var summary =
+          '다시 만난 표현 ' + (c0.reunions || 0) + '개 · 졸업한 표현 ' + (c0.graduated || 0) + '개';
+
+        var full = read.length >= WEEKS.length;
+        if (s.completed && full) {
+          // 완주했어도 퀴즈는 그대로 둡니다. 총복습호는 언제든 다시 돌 수 있어요.
+          $('done').hidden = true;
+          $('after').hidden = false;
+          $('afterSub').textContent = summary;
+          $('code').textContent = s.code || '';
+          paintBoard();
+          return;
+        }
+
+        /**
+         * 완주 카드는 **처음부터 보입니다.**
+         * 에피소드 6편을 다 읽고 들어온 사람이라면 퀴즈를 풀었든 안 풀었든
+         * 도장을 받을 자격이 있어요. 퀴즈는 검증 대상이 아닙니다.
+         *
+         * 아직 안 읽은 편이 있으면 그 자리에 안내가 들어갑니다.
+         */
+        $('done').hidden = false;
+
+        $('doneSub').textContent = summary;
+
+        $('finish').hidden = !ready;
+        $('finishNote').hidden = !ready;
+        $('missing').hidden = ready;
+        paintBoard();
+        if (ready) return;
+
+        // 어디로 가야 할지까지 알려줍니다. 목록에서 다시 찾게 하지 않으려고요.
+        if (missing.length === 1) {
+          var m = missing[0];
+          $('missingText').textContent =
+            '아직 #' + String(m.no).padStart(3, '0') + ' 을 안 읽으셨어요';
+        } else {
+          $('missingText').textContent = '아직 안 읽은 편이 있어요';
+        }
+        $('missingList').innerHTML = missing.map(function (w) {
+          return '<a class="missing-chip" href="' + EP + w.slug + '/">#' +
+                 String(w.no).padStart(3, '0') + '</a>';
+        }).join('');
+      }
+
+      function paintBoard() {
+        if (!window.Kkmd) return;
+        var s = Kkmd.getStamps(SEASON);
+        // 도장판이 두 곳(완주 카드·완주 후 카드)에 있으므로 전부 칠합니다.
+        // querySelector 로 하나만 잡으면 두 번째 판이 비어 보여요.
+        document.querySelectorAll('.stamp-cell[data-no]').forEach(function (cell) {
+          cell.classList.toggle('on', s.episodes.indexOf(Number(cell.dataset.no)) >= 0);
+        });
+        document.querySelectorAll('.stamp-cell[data-final]').forEach(function (fin) {
+          fin.classList.toggle('on', !!s.completed);
+        });
+        document.querySelectorAll('[data-progress]').forEach(function (prog) {
+          prog.textContent =
+            (s.episodes.length + (s.completed ? 1 : 0)) + ' / ' + (WEEKS.length + 1);
+        });
+      }
+
+      $('qReveal').addEventListener('click', function () {
+        revealed = true;
+        $('qReveal').hidden = true;
+        $('qPrompt').hidden = true;
+        $('qAnswer').hidden = false;
+        $('qGrade').hidden = false;
+      });
+
+      $('qGrade').addEventListener('click', function (ev) {
+        var btn = ev.target.closest('[data-r]');
+        if (!btn || !revealed || moving) return;
+        moving = true;
+
+        var r = btn.dataset.r;
+        grade(deck[pos].id, r);
+        pos++;
+
+        $('qGrade').hidden = true;
+        $('qFeedback').textContent = FEEDBACK[r] || '';
+        $('qFeedback').className = 'q-feedback ' + r;
+        $('qFeedback').hidden = false;
+
+        setTimeout(function () {
+          $('qFeedback').hidden = true;
+          moving = false;
+          render();
+        }, 1000);
+      });
+
+      /** 1층과 같은 규칙입니다 (§4-3). 중간에 그만둬도 거기까지는 남아요. */
+      function grade(id, r) {
+        if (!window.Kkmd) return;
+        var e = Kkmd.getExpr(id);
+        if (!e) {
+          // 아직 큐에 없던 표현이면 여기서 넣습니다
+          e = { state: 'new', streak: 0, nextDue: Kkmd.today(), lastSeen: null, graduated: false };
+        }
+        var today = Kkmd.today();
+        if (e.lastSeen === today) return;
+
+        var was = e.state;
+        if (r === 'ok') {
+          e.state = 'ok'; e.streak = (e.streak || 0) + 1; e.nextDue = Kkmd.plusDays(14);
+          if (was === 'lost') Kkmd.bumpCounter('reunions', 1);
+        } else if (r === 'vague') {
+          e.state = 'vague'; e.streak = 0; e.nextDue = Kkmd.plusDays(5);
+        } else {
+          e.state = 'lost'; e.streak = 0; e.nextDue = Kkmd.plusDays(2);
+        }
+        e.lastSeen = today;
+        if (e.streak >= 3 && !e.graduated) {
+          e.graduated = true;
+          Kkmd.bumpCounter('graduated', 1);
+        }
+        Kkmd.setExpr(id, e);
+      }
+
+      $('finish').addEventListener('click', function () {
+        if (!window.Kkmd) return;
+        var code = Kkmd.stampComplete(SEASON, WEEKS.length);
+        if (!code) return;   // 조건이 안 맞으면 아무 일도 하지 않습니다
+        $('code').textContent = code || Kkmd.getStamps(SEASON).code || '';
+        $('done').hidden = true;
+        $('after').hidden = false;
+        $('afterSub').textContent = $('doneSub').textContent;
+        paintBoard();
+      });
+
+      // 도장판은 들어오자마자 한 번 그립니다.
+      // (예전에는 완주 버튼을 눌렀을 때만 그려서, 이미 완주한 사람이
+      //  다시 들어오면 빈 판이 보였어요.)
+      paintBoard();
+      paintFinish();
+
+    })();
+  </script>
+</Base>

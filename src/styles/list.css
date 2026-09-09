@@ -1,161 +1,140 @@
 /* 목록·검색·단어장 화면. 색과 반지름은 tokens.css 의 값을 그대로 씁니다. */
 
 .home-hero{
-  padding:18px 0 14px; text-align:center;
+  padding:16px 0 12px; text-align:center;
 }
-.home-hero h1 {font-size:var(--fs-2xl); margin: 8px 0 0; }
-.home-hero h1.tagline-jp{
-  font-family:var(--font-jp); font-size:var(--fs-xl);
-  letter-spacing:0;
-  word-break:keep-all; line-height:1.35; margin:8px 0 10px;
+.home-hero h1{
+  font-size:27px; line-height:1.35; margin:8px 0 0; letter-spacing:-.02em;
 }
-.home-hero h1.tagline-jp rt{ font-size:.4em; color:var(--mute-2); font-weight:400; }
-.home-hero h1.tagline-jp + p{ color:var(--text); font-family: "Gowun Dodum", sans-serif; font-size:15px; margin:0;}
-@media (min-width:900px){ 
-  .home-hero h1.tagline-jp{ font-size:29px; } 
-  .home-hero h1.tagline-jp + p {font-size: 18px;}
-}
-.home-hero p {font-size: var(--fs-md); opacity: .7;}
-.home-hero h1 ~ p {margin: 4px 0 6px;}
+.home-hero p{ color:var(--muted); font-size:14.5px; margin:0; }
 
-/* ---- 검색 ---- */
+/* ---- 검색 ----
+   회차 카드와 같은 배경이면 묻혀 보여서, 한 단계 어둡게(밝은 테마에선 밝게) 깔고
+   돋보기 아이콘과 강조 테두리를 더했습니다. */
+.search-box{ margin:0 0 20px; }
+/* 돋보기는 검색창 전체가 아니라 입력칸을 기준으로 놓습니다.
+   (예전에는 아래 안내 문구가 생기면 상자가 커지면서 아이콘이 같이 내려갔어요.) */
 .search-field{ position:relative; }
 .search-field::before{
   content:'🔍'; position:absolute; left:17px; top:50%; translate:0 -50%;
   font-size:15px; opacity:.5; pointer-events:none; z-index:1;
 }
 .search-box input{
-  width:100%; padding: 14px 14px 14px 46px;font-size:15px;
+  width:100%; padding:15px 16px 15px 46px; font-size:15px;
   color:var(--text); background:var(--bg-soft);
   border:1.5px solid var(--line-2); border-radius:999px;
   font-family:var(--font-kr); outline:none;
   transition:border-color .15s ease, box-shadow .15s ease;
 }
-.search-box input:hover{ border-color:var(--hot); }
+.search-box input:hover{ border-color:var(--accent-ink); }
 .search-box input:focus{
-  border-color:var(--hot);
-  box-shadow:0 0 0 4px var(--hot-soft);
+  border-color:var(--accent-ink);
+  box-shadow:0 0 0 4px var(--accent-soft);
 }
-.search-box input::placeholder{ color:var(--muted-2); }
+.search-box input::placeholder{ color:var(--muted); }
 .search-box input::-webkit-search-cancel-button{ cursor:pointer; }
-.search-status{ font-size:14px; color:var(--muted-2); margin:16px 2px 0; text-align: center;}
+.search-status{ font-size:var(--fs-md); color:var(--muted); margin:16px 2px 0; text-align: center;}
 
-.results{ display:none; margin-top:14px; }
+.results{ display:none; margin-top:12px; }
 .result{
-  display:block; padding:21px; margin-bottom:16px; text-decoration:none;
+  display:block; padding:21px 21px 13px; margin-bottom:12px; text-decoration:none;
   background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
 }
 .result:hover{ border-color:var(--line-2); }
-.result-meta{ font-size:14px; color:var(--muted-2); margin-bottom:3px; }
-.result-title{ font-family:var(--font-jp); color:var(--text); font-weight:700; font-size:18px; margin-bottom:8px; line-height:1.45;}
-
-.result-excerpt{ color:var(--muted); font-size:14px; line-height:1.6; }
-.result-excerpt mark{ background:var(--accent-soft); color:var(--accent-ink); padding:0 2px; }
-
-.result mark{
-  background:var(--accent-soft); color:var(--accent-ink);
-  padding:0 2px; border-radius:3px; font-weight:700;
+.result-meta{ font-size: var(--fs-sm); color:var(--muted); margin-bottom:8px;}
+.result-title{
+  font-family:var(--font-jp); color:var(--text);
+  font-weight:700; font-size:15.5px; margin-bottom:9px; line-height:1.45;
 }
-.result-title mark{ background:var(--accent-soft); color:var(--accent-ink); box-decoration-break:clone;
-  -webkit-box-decoration-break:clone;}
 
-/* .hit{
-  display:flex; align-items:baseline; gap:8px;
-  padding:6px 0; font-size:var(--fs-md); line-height:1.55;
-  border-top:1px solid var(--bg-soft);
-} */
-
+/* 어디가 걸렸는지 항목별로 보여줍니다 */
 .hit{
   display:grid; grid-template-columns:38px 1fr; gap:0 8px;
-  padding:5px 0; border-top:1px solid var(--bg-soft);
+  padding:8px 0; font-size:var(--fs-md); line-height:1.55;
+  border-top:1px solid var(--line);
 }
-.hit-body{ display:flex; flex-wrap:wrap; gap:2px 8px; align-items:baseline; }
-.hit-kind{ flex:none; min-width:30px; font-size:13px; color:var(--muted-2); }
-.hit-jp{ font-family:var(--font-jp); font-size: var(--fs-md); font-weight:600; color:var(--text); }
-/* .hit-kana{
-  margin-left:6px; font-size:11.5px; font-weight:400;
-  color:var(--ruby);
-} */
-.hit-mean{ color:var(--muted); font-size:var(--fs-md);}
-.hit-more{ padding-top:6px; font-size:11.5px; color:var(--muted-2); }
+.hit-body{ 
+  display:flex; flex-wrap:wrap; gap:2px 8px; align-items:baseline; }
+.hit-kind{
+  flex:none; min-width:30px;
+  font-size:var(--fs-sm); color:var(--muted); letter-spacing:.02em;
+}
+.hit-jp{ font-family:var(--font-jp); font-size: var(--fs-md); color:var(--text); }
+.hit-mean{ color:var(--muted); font-size:var(--fs-md); }
+.hit-more{ padding-top:6px; font-size: var(--fs-sm); color:var(--muted-2); }
 
+@media (min-width:600px) {
+  .hit[data-kind=대화] .hit-body,
+  .hit[data-kind=비교] .hit-body {flex-direction: column; gap: 3px;}
+}
 /* ---- 태그 ---- */
-.tag-row{ display:flex; flex-wrap:wrap; gap:7px; margin:16px 0; }
+.tag-row{ display:flex; flex-wrap:wrap; gap:7px; margin-bottom:16px; }
 .tag-chip{
-  padding:7px 13px; font-size:14px; cursor:pointer;
+  padding:7px 13px; font-size:var(--fs-md); cursor:pointer;
   color:var(--muted); background:transparent;
   border:1px solid var(--line-2); border-radius:999px;
-  font-family:var(--font-kr);
+  font-family:var(--font-kr); font-weight: 500;
 }
-.tag-chip.on{ color:var(--bg); background:var(--hot); border-color:var(--hot); font-weight:700; }
+.tag-chip.on{ color:var(--on-hot); background:var(--hot); border-color:var(--hot); font-weight:700; }
 
 /* ---- 회차 카드 ----
    이모지는 글자 폭이 제각각(⚾🍺 vs 🍗🌙)이라 왼쪽에 두면 제목 줄이 어긋나 보입니다.
    오른쪽에 고정 크기 타일로 빼서 텍스트 시작선을 하나로 맞췄어요. */
-.ep-list{ display:flex; flex-direction: column; flex-wrap: nowrap; gap: 10px;}
+.ep-list{ display:flex; flex-direction:column; gap:12px; }
 .ep-card{
-  position: relative;
-  display:flex; gap:14px; align-items:center; flex-basis: 100%;
-  text-decoration:none; gap: 14px; padding:19px; 
+  display:flex; gap:14px; align-items:center; align-items: start;
+  padding:16px; text-decoration:none;
   background:var(--card); border:1px solid var(--line);
-  border-radius:var(--radius); box-shadow:var(--shadow);
+  border-radius:var(--radius);
   transition:border-color .15s ease, transform .15s ease;
 }
 .ep-card:hover{ border-color:var(--line-2); transform:translateY(-1px); }
 .ep-body{ flex:1; min-width:0; }
 .ep-emoji{
-  display: none; flex:none; position: absolute; right: 16px; top: 18px;
-  font-size:16px; line-height:1; opacity:.9;
+  display: none; flex:none; font-size:var(--fs-lg); line-height:1;
+  letter-spacing:-3px;      /* 두 개가 붙어 한 덩어리로 읽히게 */
+  opacity:.9;
 }
-.ep-meta{ display:flex; gap:8px; align-items:center; margin-bottom:8px; }
-.ep-no{ font-size:13px; font-weight:700; color:var(--accent-ink); letter-spacing:.04em; }
-.ep-date{ font-size:13px; color:var(--muted-2);}
+.ep-meta{ display:flex; gap:8px; align-items:center; margin-bottom:5px; }
+.ep-no{ font-size:var(--fs-sm); font-weight:700; color:var(--accent-ink); letter-spacing:.04em; }
+.ep-date{ font-size:var(--fs-sm); color:var(--muted-2); }
 .ep-title{
-  font-family:var(--font-jp); font-size:var(--fs-lgp); font-weight:700;
-  color:var(--text); line-height:1.45; margin-bottom:8px;
+  font-family:var(--font-jp); font-size:var(--fs-lg); font-weight:700;
+  color:var(--text); line-height:1.45; margin-bottom:4px;
 }
-.ep-sub{ font-size:var(--fs-md); color:var(--muted); line-height:1.6; }
+.ep-sub{ font-size:var(--fs-sm); color:var(--muted); line-height:1.6; }
 .ep-tags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
-.ep-tags span{ font-size:var(--fs-sm); color:var(--hot-ink); }
+.ep-tags span{ font-size: var(--fs-sm); color:var(--hot-ink); }
 
-/* .home-links{ margin:26px 0 6px; text-align:center; }
-.home-links a{ color:var(--accent-ink); font-size:14px; font-weight:700; text-decoration:none; } */
-.home-links {display: flex; align-items: center; justify-content: center;
-    gap: 8px;margin-top: 32px; flex-wrap: wrap;}
-.home-links a {display: inline-block; padding: 10px 24px;
-    font-size: 14px; font-weight: 600; text-decoration: none; color: var(--muted);
-    background: transparent; border: 1px solid var(--line);
-    border-radius: 999px; transition: color .15s ease, border-color .15s ease;
-    white-space: nowrap;}
-.home-links a:hover {color: var(--text); border-color: var(--line-2);}
+.home-links{ margin:26px 0 6px; text-align:center; }
+.home-links a{ color:var(--accent-ink); font-size:14px; font-weight:700; text-decoration:none; }
 .back-home{ margin:30px 0 10px; text-align:center; }
 .back-home a{ color:var(--muted); font-size:13.5px; text-decoration:none; }
 
 .empty{ color:var(--muted); font-size:14px; text-align:center; padding:40px 0; }
 
-/* .next-link{
+.next-link{
   display:inline-block; margin-top:12px;
   color:var(--accent-ink); font-size:13.5px; font-weight:700; text-decoration:none;
-} */
+}
 
-@media (min-width:600px){
+@media (min-width:560px){
+  .home-hero h1{ font-size:32px; }
+  .search-box input {padding: 19px 16px 19px 46px;}
+  /* .ep-emoji {display: block;} */
   .ep-card {padding: 24px;}
-  .ep-emoji {display: block; right: 24px; top: 24px; font-size:20px;}
+}
+@media (min-width:1200px){
+  .ep-list {flex-direction: row; flex-wrap: wrap;}
+  .ep-list .ep-card:only-child {flex-basis: 100%;}
+  .ep-card {padding: 28px; flex-basis: calc(50% - 8px);}
 }
 
-@media (min-width:900px) {
-  .ep-list{ gap: 16px; }
-}
-@media (min-width:1200px) {
-  .ep-card {padding:32px; flex-basis: calc(50% - 8px); align-items: start;}
-  .ep-list {flex-direction:row; flex-wrap: wrap; gap:16px;}
-  .ep-emoji {right: 24px; top: 32px; font-size:20px;}
-}
 
 /* 단어장 — 그 단어가 나온 회차 배지 */
 .ep-badges{ display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; }
 .ep-badge{
-  padding:4px 10px; font-size:11.5px; font-weight:700; letter-spacing:.03em;
+  padding:4px 10px; font-size: var(--fs-sm); font-weight:700; letter-spacing:.03em;
   color:var(--accent-ink); text-decoration:none;
   background:var(--accent-soft); border:1px solid var(--line);
   border-radius:999px;
@@ -174,7 +153,7 @@
    =========================================================== */
 .word-grid{
   display:grid; gap:9px;
-  grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  grid-template-columns:repeat(3,1fr);
 }
 @media (max-width:520px){
   .word-grid{ grid-template-columns:repeat(2,1fr); }
@@ -187,11 +166,11 @@
 }
 .tile-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:6px; }
 .tile-jp{
-  font-family:var(--font-jp); font-size:18px; font-weight:700;
+  font-family:var(--font-jp); font-size:17px; font-weight:700;
   line-height:1.45; word-break:keep-all;
 }
-.tile-jp rt{ font-size:.6em; color:var(--text); }
-.tile-mean{ flex:1; font-size:14px; line-height:1.55; color:var(--muted); }
+.tile-jp rt{ font-size:.5em; color:var(--ruby); font-weight:400; }
+.tile-mean{ flex:1; font-size:12.5px; line-height:1.55; color:var(--muted); }
 .tile-foot{ display:flex; flex-wrap:wrap; gap:5px; }
 
 /* ===========================================================
@@ -213,12 +192,12 @@
 .study-cta{
   display:block; margin-bottom:14px; padding:15px;
   text-align:center; text-decoration:none;
-  font-size:14.5px; font-weight:700; color:var(--on-hot);
-  background:var(--hot); border: 1px solid var(--line);
+  font-size:14.5px; font-weight:700; color:var(--text);
+  background:var(--bg-soft); border:1px solid var(--line);
   border-radius:14px;
   transition:border-color .15s ease;
 }
-.study-cta:hover{ border-color:var(--hot); filter: brightness(1.06);}
+.study-cta:hover{ border-color:var(--accent-ink); }
 
 /* 한자 쓰기 목차의 바로 가기 콤보 */
 .picker-row{
@@ -246,7 +225,7 @@
 /* ---- 단어장 필터 ---- */
 .word-filters{ display:flex; gap:7px; margin-bottom:10px; flex-wrap:wrap; }
 .word-filters select{
-  flex:1 1 0; min-width:0; padding:13px 32px 13px 14px;
+  flex:1 1 0; min-width:0; padding:10px 32px 10px 14px;
   font-family:var(--font-kr); font-size:13px;
   color:var(--text); background:var(--card);
   border:1px solid var(--line); border-radius:999px;
@@ -261,19 +240,17 @@
 .word-filters select:hover{ border-color:var(--line-2); }
 .word-filters select:focus{ border-color:var(--accent-ink); }
 .know-reset{
-  flex:none; padding:10px 14px; font-size:14px; 
-  cursor:pointer; font-family:var(--font-kr); color:var(--muted-2);
+  flex:none; padding:10px 14px; font-size: var(--fs-sm); cursor:pointer;
+  font-family:var(--font-kr); color:var(--muted-2);
   background:transparent; border:1px solid var(--line); border-radius:999px;
 }
 .know-reset:hover{ color:var(--text); border-color:var(--line-2); }
 
 .tile-hint{
-  display: flex; justify-content: space-between;
-  margin:28px 0 14px; text-align:center;
-  font-size:14px; color:var(--muted-2);
+  margin:0 0 14px; text-align:center;
+  font-size: var(--fs-sm); color:var(--muted-2);
 }
 .tile-hint b{ color:var(--muted); }
-.tile-hint .counts{color: var(--text);}
 
 .know-empty{
   padding:40px 0; text-align:center;
@@ -285,23 +262,130 @@
 .word-tile:hover{ border-color:var(--line-2); }
 .word-tile:focus-visible{ outline:2px solid var(--accent-ink); outline-offset:2px; }
 .word-tile.is-known{
-  border-color:var(--right); border-width: 2px;
+  border-color:var(--right);
   background:var(--right-soft);
 }
 /* 방금 상태를 바꾼 카드는 잠깐 강조해서, 목록에서 사라져도 뭘 눌렀는지 알 수 있게 */
 .word-tile.just-changed{ border-color:var(--accent-ink); }
 
-/* ===== 반응형: 태블릿 (600px~) ===== */
-  @media (min-width: 600px){
-    .home-hero {padding: 46px 0 18px;}
-    .search-status {margin-top: 32px;}
-    .search-box input {padding:19px 16px 19px 46px; }
-    .results {margin-top: 28px;}
-    /* 대화·비교는 문장과 설명이 둘 다 길어서, 좁은 화면에서는 줄을 나눕니다.
-       단어는 짧으니 한 줄로 두는 편이 훑어보기 좋아요. */
-    .hit[data-kind="대화"] .hit-body,
-    .hit[data-kind="비교"] .hit-body{
-      flex-direction:column;
-      gap:3px;
-    }
+/* 외움 여부는 위 탭에서 이미 고른 상태라 타일에 따로 표시하지 않습니다. */
+
+/* 검색어와 겹치는 부분 표시 */
+.result mark{
+  background:var(--accent-soft); color:var(--accent-ink);
+  padding:0 2px; border-radius:3px; font-weight:700;
+}
+.result-title mark{ background:var(--hot); color:var(--on-hot); }
+.home-hero .hero-eyebrow {display: none;}
+/* 계절 인사 — 일본어 문구는 일본어 폰트로, 후리가나는 작게 */
+.home-hero h1.tagline-jp{
+  font-family:var(--font-jp); font-size:var(--fs-lg); 
+  line-height:1.7; letter-spacing:0; word-break:keep-all; 
+}
+.home-hero h1.tagline-jp rt{
+  font-size:.4em; color:var(--ruby); font-weight:400;
+}
+.home-hero h1.tagline-jp + p{ 
+  color:var(--text); 
+  font-family: "Gowun Dodum", sans-serif; font-size:var(--fs-md); 
+  margin:0; opacity: .7;
+}
+
+@media (min-width:600px){
+  .home-hero h1.tagline-jp{ font-size:24px; }
+  .home-hero h1.tagline-jp + p {font-size:var(--fs-base);}
+
+}
+@media (min-width:900px){
+  .home-hero h1.tagline-jp{ font-size:29px; }
+  .home-hero h1.tagline-jp + p {font-size:var(--fs-lg);}
+}
+
+/* ===========================================================
+   홈 — 소개 · 다시 만나기 · 목록
+   =========================================================== */
+
+/* 다시 만나기 안내 */
+.again-entry{ margin-bottom:26px; }
+.ae-card{
+  display:flex; flex-direction:column; gap:5px;
+  padding:18px 20px; text-decoration:none;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius);
+  transition:border-color .15s ease;
+}
+.ae-card:hover{ border-color:var(--line-2); }
+.ae-card.is-plain{ cursor:default; border-style:dashed; }
+.ae-card.is-plain:hover{ border-color:var(--line); }
+.ae-title{ font-size:var(--fs-lg); font-weight:800; color:var(--text); }
+.ae-sub{ font-size:var(--fs-sm); color:var(--muted); }
+
+/* 목록 제목 */
+.home-sec{
+  scroll-margin-top:70px; margin:0 0 12px; font-size:var(--fs-lg); font-weight:800; letter-spacing:-.01em;
+}
+
+/* 회차 카드 보강 */
+.ep-tag{
+  padding:2px 8px; font-size:var(--fs-xs);
+  color:var(--accent-ink); background:var(--accent-soft); border-radius:999px;
+}
+.ep-keys{
+  margin-top:9px; font-family:var(--font-jp);
+  font-size:var(--fs-sm); color:var(--hot-ink); line-height:1.6;
+}
+
+/* 시즌 그룹 — 시즌 2부터 나타납니다 */
+.season{
+  border:1px solid var(--line); border-radius:var(--radius);
+  overflow:hidden;
+}
+.season + .season{ margin-top:10px; }
+.season > summary{
+  display:flex; align-items:center; gap:10px;
+  padding:15px 17px; cursor:pointer; list-style:none;
+}
+.season > summary::-webkit-details-marker{ display:none; }
+.season > summary::after{
+  content:'▼'; margin-left:auto; font-size:var(--fs-xs); color:var(--muted-2);
+  transition:transform .18s ease;
+}
+.season[open] > summary::after{ transform:rotate(180deg); }
+.season > summary:hover{ background:var(--bg-soft); }
+.season-title{ font-size:var(--fs-md); font-weight:800; }
+.season-count{ font-size:var(--fs-xs); color:var(--muted-2); }
+.season-body{
+  display:flex; flex-direction:column; gap:10px;
+  padding:2px 12px 14px;
+}
+
+@media (min-width:600px) {
+  .home-hero{
+    padding:36px 0 22px;
   }
+  .home-hero h1 {margin:8px 0 10px;}
+}
+
+/* ===========================================================
+   모바일 — 장면 태그를 한 줄 가로 스크롤로
+   -----------------------------------------------------------
+   여러 줄로 흐르면 첫 화면에서 에피소드 목록이 아래로 밀립니다.
+   오른쪽 끝을 일부러 잘리게 두어 "더 있다" 는 것을 알립니다.
+   가로 스크롤은 태그와 도장판에만 씁니다. 본문에는 쓰지 않아요.
+   =========================================================== */
+@media (max-width:600px){
+  .tag-row{
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    padding-right:28px;          /* 마지막 칩이 살짝 잘려 보이게 */
+    margin-right:-18px;          /* 화면 가장자리까지 흐르도록 */
+  }
+  .tag-row::-webkit-scrollbar{ display:none; }
+  .tag-chip{ flex:none; }
+
+  /* 스크롤로 다 볼 수 있으니 더보기 버튼은 감추고 전부 펼칩니다 */
+  .tag-chip.extra{ display:inline-block; }
+  .tag-chip.more{ display:none; }
+}

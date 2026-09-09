@@ -6,14 +6,20 @@
  */
 import { toPlain } from '../lib/furigana';
 
+/**
+ * 웃음 표기는 글로 쓰는 것이라 소리 내어 읽지 않습니다.
+ * (笑) 를 그대로 넘기면 음성이 "わら" 라고 읽어버려요.
+ */
+const forSpeech = (t: string) =>
+  toPlain(t).replace(/[(（]\s*笑\s*[)）]/g, '').replace(/\s+/g, ' ').trim();
+
 interface Props { text: string; audio?: string; label?: string; class?: string; }
 const { text, audio, label = '발음 듣기', class: className = 'spk' } = Astro.props;
 ---
 <button
   type="button"
   class={className}
-  data-jp={toPlain(text)}
+  data-jp={forSpeech(text)}
   data-audio={audio}
   aria-label={label}
-  data-pagefind-ignore
 >🔊</button>

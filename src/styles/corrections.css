@@ -1,0 +1,40 @@
+/* ===========================================================
+   바로잡은 기록
+   =========================================================== */
+.corr-head{ padding:40px 0 24px; text-align:center; }
+.corr-head h1{
+  margin:8px 0 8px; font-size:var(--fs-2xl); font-weight:800; letter-spacing:-.02em;
+}
+.corr-head p{ margin:0; font-size:var(--fs-md); color:var(--muted); }
+
+.corr-list{
+  margin:0; padding:4px 20px; list-style:none;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius);
+}
+.corr{ padding:18px 0; border-top:1px solid var(--line); }
+.corr:first-child{ border-top:none; }
+
+.corr-meta{ font-size:var(--fs-sm); color:var(--muted); }
+.corr-meta a{ color:var(--accent-ink); text-decoration:none; font-weight:700; }
+.corr-text{
+  margin-top:5px; font-size:var(--fs-base); font-weight:600; line-height:1.65;
+}
+/* 본문에 일본어가 섞여 나오므로 폰트를 지정해 둡니다 */
+.corr-text .jp{ font-family:var(--font-jp); font-size: var(--fs-base);}
+.corr-note{ margin-top:6px; font-size:var(--fs-sm); color:var(--muted); }
+
+.corr-empty{
+  padding:48px 24px; text-align:center;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius);
+}
+/* .corr-empty p{ margin:0 0 26px; font-size:var(--fs-sm); color:var(--muted-2); }
+.corr-empty p:first-child{ margin:0; font-size:var(--fs-base); color:var(--muted);} */
+.corr-empty a{ color:var(--accent-ink); }
+.corr-empty p {margin: 12px 0 0;}
+
+.corr-foot{
+  margin:22px 0 0; text-align:center;
+  font-size:var(--fs-xs); line-height:1.7; color:var(--muted-2);
+}

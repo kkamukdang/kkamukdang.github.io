@@ -1,11 +1,18 @@
 ---
 import Jp from './Jp.astro';
-interface Props { emoji: string; title: string; subtitle: string; }
-const { emoji, title, subtitle } = Astro.props;
+
+interface Props {
+  emoji: string;
+  title: string;
+  subtitle: string;
+  /** "시즌 1 · #003 · 9월 4일" 로 그려집니다. 없으면 생략돼요. */
+  meta?: string;
+}
+const { emoji, title, subtitle, meta } = Astro.props;
 ---
 <div class="hero">
   <span class="hero-emoji">{emoji}</span>
-  <div class="hero-eyebrow hide">까먹당 · 에피소드</div>
+  {meta ? <div class="hero-eyebrow">{meta}</div> : <div class="hero-eyebrow">까먹당 · 일본어</div>}
   <h1><Jp text={title} /></h1>
   <p>{subtitle}</p>
 </div>

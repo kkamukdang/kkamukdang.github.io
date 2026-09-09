@@ -1,0 +1,133 @@
+/* ===========================================================
+   도장판
+   -----------------------------------------------------------
+   StampBoard.astro 가 직접 불러옵니다.
+   에피소드·다시 만나기·추억 보관함 어디에 놓아도 스타일이 따라와요.
+   (예전에는 keypoints.css 안에 있어서, 그 파일을 안 쓰는 화면에서는
+    도장판이 목록처럼 세로로 늘어졌습니다.)
+   =========================================================== */
+.stampboard{
+  margin-top:12px; padding:18px 16px 14px;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius);
+}
+
+/* 7칸은 좁은 화면에서도 한 줄을 유지합니다 (탭 대상이 아니므로) */
+.stamp-row{ display:flex; gap:6px; }
+
+.stamp-cell{
+  flex:1 1 0; min-width:0;
+  display:flex; flex-direction:column; align-items:center; justify-self: center; gap:4px;
+  padding:10px 2px 4px;
+  border:1px dashed var(--line); border-radius:11px;
+}
+.stamp-cell.final{ border-style:solid; }
+
+.stamp-mark{
+  font-size:19px; line-height:1;
+  transform-origin:50% 60%;
+  opacity:0; transform:scale(.5);          /* 기본은 빈 칸 */
+  transition:opacity .2s ease, transform .2s ease;
+}
+.stamp-label{ font-size:var(--fs-xs); color:var(--muted-2); }
+
+/* 이미 찍힌 칸 */
+.stamp-cell.on{ border-style:solid; /* border-color:var(--hot);*/ background:var(--bg-soft);  }
+.stamp-cell.on .stamp-mark{ opacity:1; transform:none; color: var(--stamp); }
+.stamp-cell.on .stamp-label{ color:var(--muted); font-weight:700; }
+
+/* 방금 찍히는 칸
+   ------------------------------------------------------------
+   도장을 쾅 누르는 느낌으로:
+     ① 크게 떠 있다가 빠르게 내려앉고
+     ② 살짝 튕긴 뒤 제자리
+     ③ 칸이 한 번 흔들리고, 테두리에서 파문이 퍼집니다            */
+@keyframes stamp-in{
+  0%   { opacity:0; transform:scale(2.6) rotate(-22deg); }
+  40%  { opacity:1; transform:scale(.78) rotate(6deg); }
+  60%  { transform:scale(1.14) rotate(-3deg); }
+  78%  { transform:scale(.95) rotate(1deg); }
+  100% { opacity:1; transform:none; }
+}
+.stamp-cell.just .stamp-mark{
+  animation:stamp-in .62s cubic-bezier(.2,.9,.25,1) both;
+}
+
+/* 칸이 도장에 눌리는 느낌 */
+@keyframes stamp-hit{
+  0%,100%{ transform:none; }
+  38%    { transform:translateY(2px) scale(.96); }
+  55%    { transform:translateY(-1px) scale(1.03); }
+  72%    { transform:none; }
+}
+.stamp-cell.just{ animation:stamp-hit .62s cubic-bezier(.2,.9,.25,1) both; }
+
+/* 파문 */
+.stamp-cell{ position:relative; overflow:visible;}
+.stamp-cell.just::after{
+  content:''; position:absolute; inset:-2px;
+  border:2px solid var(--accent-ink); border-radius:13px;
+  opacity:0; pointer-events:none;
+  animation:stamp-ring .7s ease-out .18s both;
+}
+@keyframes stamp-ring{
+  0%  { opacity:.85; transform:scale(1); }
+  100%{ opacity:0;  transform:scale(1.35); }
+}
+
+.stamp-note{
+  margin:14px 0 0; font-size:var(--fs-sm); line-height:1.7;
+  color:var(--muted); text-align:center;
+}
+.stamp-said{
+  color:var(--text); text-align:center;
+  font-size:var(--fs-sm); font-weight:600;
+  margin:6px 0;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .stamp-cell.just,
+  .stamp-cell.just::after,
+  .stamp-cell.just .stamp-mark{ animation:none; }
+  .stamp-cell.just .stamp-mark{ opacity:1; transform:none; }
+}
+
+
+/* 도장판 머리말 — "시즌 1 도장판    3 / 7" */
+.stamp-head{
+  display:flex; align-items:baseline; justify-content:space-between;
+  margin-bottom:11px;
+}
+.stamp-title{ font-size:var(--fs-md);  color:var(--muted); }
+.stamp-progress{
+  font-size:11.5px; color:var(--muted-2); font-variant-numeric:tabular-nums;
+}
+
+/* ===========================================================
+   모바일 — 도장 이미지를 감추고 숫자만
+   -----------------------------------------------------------
+   7칸을 좁은 화면에 넣으면 도장이 뭉개져 알아볼 수 없습니다.
+   이미지는 감추되 찍히는 순간의 효과는 그대로 둡니다 —
+   눌리는 칸, 퍼지는 파문, 그리고 숫자가 커졌다 앉는 움직임.
+   =========================================================== */
+@media (max-width:600px){
+  .stamp-cell{ padding:11px 2px; gap:0; }
+  .stamp-mark{ display:none; }
+
+  .stamp-label{ font-size:13px; font-weight:700; }
+
+  /* 도장 대신 숫자가 찍히는 시늉을 합니다 */
+  .stamp-cell.just .stamp-label{
+    animation:stamp-in .62s cubic-bezier(.2,.9,.25,1) both;
+    transform-origin:50% 50%;
+  }
+
+  /* 완주 칸은 「완주」 두 글자가 길어 ★ 하나로 줄입니다.
+     글자를 지우지 않고 크기만 0 으로 두어, 화면 읽기 프로그램에는
+     그대로 「완주」로 읽히게 합니다. */
+  .stamp-cell.final .stamp-label{ font-size:0; }
+  .stamp-cell.final .stamp-label::after{
+    content:'★';
+    font-size:14px;
+  }
+}

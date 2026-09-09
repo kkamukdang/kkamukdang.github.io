@@ -1,0 +1,82 @@
+---
+/**
+ * 구독 유도
+ * -------------------------------------------------------------
+ * 홈과 에피소드 하단이 같은 컴포넌트를 씁니다. 문구만 달라요.
+ *
+ * 읽은 편수에 따라 크기가 줄어듭니다.
+ *   0~2편  → 큰 카드
+ *   3편 이상 → 한 줄 링크
+ *   「접기」를 누른 적 있음 → 한 줄 링크 (홈에서만 접을 수 있어요)
+ *
+ * 구독 여부는 알 수 없으므로 읽은 편수로 짐작합니다.
+ * 검색으로 처음 들어온 사람에게는 이 페이지가 첫 화면이므로 없애지 않습니다.
+ */
+import { SITE } from '../lib/site';
+import '../styles/cta.css';
+
+interface Props {
+  title: string;
+  /** 제목 아래 설명. 에피소드 하단에서는 생략합니다 */
+  lead?: string;
+  /** 「접기」를 보여줄지. 홈에서만 씁니다 */
+  closable?: boolean;
+  /** 줄어들었을 때 보여줄 한 줄 */
+  mini?: string;
+}
+const {
+  title,
+  lead,
+  closable = false,
+  mini = '💌 매주 목요일, 한 문장씩 메일로 받아보기 →',
+} = Astro.props;
+---
+<section class="cta" data-cta>
+  <div class="cta-full" data-cta-full>
+    <h2 class="cta-title">{title}</h2>
+    {lead && <p class="cta-lead" set:html={lead} />}
+
+    <a class="cta-btn" href={SITE.subscribeUrl} target="_blank" rel="noopener">
+      지금 입당하기
+    </a>
+    <p class="cta-meta">주 1회 · 언제든 탈당 · 회비 없음</p>
+
+    {closable && (
+      <p class="cta-close">
+        이 소식지, 이미 받고 계신가요?
+        <button type="button" data-cta-close>접기</button>
+      </p>
+    )}
+  </div>
+
+  <a class="cta-mini" data-cta-mini href={SITE.subscribeUrl} target="_blank" rel="noopener" hidden>
+    {mini}
+  </a>
+</section>
+
+<script is:inline>
+  /* 읽은 편수와 「접기」 기록에 따라 크기를 정합니다. */
+  (function () {
+    document.querySelectorAll('[data-cta]').forEach(function (box) {
+      var full = box.querySelector('[data-cta-full]');
+      var mini = box.querySelector('[data-cta-mini]');
+      var btn = box.querySelector('[data-cta-close]');
+      if (!full || !mini || !window.Kkmd) return;
+
+      function paint() {
+        var ui = Kkmd.getUi();
+        var small = ui.ctaClosed || (ui.episodesRead || 0) >= 3;
+        full.hidden = small;
+        mini.hidden = !small;
+      }
+
+      if (btn) {
+        btn.addEventListener('click', function () {
+          Kkmd.setUi({ ctaClosed: true });
+          paint();
+        });
+      }
+      paint();
+    });
+  })();
+</script>

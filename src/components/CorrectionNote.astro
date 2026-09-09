@@ -1,0 +1,28 @@
+---
+/**
+ * 에피소드 하단의 정정 안내 (진입 경로 ②)
+ * -------------------------------------------------------------
+ * 그 편이 고쳐졌을 때만 나타납니다. 없으면 아무것도 그리지 않아요.
+ * 이미 메일을 받은 사람은 틀린 내용을 그대로 갖고 있으므로,
+ * 그 편을 다시 열었을 때 알려주는 자리가 필요합니다.
+ */
+import { url } from '../lib/site';
+
+interface Props {
+  corrections: { date: string; text: string; note?: string }[];
+}
+const { corrections } = Astro.props;
+
+const latest = [...corrections].sort((a, b) => (a.date < b.date ? 1 : -1))[0];
+const fmt = (ymd: string) => {
+  const [, m, d] = ymd.split('-');
+  return `${Number(m)}월 ${Number(d)}일`;
+};
+---
+{latest && (
+  <a class="corr-link" href={url('/corrections/')}>
+    {corrections.length > 1
+      ? `이 편은 ${corrections.length}번 고쳤어요 · 최근 ${fmt(latest.date)} →`
+      : `이 편은 ${fmt(latest.date)}에 한 번 고쳤어요 →`}
+  </a>
+)}

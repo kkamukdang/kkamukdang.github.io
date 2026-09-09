@@ -269,6 +269,14 @@ for (const ep of episodes) {
         lines.push(c.red('  연결 오류  ') + `${kp.id} 의 compareIndex ${kp.compareIndex} 가 범위 밖입니다`);
         problems++;
       }
+      if (kp.sceneIndex == null) {
+        lines.push(c.yellow('  대화 연결  ') + `${kp.id} 에 sceneIndex 가 없습니다` +
+          c.dim('  카드에 예문이 안 나와요'));
+        notes++;
+      } else if (!(ep.data.scene ?? [])[kp.sceneIndex]) {
+        lines.push(c.red('  연결 오류  ') + `${kp.id} 의 sceneIndex ${kp.sceneIndex} 가 범위 밖입니다`);
+        problems++;
+      }
       if (kp.applyIndex != null && !(ep.data.apply ?? [])[kp.applyIndex]) {
         lines.push(c.red('  연결 오류  ') + `${kp.id} 의 applyIndex ${kp.applyIndex} 가 범위 밖입니다`);
         problems++;

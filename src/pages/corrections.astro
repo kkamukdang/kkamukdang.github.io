@@ -1,0 +1,71 @@
+---
+/**
+ * 바로잡은 기록
+ * -------------------------------------------------------------
+ * 개발지시서 · 시안 9
+ *
+ * AI 로 초안을 만든다는 것을 약점이 아니라 신뢰 장치로 바꾸는 페이지입니다.
+ * "이만큼 검증받으며 왔다" 는 증거가 쌓이는 자리예요.
+ *
+ * 발행 전이라 비어 있어도 먼저 열어둡니다.
+ * 나중에 만들면 "숨기다 들킨" 모양이 되니까요.
+ */
+import { getListed } from '../lib/episodes';
+import Base from '../layouts/Base.astro';
+import { SITE, url } from '../lib/site';
+import '../styles/corrections.css';
+
+const episodes = await getListed();
+
+/** 회차에 흩어져 있는 정정을 한 줄씩 펴서 최신순으로 모읍니다. */
+const logs = episodes
+  .flatMap((ep) =>
+    ep.data.corrections.map((c) => ({
+      ...c,
+      no: ep.data.no,
+      slug: ep.id,
+    }))
+  )
+  .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+
+const fmt = (ymd: string) => {
+  const [, m, d] = ymd.split('-');
+  return `${Number(m)}월 ${Number(d)}일`;
+};
+---
+<Base
+  title={`바로잡은 기록 — ${SITE.name}`}
+  description="틀린 걸 발견하면 여기에 적어둡니다."
+>
+  <div class="wrap reading">
+    <div class="corr-head">
+      <div class="hero-eyebrow">{SITE.name} · 정정 노트</div>
+      <h1>바로잡은 기록</h1>
+      <p>잘못된 내용을 발견하면 바로잡아 기록합니다.</p>
+    </div>
+
+    {logs.length > 0 ? (
+      <ol class="corr-list">
+        {logs.map((c) => (
+          <li class="corr">
+            <div class="corr-meta">
+              {fmt(c.date)} ·
+              <a href={url(`/ep/${c.slug}/`)}>{`#${String(c.no).padStart(3, '0')}`}</a>
+            </div>
+            <div class="corr-text" set:html={c.text} />
+            {c.note && <div class="corr-note">{c.note}</div>}
+          </li>
+        ))}
+      </ol>
+    ) : (
+      /* 비어 있어도 이 페이지는 있습니다 */
+      <div class="corr-empty">
+        <p><img src={url('/cha-correct.webp')}></p>
+      </div>
+    )}
+
+    <p class="corr-foot" hidden>
+      일본어 초안은 AI 의 도움을 받아 만들고, 사람이 확인해 발행합니다
+    </p>
+  </div>
+</Base>

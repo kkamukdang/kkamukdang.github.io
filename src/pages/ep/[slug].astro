@@ -1,24 +1,43 @@
 ---
+/**
+ * 에피소드 상세
+ * -------------------------------------------------------------
+ * 개발지시서 §7-2 의 순서를 따릅니다.
+ *
+ *   헤더 → 회차 이동 → 오늘의 핵심 한 줄 → 오늘의 대화
+ *   → 이번 편에서 딱 3개
+ *   → 도장판                       ← 도장·복습 큐 등록 트리거 (2-B 에서 추가)
+ *   → ── 오늘 몫은 여기까지 ──
+ *   → 나중에 찾아볼 것(접힘) → 다음 편 예고 → 회차 이동 → 구독 CTA
+ *
+ * 위쪽만 읽어도 그 주 몫은 끝납니다. 아래는 사전이에요.
+ */
 import { getPages } from '../../lib/episodes';
 import Base from '../../layouts/Base.astro';
 import Hero from '../../components/Hero.astro';
 import EpisodeNav from '../../components/EpisodeNav.astro';
 import SectionTitle from '../../components/SectionTitle.astro';
+import SectionLead from '../../components/SectionLead.astro';
 import Scene from '../../components/Scene.astro';
+import KeyPoints from '../../components/KeyPoints.astro';
+import TodayEnd from '../../components/TodayEnd.astro';
+import StampBoard from '../../components/StampBoard.astro';
+import LaterBox from '../../components/LaterBox.astro';
+import LaterPart from '../../components/LaterPart.astro';
 import WordGroup from '../../components/WordGroup.astro';
 import Compare from '../../components/Compare.astro';
 import Apply from '../../components/Apply.astro';
-import Quiz from '../../components/Quiz.astro';
-import Subscribe from '../../components/Subscribe.astro';
+import SubscribeCta from '../../components/SubscribeCta.astro';
 import NextCard from '../../components/NextCard.astro';
 import EpisodeFooter from '../../components/EpisodeFooter.astro';
-import { toPlain } from '../../lib/furigana';
+import CorrectionNote from '../../components/CorrectionNote.astro';
+import { toPlain, toChunks } from '../../lib/furigana';
 import { SITE, url } from '../../lib/site';
+import '../../styles/keypoints.css';
 
 export async function getStaticPaths() {
   const all = await getPages();
-  
-  // 이전/다음 편은 회차 번호 순서로 자동 연결됩니다. 손으로 링크를 고칠 일이 없습니다.
+  // 이전/다음 편은 회차 번호 순서로 자동 연결됩니다.
   return all.map((ep, i) => ({
     params: { slug: ep.id },
     props: { ep, prev: all[i - 1] ?? null, next: all[i + 1] ?? null },
@@ -29,117 +48,240 @@ const { ep, prev, next } = Astro.props;
 const d = ep.data;
 const plainTitle = toPlain(d.title);
 const hasKanji = d.kanjiPractice.length > 0;
-const searchTexts = [
-  d.title,
-  ...d.scene.map((l) => l.jp),
-  ...d.wordGroups.flatMap((g) => g.items.map((i) => i.jp)),
-  ...d.compare.flatMap((c) => [c.bad.jp, c.good.jp]),
-  ...d.apply.map((a) => a.jp),
-];
-// 글자 하나씩이 아니라 단어 단위로 보여줍니다.
-// 개수가 줄고, 무엇을 쓰게 되는지 바로 보여요.
-const kanjiWords = d.kanjiPractice.map((w) => w.w).join(' · ');
 
+/**
+ * 「더 파보기」에는 전부 그대로 둡니다.
+ * 위에서 3개를 골라 올렸다고 해서 아래에서 빼지 않아요 —
+ * 여기는 나중에 찾아보는 사전이라, 없으면 오히려 당황하게 됩니다.
+ */
+const allCompare = d.compare;
+const allApply = d.apply;
+
+const wordCount = d.wordGroups.reduce((n, g) => n + g.items.length, 0);
+
+// 대화에서 밑줄 칠 조각. 「딱 3개」의 표제에서 뽑습니다.
+const specs = d.keyPoints.map((k) => toChunks(k.jp)).filter((c) => c.length > 0);
+
+// 접는 버튼 한 줄에 들어갈 요약: "단어 10 · 비교 4 · 한자 5 · 연습 퀴즈"
+/**
+ * 「더 파보기」 안의 목차.
+ * 열면 맨 위에 칩이 뜨고, 누르면 그 섹션으로 내려갑니다.
+ * 한자 쓰기에서 돌아올 때도 이 앵커(#later-kanji)를 씁니다.
+ */
+const parts = [
+  wordCount > 0 ? { id: 'later-words', label: `단어와 문법 ${wordCount}` } : null,
+  allCompare.length > 0 ? { id: 'later-compare', label: `헷갈리는 것 ${allCompare.length}` } : null,
+  allApply.length > 0 ? { id: 'later-apply', label: `다른 상황 ${allApply.length}` } : null,
+  hasKanji ? { id: 'later-kanji', label: `한자 쓰기 ${d.kanjiPractice.length}` } : null,
+].filter(Boolean) as { id: string; label: string }[];
+
+const summaryParts = [
+  wordCount > 0 ? `단어 ${wordCount}` : null,
+  allCompare.length > 0 ? `비교 ${allCompare.length}` : null,
+  allApply.length > 0 ? `응용 ${allApply.length}` : null,
+  hasKanji ? `한자 ${d.kanjiPractice.length}` : null,
+].filter(Boolean).join(' · ');
+
+const fmtDate = new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric' });
+const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${fmtDate.format(d.date)}`;
 ---
 <Base
   title={`${plainTitle} — ${SITE.name}`}
   description={d.description}
-  ogTitle={`${SITE.brand} — ${d.subtitle}`}
+  ogTitle={`${SITE.brand ?? SITE.name} — ${d.subtitle}`}
   ogImage={`/og/${ep.id}.png`}
+  nav="episode"
 >
   <div class="wrap reading" data-pagefind-body>
     <meta data-pagefind-meta={`no:${d.no}`} />
 
-    <Hero emoji={d.emoji} title={d.title} subtitle={d.subtitle} />
+    <Hero emoji={d.emoji} title={d.title} subtitle={d.subtitle} meta={heroMeta} />
 
     <EpisodeNav prev={prev} next={next} id="navTop" />
 
-    {d.recap && (
-      <PrevCard
-        text={d.recap}
-        prev={prev ? { slug: prev.id, no: prev.data.no, subtitle: prev.data.subtitle } : null}
-      />
-    )}
-    
     <EpisodeFooter keyPoints={d.keyPoints} />
 
     {d.scene.length > 0 && (
       <>
         <SectionTitle badge="SCENE" title="오늘의 대화" />
-        <Scene lines={d.scene} />
+        <Scene lines={d.scene} specs={specs} />
       </>
     )}
 
-    {d.wordGroups.length > 0 && (
+    {d.keyPoints.length > 0 && (
       <>
-        <SectionTitle badge="WORD" title="새 단어 & 문법" />
-        {d.wordGroups.map((g, i) => (
-          <WordGroup label={g.label} items={g.items} term={i === 0} />
-        ))}
+        <SectionTitle badge="TODAY" title="이번 편에서 딱 3개" />
+        <SectionLead text="✨ 여기 나온 표현은 사흘 뒤에 다시 만나게 돼요. 자신 없는 표현은 내일 바로 만나요." />
+        <KeyPoints points={d.keyPoints} scene={d.scene} />
       </>
     )}
 
-    {d.compare.length > 0 && (
-      <>
-        <SectionTitle badge="CHECK" title="❌ vs ✅ 비교" />
-        {d.compare.map((c, i) => (
-          <Compare
-            title={`${String(i + 1).padStart(2, '0')}. ${c.title}`}
-            bad={c.bad}
-            good={c.good}
-            tip={c.tip}
-          />
-        ))}
-      </>
-    )}
+    <StampBoard
+      season={d.season}
+      markNo={d.no}
+      exprIds={d.keyPoints.map((k) => k.id)}
+      note="여기까지 읽으면 오늘의 표현 3개가 사흘 뒤 다시만나기 약속에 등록됩니다."
+    />
 
-    {d.apply.length > 0 && (
-      <>
-        <SectionTitle badge="APPLY" title="응용 문장" />
-        <Apply items={d.apply} />
-      </>
-    )}
+    <TodayEnd />
 
-    {d.quiz.length > 0 && (
-      <>
-        <SectionTitle badge="QUIZ" title="복습 퀴즈" />
-        <Quiz items={d.quiz} />
-      </>
-    )}
+    <div class="later-list">
+      <LaterBox summary={summaryParts}>
+        {d.wordGroups.length > 0 && (
+          <LaterPart
+            id="later-words"
+            title="단어와 문법 전부"
+            note="✨ 오늘 안 외워도 괜찮아요. 필요할 때 여기서 찾으면 돼요."
+          >
+            <nav class="later-toc">
+              {parts.map((p) => <a class="toc-chip" href={`#${p.id}`}>{p.label}</a>)}
+            </nav>
+            {d.wordGroups.map((g, i) => (
+              <WordGroup label={g.label} items={g.items} term={i === 0} />
+            ))}
+          </LaterPart>
+        )}
 
-    {SITE.subscribeOnEpisodes && <Subscribe />}
+        {allCompare.length > 0 && (
+          <LaterPart id="later-compare" title="😵‍💫 헷갈리는 것들">
+            {allCompare.map((c, i) => (
+              <Compare
+                title={`${String(i + 1).padStart(2, '0')}. ${c.title}`}
+                bad={c.bad}
+                good={c.good}
+                tip={c.tip}
+              />
+            ))}
+          </LaterPart>
+        )}
 
-    {hasKanji && (
-      <a class="write-link" href={url(`/ep/${ep.id}/write/`)}>
-        <span>✍️ 오늘의 한자 써보기 —</span>
-        <span class="jp" lang="ja">{`${kanjiWords}`}</span>
-      </a>
-    )}
+        {allApply.length > 0 && (
+          <LaterPart id="later-apply" title="📝 다른 상황에서도">
+            <Apply items={allApply} />
+          </LaterPart>
+        )}
+
+        {hasKanji && (
+          <LaterPart id="later-kanji" title="✍️ 한자 써보기" note="✨ 손으로 한 번 써보면 눈으로 볼 때와 다르게 남아요.">
+            <a class="write-link" href={url(`/ep/${ep.id}/write/`)}>
+              <span class="jp" lang="ja">{d.kanjiPractice.map((w) => w.w).join(' · ')}</span>
+            </a>
+          </LaterPart>
+        )}
+
+      </LaterBox>
+    </div>
 
     {d.nextPreview && (
-      <NextCard
-        text={d.nextPreview}
-        next={next ? { slug: next.id, no: next.data.no } : null}
-      />
+      <NextCard text={d.nextPreview} next={next ? { slug: next.id, no: next.data.no } : null} />
     )}
 
-    
-
     <EpisodeNav prev={prev} next={next} sticky id="navBottom" />
-    <script is:inline>
-      (function () {
-        var top = document.getElementById('navTop');
-        var bottom = document.getElementById('navBottom');
-        if (!top || !bottom) return;
 
-        if (!('IntersectionObserver' in window)) {
-          bottom.classList.add('show');
-          return;
-        }
-        new IntersectionObserver(function (entries) {
-          bottom.classList.toggle('show', !entries[0].isIntersecting);
-        }, { rootMargin: '-60px 0px 0px 0px' }).observe(top);
-      })();
-    </script>
+    {/* 바로잡은 기록 */}
+    <CorrectionNote corrections={d.corrections} />
+
+    {/* 구독 CTA */}
+    {SITE.subscribeOnEpisodes && (
+      <SubscribeCta title="매주 목요일, 이런 이야기를 하나씩" />
+    )}
   </div>
+
+
+  <script is:inline>
+    /* ---------- 도장 · 복습 큐 등록 ----------
+       구분선("오늘 몫은 여기까지")에 도달하면 한 번만 실행됩니다.
+       접힌 영역을 열지 않아도, 끝까지 스크롤하지 않아도 여기까지만 오면 됩니다. */
+    (function () {
+      var board = document.querySelector('.stampboard');
+      var end = document.getElementById('todayEnd');
+      if (!board || !end || !window.Kkmd) return;
+
+      var season = Number(board.dataset.season);
+      var markNo = Number(board.dataset.mark);
+      var exprs = (board.dataset.exprs || '').split(',').filter(Boolean);
+
+      /** 저장된 기록대로 도장판을 칠합니다. justNo 칸은 찍히는 모션을 붙여요. */
+      function paint(justNo) {
+        var s = Kkmd.getStamps(season);
+        board.querySelectorAll('.stamp-cell[data-no]').forEach(function (cell) {
+          var no = Number(cell.dataset.no);
+          var on = s.episodes.indexOf(no) >= 0;
+          cell.classList.toggle('on', on);
+          if (on && no === justNo) cell.classList.add('just');
+        });
+        var fin = board.querySelector('.stamp-cell[data-final]');
+        if (fin) fin.classList.toggle('on', !!s.completed);
+
+        var prog = board.querySelector('[data-progress]');
+        if (prog) {
+          prog.textContent = (s.episodes.length + (s.completed ? 1 : 0)) + ' / 7';
+        }
+      }
+
+      paint(null);
+
+      var done = false;
+      function arrive() {
+        if (done) return;
+        done = true;
+
+        // 아직 없는 표현만 등록합니다. 「자신 없어요」로 내일 잡힌 것은 그대로 둡니다.
+        var added = 0;
+        exprs.forEach(function (id) { if (Kkmd.register(id, 3)) added++; });
+
+        var fresh = Kkmd.stampEpisode(season, markNo);
+        paint(fresh ? markNo : null);
+
+        if (fresh) {
+          var ui = Kkmd.getUi();
+          Kkmd.setUi({ episodesRead: (ui.episodesRead || 0) + 1 });
+        }
+
+        var said = board.querySelector('.stamp-said');
+        if (said) {
+          said.textContent = fresh
+            ? (added > 0
+                ? '도장을 찍었어요 · 표현 ' + added + '개가 사흘 뒤 약속에 등록됐어요'
+                : '도장을 찍었어요')
+            : '👀 이 회차는 이미 읽으셨네요';
+          said.hidden = false;
+        }
+      }
+
+      if (!('IntersectionObserver' in window)) { arrive(); return; }
+      var io = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { arrive(); io.disconnect(); }
+      }, { rootMargin: '0px 0px -10% 0px' });
+      io.observe(end);
+    })();
+
+    /* ---------- 자신 없어요 ---------- */
+    (function () {
+      if (!window.Kkmd) return;
+      document.querySelectorAll('[data-unsure]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (btn.dataset.done) return;
+          Kkmd.accelerate(btn.dataset.unsure);
+          btn.dataset.done = '1';
+          btn.textContent = '내일 다시 만나요 🫡';
+        });
+      });
+    })();
+
+    /* 위쪽 이동 바가 보이는 동안에는 아래 바를 숨깁니다. */
+    (function () {
+      var top = document.getElementById('navTop');
+      var bottom = document.getElementById('navBottom');
+      if (!top || !bottom) return;
+
+      if (!('IntersectionObserver' in window)) {
+        bottom.classList.add('show');
+        return;
+      }
+      new IntersectionObserver(function (entries) {
+        bottom.classList.toggle('show', !entries[0].isIntersecting);
+      }, { rootMargin: '-60px 0px 0px 0px' }).observe(top);
+    })();
+  </script>
 </Base>

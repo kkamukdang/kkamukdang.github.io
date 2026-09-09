@@ -1,0 +1,43 @@
+/* ===========================================================
+   구독 유도 (CTA)
+   -----------------------------------------------------------
+   SubscribeCta.astro 가 직접 불러옵니다.
+   홈과 에피소드 하단 어디에 놓아도 스타일이 따라와요.
+   (list.css 에 두면 그 파일을 안 쓰는 에피소드 페이지에서 깨집니다 —
+    도장판에서 겪었던 것과 같은 문제예요.)
+   =========================================================== */
+
+.cta{ margin:8px 0 12px; }
+.cta-full{
+  padding:30px 22px 22px; text-align:center;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius); box-shadow:var(--shadow);
+}
+.cta-title{
+  margin:0 0 10px; font-size:var(--fs-xl); font-weight:800; letter-spacing:-.02em;
+}
+.cta-lead{ margin:0 0 20px; font-size:var(--fs-base); line-height:1.75; color:var(--muted); }
+.cta-btn{
+  display:block; padding:15px; text-decoration:none;
+  font-size:var(--fs-base); font-weight:700;
+  color:var(--on-hot); background:var(--hot); border-radius:14px;
+}
+.cta-meta{ margin:11px 0 0; font-size:var(--fs-sm); color:var(--muted-2); }
+.cta-close{
+  margin:16px 0 0; padding-top:14px;
+  font-size:var(--fs-xs); color:var(--muted-2);
+  border-top:1px solid var(--line);
+}
+.cta-close button{
+  margin-left:4px; padding:0; cursor:pointer;
+  font-family:var(--font-kr); font-size:var(--fs-xs); color:var(--muted);
+  background:none; border:none; text-decoration:underline;
+}
+.cta-mini{
+  display:block; padding:14px; text-align:center; text-decoration:none;
+  font-size:var(--fs-sm); font-weight:600; color:var(--muted);
+  background:var(--card); border:1px solid var(--line); border-radius:14px;
+}
+.cta-mini:hover{
+  border-color: var(--line-2);
+}

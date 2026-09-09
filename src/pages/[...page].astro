@@ -8,11 +8,12 @@
 import type { GetStaticPaths } from 'astro';
 import { getListed } from '../lib/episodes';
 import Base from '../layouts/Base.astro';
-import Subscribe from '../components/Subscribe.astro';
-import { toPlain } from '../lib/furigana';
+import SubscribeCta from '../components/SubscribeCta.astro';
+import AgainBlock from '../components/AgainBlock.astro';
+import { toPlain, toKanji } from '../lib/furigana';
+import { SITE, url } from '../lib/site';
 import { SEASONAL, BONUS } from '../lib/taglines';
 import { toRuby } from '../lib/furigana';
-import { SITE, url } from '../lib/site';
 import '../styles/list.css';
 
 const PER_PAGE = 12;
@@ -26,20 +27,39 @@ export const getStaticPaths = (async ({ paginate }) => {
 
 const { page } = Astro.props;
 
-// 태그 목록은 현재 페이지가 아니라 전체 회차에서 뽑습니다.
+/**
+ * 장면 태그는 다섯 개로 고정입니다. 회차가 늘어도 칩이 늘지 않아요.
+ * 소재 태그(음식·야구)는 칩에 띄우지 않고 검색으로만 찾습니다.
+ */
+const SCENE_TAGS = ['부탁하기', '실수 수습', '상황 설명', '리액션', '거절·미루기'];
 const all = await getListed();
-const tagCount = new Map<string, number>();
-for (const ep of all) {
-  for (const t of ep.data.tags) tagCount.set(t, (tagCount.get(t) ?? 0) + 1);
+const used = new Set(all.map((ep) => ep.data.tags[0]).filter(Boolean));
+const tags = SCENE_TAGS.filter((t) => used.has(t));
+
+/**
+ * 시즌별로 묶습니다. 현재 시즌은 펼치고, 지난 시즌은 접힌 헤더 한 줄로.
+ * 시즌이 하나뿐이면 헤더 없이 그냥 목록만 나옵니다.
+ * (추억 보관함과 같은 그룹핑 방식이에요)
+ */
+const bySeason = new Map<number, typeof page.data>();
+for (const ep of page.data) {
+  const list = bySeason.get(ep.data.season) ?? [];
+  list.push(ep);
+  bySeason.set(ep.data.season, list);
 }
-// 많이 쓰인 태그가 앞에 오도록 정렬 — 새 태그가 늘어도 위쪽은 안정적입니다.
-const tags = [...tagCount.entries()]
-  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ko'))
-  .map(([t]) => t);
+const seasons = [...bySeason.entries()].sort((a, b) => b[0] - a[0]);
+const currentSeason = seasons.length > 0 ? seasons[0][0] : 1;
+
+/** 시즌 이름. 나중에 시즌마다 부제를 붙이고 싶으면 여기만 고치면 됩니다. */
+const SEASON_NAME: Record<number, string> = { 1: '친구랑, 반말로' };
 
 const fmt = new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
 const isFirst = page.currentPage === 1;
-// 계절, 시간별 인삿말 추가
+
+/**
+ * 후리가나를 미리 ruby HTML 로 바꿔서 넘깁니다.
+ * 브라우저에서는 계절·시간만 보고 고르면 되도록요.
+ */
 const rubyize = (lines: { jp: string; ko: string }[]) =>
   lines.map((l) => ({ jp: toRuby(l.jp), ko: l.ko }));
 
@@ -59,18 +79,19 @@ const TAGLINES = {
 >
   <div class="wrap">
     {isFirst && (
-      <div class="home-hero" data-pagefind-ignore>
+      <div class="home-hero">
+        <div class="hero-eyebrow">까먹당 · 일본어</div>
         <h1 id="tagline">{SITE.tagline}</h1>
         <p id="taglineKo">{SITE.description}</p>
       </div>
     )}
 
-    <div class="search-box" data-pagefind-ignore>
+    <div class="search-box">
       <div class="search-field">
         <input
           type="search"
           id="q"
-          placeholder="단어·문법·상황으로 찾기 (예: 我慢, てもいい, 배달)"
+          placeholder="我慢, てもいい, 배달, 부탁하기"
           autocomplete="off"
           aria-label="회차 검색"
         />
@@ -79,8 +100,22 @@ const TAGLINES = {
       <div id="results" class="results"></div>
     </div>
 
+    {isFirst && (
+      <>
+        <SubscribeCta
+          title="배우고, 까먹고, 다시 만나는 일본어"
+          lead="매주 딱 3개만 배우세요.<br />까먹으면 다시 찾아드릴게요."
+          closable
+        />
+        <AgainBlock />
+      </>
+    )}
+
+    <h2 class="home-sec" id="episodes">에피소드</h2>
+
+
     {tags.length > 0 && (
-      <div class="tag-row" id="tagRow" data-pagefind-ignore>
+      <div class="tag-row" id="tagRow">
         <button class="tag-chip on" data-tag="">전체</button>
         {tags.map((t, i) => (
           <button class={i < TAGS_SHOWN ? 'tag-chip' : 'tag-chip extra'} data-tag={t}>{t}</button>
@@ -94,23 +129,45 @@ const TAGLINES = {
     )}
 
     <div class="ep-list" id="epList">
-      {page.data.map((ep) => (
+      {seasons.map(([season, list]) => {
+        const cards = list.map((ep) => (
         <a class="ep-card" href={url(`/ep/${ep.id}/`)} data-tags={ep.data.tags.join(',')}>
           <div class="ep-body">
             <div class="ep-meta">
               <span class="ep-no">{`#${String(ep.data.no).padStart(3, '0')}`}</span>
               <span class="ep-date">{fmt.format(ep.data.date)}</span>
+              {ep.data.tags[0] && <span class="ep-tag">{ep.data.tags[0]}</span>}
             </div>
-
             <div class="ep-title" set:html={toPlain(ep.data.title)} />
             <div class="ep-sub">{ep.data.subtitle}</div>
-            {ep.data.tags.length > 0 && (
-              <div class="ep-tags">{ep.data.tags.map((t) => <span>{`#${t}`}</span>)}</div>
+            {/* 핵심 표현 3개 — "그 표현 어디서 봤더라" 로 찾아오는 길 */}
+            {ep.data.keyPoints.length > 0 && (
+              <div class="ep-keys jp">
+                {ep.data.keyPoints.map((k) => toKanji(k.jp)).join(' · ')}
+              </div>
             )}
           </div>
           <span class="ep-emoji" aria-hidden="true">{ep.data.emoji}</span>
         </a>
-      ))}
+      ));
+
+        // 시즌이 하나뿐이면 헤더 없이 목록만
+        if (seasons.length === 1) return cards;
+
+        // 현재 시즌은 펼치고, 지난 시즌은 접습니다
+        return (
+          <details class="season" open={season === currentSeason}>
+            <summary>
+              <span class="season-title">
+                {`시즌 ${season}`}
+                {SEASON_NAME[season] && ` · ${SEASON_NAME[season]}`}
+              </span>
+              <span class="season-count">{`${list.length}편`}</span>
+            </summary>
+            <div class="season-body">{cards}</div>
+          </details>
+        );
+      })}
     </div>
 
     {page.data.length === 0 && (
@@ -118,7 +175,7 @@ const TAGLINES = {
     )}
 
     {page.lastPage > 1 && (
-      <div class="pager" id="pager" data-pagefind-ignore>
+      <div class="pager" id="pager">
         {page.url.prev
           ? <a class="pill" href={page.url.prev}>← 최신</a>
           : <span class="pill ghost">← 최신</span>}
@@ -129,36 +186,52 @@ const TAGLINES = {
       </div>
     )}
 
-    {isFirst && SITE.subscribeOnHome && <Subscribe />}
   </div>
 
   <script is:inline define:vars={{ INDEX: url('/search.json'), TAGLINES }}>
     window.__INDEX__ = INDEX;
 
-    /* ---------- 시간대·계절 인사 ---------- */
+    /* ---------- 계절 × 시간대 인사 ----------
+       정적 사이트라 빌드 시각이 아니라 방문 시각을 기준으로 고릅니다.
+       문구를 늘리거나 고치려면 src/lib/taglines.ts 만 손보면 돼요.        */
     (function () {
       var el = document.getElementById('tagline');
       var ko = document.getElementById('taglineKo');
       if (!el) return;
 
-      var now = new Date(), h = now.getHours();
-      var m = now.getMonth() + 1, d = now.getDate(), w = now.getDay();
+      var now = new Date();
+      var h = now.getHours();
+      var m = now.getMonth() + 1;   // 1~12
+      var d = now.getDate();
+      var w = now.getDay();         // 0=일 … 5=금
+
+    /* 체감 계절. 달력보다 늦게 시작해서 늦게 끝납니다.
+      봄   3/15 ~ 5/25
+      여름 5/26 ~ 9/20    ← 요즘은 5월 하순부터 덥습니다
+      가을 9/21 ~ 11/15
+      겨울 나머지 전부 (11/16 ~ 3/14, 연말·연초에 걸쳐 있어 나머지로 둡니다) */
+     
+      var md = m * 100 + d;
+      var special =
+        (m === 1 && d === 1)       ? 'newyear' :
+        (md >= 401 && md <= 415)   ? 'sakura' :
+        (md >= 620 && md <= 720)   ? 'jangma' :
+        (md >= 801 && md <= 820)   ? 'heat' :
+        (md >= 1020 && md <= 1110) ? 'danpung' :
+        (md >= 1201 && md <= 1220) ? 'firstSnow' :
+        (h >= 2 && h < 5)          ? 'lateNight' :
+        (w === 5 && h >= 17)       ? 'fridayNight' :
+        (w === 1 && h < 12)        ? 'monday' : null;
 
       var season =
-        m >= 3 && m <= 5  ? 'spring' :
-        m >= 6 && m <= 8  ? 'summer' :
-        m >= 9 && m <= 11 ? 'autumn' : 'winter';
+        (md >= 315 && md <= 525)  ? 'spring' :
+        (md >= 526 && md <= 831)  ? 'summer' :
+        (md >= 901 && md <= 1115) ? 'autumn' : 'winter';
 
       var slot =
-        h >= 5  && h < 11 ? 'morning' :
-        h >= 11 && h < 17 ? 'day' :
+        h >= 5  && h < 12 ? 'morning' :
+        h >= 12 && h < 17 ? 'day' :
         h >= 17 && h < 21 ? 'evening' : 'night';
-
-      var special =
-        (m === 1 && d === 1) ? 'newyear' :
-        (h >= 2 && h < 5)    ? 'lateNight' :
-        (w === 5 && h >= 17) ? 'fridayNight' :
-        (w === 1 && h < 11) ? 'monday' : null;
 
       var pool = null;
       if (special) {
@@ -168,11 +241,8 @@ const TAGLINES = {
       if (!pool || !pool.length) pool = TAGLINES.seasonal[season][slot];
       if (!pool || !pool.length) return;
 
-      // 날짜를 씨앗 삼아 고릅니다. 같은 날 여러 번 와도 같은 문구,
-      // 날이 바뀌면 다음 문구로 넘어가요.
-      var seed = Math.floor(now.getTime() / 86400000);   // 며칠째인가
-      var line = pool[seed % pool.length];
-
+      // 칸에 여러 개가 있으면 그중 하나를 무작위로.
+      var line = pool[Math.floor(Math.random() * pool.length)];
       el.innerHTML = line.jp;
       el.classList.add('tagline-jp');
       if (ko) ko.textContent = line.ko;
@@ -207,8 +277,9 @@ const TAGLINES = {
     });
 
     /* ---------- 검색 ----------
-    빌드할 때 만들어둔 /search.json 을 받아 브라우저에서 부분 일치로 찾습니다.
-    한자·가나·한국어 뜻 어느 쪽으로 쳐도 걸리고, 결과에는 언제나 한자 원문을 보여줍니다. */
+       빌드할 때 만들어둔 /search.json 을 받아 브라우저에서 부분 일치로 찾습니다.
+       한자·가나·한국어 뜻 어느 쪽으로 쳐도 걸리고,
+       결과에는 언제나 한자 원문을 보여줍니다.                              */
     (function () {
       var input = document.getElementById('q');
       var results = document.getElementById('results');
@@ -218,18 +289,24 @@ const TAGLINES = {
       var pager = document.getElementById('pager');
       var docs = null;
       var timer = null;
-      var emptyTimer = null;
 
       function norm(s) {
         return s.replace(/[\s、。，．！？!?「」『』()（）·・…~〜\-]/g, '').toLowerCase();
       }
+
       function esc(s) {
         return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       }
 
       /* 검색어와 겹치는 부분에 표시를 답니다.
-        대조는 구두점을 걷어낸 표준형으로 하고 화면에는 원문을 보여줘야 하므로,
-        표준형을 만들 때 각 글자가 원문 몇 번째였는지 기록해두고 되돌립니다. */
+         ------------------------------------------------------------
+         덩어리 목록(p)을 받아 두 갈래로 대조합니다.
+           · 보이는 글자   配達じゃなくて…   → 한자로 친 검색어가 걸림
+           · 읽는 법       はいたつじゃなくて… → 가나로 친 검색어가 걸림
+
+         어느 쪽에서 걸리든 "그 덩어리" 를 통째로 칠하므로,
+         はいたつ 로 찾아도 화면에는 配達 만 표시됩니다.
+         가나를 따로 띄울 필요가 없어요.                                  */
       var STRIP = /[\s、。，．！？!?「」『』()（）·・…~〜\-]/;
 
       /** 덩어리 목록 → 표준형 문자열 + 각 글자가 몇 번째 덩어리였는지 */
@@ -250,7 +327,7 @@ const TAGLINES = {
          한 글자 검색에서 읽기까지 뒤지면 노이즈가 큽니다.
          예) も 로 찾으면 注文(ちゅうもん), 思う(おもう) 처럼
              읽기 안쪽에만 들어 있는 한자까지 전부 걸려요.
-         그래서 두 글자 이상일 때만 읽기를 봅니다. */
+         그래서 두 글자 이상일 때만 읽기를 봅니다.                          */
       function useReadings(q) { return q.length >= 2; }
 
       /** 검색어가 걸린 덩어리 번호를 모읍니다 */
@@ -301,22 +378,13 @@ const TAGLINES = {
       }
 
       function showList(on) {
+        var sec = document.getElementById('episodes');
+        if (sec) sec.style.display = on ? '' : 'none'; 
         list.style.display = on ? '' : 'none';
         if (tagRow) tagRow.style.display = on ? '' : 'none';
         if (pager) pager.style.display = on ? '' : 'none';
         results.style.display = on ? 'none' : 'block';
       }
-
-      var composing = false;
-
-      // 한글·일본어는 글자를 조합해가며 입력합니다 (ㅂ → 배 → 배달).
-      // 조합 중에 검색하면 중간 단계마다 "결과 없어요" 가 깜빡여요.
-      input.addEventListener('compositionstart', function () { composing = true; });
-      input.addEventListener('compositionend', function () {
-        composing = false;
-        clearTimeout(timer);
-        timer = setTimeout(run, 140);
-      });
 
       input.addEventListener('input', function () {
         clearTimeout(timer);
@@ -333,9 +401,6 @@ const TAGLINES = {
         var q = norm(raw);
         if (!q) { showList(true); return; }
 
-        // ㅂ, ㅏ 같은 낱자만 남았으면 아직 찾을 때가 아닙니다.
-        if (/^[\u3131-\u318E]+$/.test(q)) { showList(true); status.textContent = ''; return; }
-
         showList(false);
 
         var found = [];
@@ -345,7 +410,7 @@ const TAGLINES = {
         function matches(parts, extra, wide) {
           if (wide) return wide.indexOf(q) >= 0;
           return flatten(parts, false).flat.indexOf(q) >= 0 ||
-                (extra ? norm(extra).indexOf(q) >= 0 : false);
+                 (extra ? norm(extra).indexOf(q) >= 0 : false);
         }
 
         data.forEach(function (doc) {
@@ -354,28 +419,22 @@ const TAGLINES = {
           });
           var titleHit = matches(doc.p, doc.subtitle + doc.tags.join(''), deep ? doc.q : null);
           if (!hits.length && !titleHit) return;
+
+          // 짧은 항목이 위로 오게 — 단어가 문장보다 먼저 보이는 편이 읽기 좋아요.
           hits.sort(function (a, b) { return a.p.length - b.p.length; });
           found.push({ doc: doc, hits: hits, score: (titleHit ? 100 : 0) + hits.length });
         });
 
         found.sort(function (a, b) { return b.score - a.score || b.doc.no - a.doc.no; });
 
-        // 타이핑 중에는 "결과 없음" 을 띄우지 않습니다.
-        // 한글·일본어는 글자를 조합하며 입력해서, 중간 단계마다 메시지가 깜빡이거든요.
-        clearTimeout(emptyTimer);
-        if (found.length) {
-          status.textContent = found.length + '개 에피소드에서 찾았어요';
-        } else {
-          status.textContent = '';
-          emptyTimer = setTimeout(function () {
-            status.textContent = '결과가 없어요. 다른 말로 찾아보세요.';
-          }, 600);
-        }
+        status.textContent = found.length
+          ? found.length + '개 회차에서 찾았어요'
+          : '결과가 없어요. 다른 말로 찾아보세요.';
 
         results.innerHTML = found.slice(0, 12).map(function (f) {
           var rows = f.hits.slice(0, 4).map(function (e) {
             return '<div class="hit" data-kind="' + esc(e.kind) + '">' +
-                  '<span class="hit-kind">' + esc(e.kind) + '</span>' +
+                   '<span class="hit-kind">' + esc(e.kind) + '</span>' +
                    '<div class="hit-body">' +
                       '<span class="hit-jp">' + markParts(e.p, q) + '</span>' +
                       '<span class="hit-mean">' + markText(e.mean, q) + '</span>' +
@@ -386,10 +445,10 @@ const TAGLINES = {
             ? '<div class="hit-more">외 ' + (f.hits.length - 4) + '개</div>' : '';
 
           return '<a class="result" href="' + f.doc.url + '">' +
-                  '<div class="result-meta">#' +
-                    String(f.doc.no).padStart(3, '0') + ' · ' + markText(f.doc.subtitle, q) + '</div>' +
-                  '<div class="result-title">' + markParts(f.doc.p, q) + '</div>' +
-                  rows + more + '</a>';
+                 '<div class="result-meta">#' +
+                   String(f.doc.no).padStart(3, '0') + ' · ' + markText(f.doc.subtitle, q) + '</div>' +
+                 '<div class="result-title">' + markParts(f.doc.p, q) + '</div>' +
+                 rows + more + '</a>';
         }).join('');
       }
     })();
