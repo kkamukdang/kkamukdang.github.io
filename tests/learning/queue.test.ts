@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createEmptyState } from '../../src/lib/learning/state';
-import { createExtraBatch, getOrCreateReviewFlow, selectDueExpressions, type QueueRegistryIndex } from '../../src/lib/learning/queue';
+import { createExtraBatch, getOrCreateReviewFlow, markReviewFlowAnswered, selectDueExpressions, type QueueRegistryIndex } from '../../src/lib/learning/queue';
 import type { ExpressionId, ExpressionStateV2 } from '../../src/lib/learning/types';
 
 const NOW = '2026-09-10T03:00:00.000Z';
@@ -13,12 +13,23 @@ describe('review queue', () => {
     const state = createEmptyState(NOW); ids.forEach((id, index) => { state.expressions[id] = expr(index === 0 ? '2026-09-01' : '2026-09-02', index === 1 ? 'unfamiliar' : null); });
     expect(selectDueExpressions(state, registry, '2026-09-10', new Set(), 3)).toEqual([ids[0], ids[1], ids[2]]);
   });
-  it('추가 batch는 기존 ID를 제외하고 같은 날 flow를 복원한다', () => {
+  it('기본 batch 완료 후에만 기존 ID를 제외한 추가 batch를 만든다', () => {
     const state = createEmptyState(NOW); ids.forEach((id) => { state.expressions[id] = expr('2026-09-01'); });
     const daily = getOrCreateReviewFlow(state, registry, '2026-09-10', NOW);
     const refreshed = getOrCreateReviewFlow(daily.state, registry, '2026-09-10', NOW);
     expect(refreshed.changed).toBe(false); expect(refreshed.flow.batches[0].expressionIds).toEqual(['s01e01-baiiyo', 's01e01-gaman', 's01e01-temoii']);
-    const extra = createExtraBatch(daily.state, registry, '2026-09-10', NOW);
+    expect(createExtraBatch(daily.state, registry, '2026-09-10', NOW).flow.batches).toHaveLength(1);
+    const completed = daily.flow.batches[0].expressionIds.reduce(
+      (current, expressionId) => markReviewFlowAnswered(current, expressionId, NOW),
+      daily.state,
+    );
+    expect(completed.reviewFlow?.baseCompletedAt).toBe(NOW);
+    const extra = createExtraBatch(completed, registry, '2026-09-10', NOW);
     expect(extra.flow.batches[1].expressionIds).toEqual(['s01e02-moraeba', 's01e02-natteru']);
+    const extraCompleted = extra.flow.batches[1].expressionIds.reduce(
+      (current, expressionId) => markReviewFlowAnswered(current, expressionId, '2026-09-10T04:00:00.000Z'),
+      extra.state,
+    );
+    expect(extraCompleted.reviewFlow?.baseCompletedAt).toBe(NOW);
   });
 });

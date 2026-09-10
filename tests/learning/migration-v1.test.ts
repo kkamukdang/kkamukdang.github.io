@@ -20,7 +20,8 @@ describe('v1 → v2 migration', () => {
     expect(result.value.seasons.s01.completed).toBe(true);
     expect(result.value.migration?.legacyCounters).toEqual({ reunions: 4, graduated: 1 });
     expect(storage.getItem(STORAGE_KEYS.backup)).not.toBeNull();
-    expect(storage.getItem('kkmd:expr:s01e01-temoii')).toBeNull();
+    expect(storage.getItem(STORAGE_KEYS.migration)).not.toBeNull();
+    expect(storage.getItem('kkmd:expr:s01e01-temoii')).not.toBeNull();
   });
   it('retired ID를 그대로 보존하고 replacement로 이전하지 않는다', () => {
     const storage = new MemoryStorage();
@@ -41,5 +42,17 @@ describe('v1 → v2 migration', () => {
     const before = storage.length; const writesBefore = storage.writeCount;
     const result = new LocalStorageAdapter(storage, () => NOW).migrate({ persist: false });
     expect(result.ok && result.persisted).toBe(false); expect(storage.length).toBe(before); expect(storage.writeCount).toBe(writesBefore);
+  });
+  it('동일 fingerprint의 완료 marker가 있으면 v2 유실 후 중복 migration하지 않는다', () => {
+    const storage = new MemoryStorage();
+    storage.setItem('kkmd:counter', JSON.stringify({ reunions: 1 }));
+    const adapter = new LocalStorageAdapter(storage, () => NOW);
+    expect(adapter.migrate().ok).toBe(true);
+    storage.removeItem(STORAGE_KEYS.state);
+    const writesBefore = storage.writeCount;
+    const retried = adapter.migrate();
+    expect(retried).toMatchObject({ ok: false, code: 'invalid-v2' });
+    expect(storage.writeCount).toBe(writesBefore + 1); // availability probe만 기록
+    expect(storage.getItem('kkmd:counter')).not.toBeNull();
   });
 });

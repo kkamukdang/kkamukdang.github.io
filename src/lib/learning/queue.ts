@@ -48,6 +48,10 @@ export function getOrCreateReviewFlow(state: LearningStateV2, registry: QueueReg
 export function createExtraBatch(state: LearningStateV2, registry: QueueRegistryIndex, today: DateOnly, now: string): { state: LearningStateV2; flow: ReviewFlowState; changed: boolean } {
   const base = getOrCreateReviewFlow(state, registry, today, now);
   const next = cloneState(base.state);
+  const active = next.reviewFlow?.batches.find((batch) => batch.id === next.reviewFlow?.activeBatchId);
+  if (active && active.answeredIds.length < active.expressionIds.length) {
+    return { state: base.state, flow: base.flow, changed: base.changed };
+  }
   const excluded = new Set(next.reviewFlow!.batches.flatMap((batch) => batch.expressionIds));
   const ids = selectDueExpressions(next, registry, today, excluded, 3);
   if (!ids.length) return { state: base.state, flow: base.flow, changed: base.changed };
@@ -60,6 +64,6 @@ export function markReviewFlowAnswered(state: LearningStateV2, expressionId: Exp
   const next = cloneState(state);
   const batch = next.reviewFlow?.batches.find((item) => item.id === next.reviewFlow?.activeBatchId);
   if (batch?.expressionIds.includes(expressionId) && !batch.answeredIds.includes(expressionId)) batch.answeredIds.push(expressionId);
-  if (batch && batch.answeredIds.length === batch.expressionIds.length) next.reviewFlow!.baseCompletedAt ||= now;
+  if (batch?.kind === 'daily' && batch.answeredIds.length === batch.expressionIds.length) next.reviewFlow!.baseCompletedAt ||= now;
   return next;
 }

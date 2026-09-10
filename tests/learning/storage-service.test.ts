@@ -35,6 +35,30 @@ describe('저장 검증과 idempotency', () => {
     const result = adapter.update((current) => ({ ...current, receipts: { ...current.receipts, evt: { type: 'review_answered', payloadHash: 'right', processedAt: NOW } as EventReceipt } }), { eventId: 'evt', payloadHash: 'right', verify: (state) => Boolean(state.receipts.evt) });
     expect(result).toEqual({ ok: false, code: 'conflict' });
   });
+  it('receipt가 맞아도 mutation 핵심 상태가 다르면 conflict다', () => {
+    const storage = new MemoryStorage(); const adapter = new LocalStorageAdapter(storage, () => new Date(NOW)); adapter.write(createEmptyState(NOW));
+    storage.corruptAfterWrite = (key, value) => {
+      if (key !== STORAGE_KEYS.state) return value;
+      const parsed = JSON.parse(value);
+      if (parsed.receipts['review-core-1']) parsed.expressions[id].nextReviewDate = '2026-09-30';
+      return JSON.stringify(parsed);
+    };
+    const result = new LearningService(adapter, options).rateReview({
+      eventId: 'review-core-1', now: NOW, expressionId: id, rating: 'remembered', source: 'again', registerIfMissing: true,
+    });
+    expect(result).toEqual({ ok: false, code: 'conflict' });
+  });
+  it('again 평가는 동일 mutation에서 active batch 응답과 기본 완료를 기록한다', () => {
+    const storage = new MemoryStorage(); const adapter = new LocalStorageAdapter(storage, () => new Date(NOW));
+    const state = createEmptyState(NOW);
+    state.expressions[id] = { registeredAt: NOW, registeredSource: 'episode', reviewStage: 'R1', rememberStreak: 0, lastRating: null, cueBoost: 0, graduated: false, nextReviewDate: '2026-09-10' };
+    adapter.write(state);
+    const service = new LearningService(adapter, options);
+    expect(service.getOrCreateReviewFlow('2026-09-10', NOW).ok).toBe(true);
+    const result = service.rateReview({ eventId: 'flow-answer-1', now: NOW, expressionId: id, rating: 'remembered', source: 'again' });
+    expect(result.ok && result.state.reviewFlow?.batches[0].answeredIds).toEqual([id]);
+    expect(result.ok && result.state.reviewFlow?.baseCompletedAt).toBe(NOW);
+  });
   it('history soft cap은 일반 review부터 지우고 lifecycle은 보존한다', () => {
     const lifecycle = Array.from({ length: 1001 }, (_, index) => ({ eventId: `life-${index}`, type: 'episode_completed', at: NOW } as LearningEvent));
     expect(applyHistorySoftCap(lifecycle)).toHaveLength(1001);
@@ -47,4 +71,3 @@ describe('저장 검증과 idempotency', () => {
     expect(state.history).toHaveLength(1000); expect(state.receipts.evt.payloadHash).toBe('hash');
   });
 });
-
