@@ -14,13 +14,18 @@
 import type { APIRoute } from 'astro';
 import { getListed } from '../lib/episodes';
 import { toChunks, toRubyCloze, toRuby, toKanji } from '../lib/furigana';
+import { createRegistryIndex, loadExpressionRegistry } from '../lib/content/expression-registry';
+import type { ExpressionId } from '../lib/learning/types';
 
 export const GET: APIRoute = async () => {
   const episodes = await getListed();
+  const registry = createRegistryIndex(await loadExpressionRegistry());
 
   const out = episodes.flatMap((ep) => {
     const d = ep.data;
     return d.keyPoints.map((kp) => {
+      const expressionId = kp.id as ExpressionId;
+      const registryEntry = registry.active[expressionId] ?? registry.retired[expressionId];
       const line = kp.sceneIndex == null ? undefined : d.scene[kp.sceneIndex];
       const cloze = line
         ? toRubyCloze(line.jp, [toChunks(kp.jp)])
@@ -55,6 +60,13 @@ export const GET: APIRoute = async () => {
         season: d.season,
         slug: ep.id,
         subtitle: d.subtitle,
+        registry: registryEntry ? {
+          canonical: registryEntry.canonical,
+          display: registryEntry.display,
+          aliases: registryEntry.aliases,
+          status: registryEntry.status,
+          active: Boolean(registry.active[expressionId]),
+        } : null,
       };
     });
   });

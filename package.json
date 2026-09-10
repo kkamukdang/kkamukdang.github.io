@@ -4,15 +4,20 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/check.mjs && astro build",
+    "build": "npm run check && npm run test && astro build",
     "preview": "astro preview",
-    "check": "node scripts/check.mjs"
+    "check": "node scripts/check.mjs && astro sync && tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "astro": "^5.13.0",
     "astro-og-canvas": "^0.13.0"
   },
   "devDependencies": {
-    "js-yaml": "^4.1.0"
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^24.13.4",
+    "js-yaml": "^4.1.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
   }
 }

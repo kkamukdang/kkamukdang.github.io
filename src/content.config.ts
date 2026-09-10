@@ -10,6 +10,22 @@ import { glob } from 'astro/loaders';
  */
 
 const jp = z.string(); // 후리가나 단축 표기가 허용되는 일본어 문자열
+const memoryCue = z.object({
+  asset: z.string().regex(/^\/characters\/[a-z0-9/_-]+\.(webp|png)$/),
+  alt: z.string().trim().min(10).max(120),
+});
+const stageReviewPrompt = z.object({
+  cue: z.string().trim().min(1).max(120),
+  answer: z.string().trim().min(1).max(120),
+  explanation: z.string().trim().max(160).optional(),
+  mode: z.enum(['cued-recall', 'choice']).default('cued-recall'),
+});
+const reviewPrompt = z.object({
+  R2: stageReviewPrompt.optional(),
+  R3: stageReviewPrompt.optional(),
+}).strict().refine((value) => Boolean(value.R2 || value.R3), {
+  message: 'reviewPrompt에는 R2 또는 R3 중 하나가 필요합니다',
+});
 
 const episodes = defineCollection({
   loader: glob({ pattern: '**/*.yaml', base: './src/data/episodes' }),
@@ -127,10 +143,13 @@ const episodes = defineCollection({
          * 「이번 편에서 딱 3개」 카드가 그 문장을 그대로 다시 보여주고,
          * 대화에서도 해당 부분을 표시합니다.
          */
-        sceneIndex: z.number().optional(),
+        sceneIndex: z.number().int().nonnegative().optional(),
         /** 마땅한 항목이 없으면 생략합니다. 억지로 붙이지 않아요. */
-        compareIndex: z.number().optional(),
-        applyIndex: z.number().optional(),
+        compareIndex: z.number().int().nonnegative().optional(),
+        applyIndex: z.number().int().nonnegative().optional(),
+        quizIndex: z.number().int().nonnegative().optional(),
+        memoryCue: memoryCue.optional(),
+        reviewPrompt: reviewPrompt.optional(),
       })
     ).default([]),
 

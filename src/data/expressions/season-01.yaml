@@ -1,0 +1,30 @@
+schemaVersion: 1
+seasonId: s01
+expressions:
+  - { id: s01e01-temoii, canonical: "〜てもいい?", display: "〜でもいい?", aliases: ["〜でもいい?"], type: pattern, sense: "가볍게 허락을 구함", function: [permission], contexts: [friends, food], difficulty: beginner, source: editorial-audit, status: published, episodes: [{ id: s01e01, role: keyPoint }] }
+  - { id: s01e01-gaman, canonical: "我慢できない", display: "我慢[がまん]できない", aliases: [], type: phrase, sense: "더 참을 수 없는 한계를 말함", function: [inability, limit], contexts: [friends, food], difficulty: beginner, source: editorial-audit, status: published, episodes: [{ id: s01e01, role: keyPoint }] }
+  - { id: s01e01-baiiyo, canonical: "〜ばいいよ", display: "〜ばいいよ", aliases: ["〜ばいい", "始めればいいよ"], type: pattern, sense: "해결책을 가볍게 제안함", function: [advice, reassurance], contexts: [friends, food], difficulty: lower-intermediate, source: editorial-audit, status: published, episodes: [{ id: s01e01, role: keyPoint }] }
+  - { id: s01e02-natteru, canonical: "AじゃなくてBになってる", display: "Aじゃなくて Bになってる", aliases: ["〜になってる"], type: pattern, sense: "의도와 다른 상태를 바로잡음", function: [correction], contexts: [mistake-recovery, food], difficulty: lower-intermediate, source: editorial-audit, status: published, episodes: [{ id: s01e02, role: keyPoint }] }
+  - { id: s01e02-moraeba, canonical: "〜てもらえば?", display: "〜てもらえば?", aliases: ["〜てもらえば"], type: pattern, sense: "부드럽게 제안함", function: [suggestion], contexts: [mistake-recovery], difficulty: lower-intermediate, source: editorial-audit, status: published, episodes: [{ id: s01e02, role: keyPoint }] }
+  - { id: s01e02-tasukaru, canonical: "助かる", display: "助[たす]かる", aliases: [], type: phrase, sense: "도움으로 곤란이 해결된 안도", function: [relief], contexts: [mistake-recovery], difficulty: beginner, source: editorial-audit, status: published, episodes: [{ id: s01e02, role: keyPoint }] }
+  - { id: s01e03-nanikairu, canonical: "何かいる?", display: "何[なに]かいる?", aliases: [], type: phrase, sense: "필요한 것이 있는지 확인함", function: [offer], contexts: [friends, baseball], difficulty: beginner, source: editorial-audit, status: published, episodes: [{ id: s01e03, role: keyPoint }] }
+  - { id: s01e03-tekuru, canonical: "〜てくる", display: "〜てくる", aliases: ["買ってくる", "行ってくる"], type: pattern, sense: "갔다가 돌아오는 이동", function: [movement-return], contexts: [friends, baseball], difficulty: lower-intermediate, source: editorial-audit, status: published, episodes: [{ id: s01e03, role: keyPoint }] }
+  - { id: s01e03-ndayone, canonical: "〜んだよね", display: "〜んだよね", aliases: [], type: pattern, sense: "공유된 인식을 확인함", function: [shared-context], contexts: [friends], difficulty: lower-intermediate, source: editorial-audit, status: published, episodes: [{ id: s01e03, role: keyPoint }] }
+  - { id: s01e04-imanonani, canonical: "今の何?", display: "今[いま]の何[なに]?", aliases: [], type: phrase, sense: "방금 일을 재확인함", function: [clarification], contexts: [reaction], difficulty: beginner, source: editorial-audit, status: published, episodes: [{ id: s01e04, role: keyPoint }] }
+  - { id: s01e04-madamashi, canonical: "〜のほうがまだマシ", display: "〜のほうがまだマシ", aliases: ["まだマシ"], type: pattern, sense: "덜 나쁜 쪽을 비교함", function: [comparison], contexts: [reaction], difficulty: lower-intermediate, source: editorial-audit, status: published, episodes: [{ id: s01e04, role: keyPoint }] }
+  - { id: s01e04-madaikeru, canonical: "まだいける?", display: "まだいける?", aliases: [], type: phrase, sense: "계속 가능한지 확인함", function: [feasibility], contexts: [reaction], difficulty: beginner, source: approved-design, status: approved-pending-yaml, episodes: [{ id: s01e04, role: keyPoint }] }
+  - { id: s01e05-noni, canonical: "〜のに", display: "〜のに", aliases: [], type: grammar, sense: "기대와 다른 결과를 드러냄", function: [contrast], contexts: [drama], difficulty: lower-intermediate, source: editorial-audit, status: published, episodes: [{ id: s01e05, role: keyPoint }] }
+  - { id: s01e05-chatta, canonical: "〜ちゃった", display: "〜ちゃった", aliases: ["〜てしまった"], type: grammar, sense: "실수에 유감을 얹음", function: [regret], contexts: [drama], difficulty: lower-intermediate, source: editorial-audit, status: published, episodes: [{ id: s01e05, role: keyPoint }] }
+  - { id: s01e05-yamete, canonical: "やめて", display: "やめて", aliases: ["やめてよ"], type: phrase, sense: "행동을 멈춰 달라고 요청함", function: [request-stop], contexts: [drama], difficulty: beginner, source: editorial-audit, status: published, episodes: [{ id: s01e05, role: keyPoint }] }
+  - { id: s01e06-ashitakara, canonical: "また明日から", display: "また明日[あした]から", aliases: [], type: chunk, sense: "또 내일부터 시작함", function: [postponement], contexts: [food], difficulty: beginner, source: approved-design, status: approved-pending-display-update, episodes: [{ id: s01e06, role: keyPoint }] }
+  - { id: s01e06-majide, canonical: "マジで", display: "マジで", aliases: ["マジ"], type: phrase, sense: "진정성이나 정도를 강조함", function: [emphasis], contexts: [friends], difficulty: beginner, source: editorial-audit, status: published, episodes: [{ id: s01e06, role: keyPoint }] }
+  - { id: s01e06-toriaezu, canonical: "とりあえず", display: "とりあえず", aliases: [], type: phrase, sense: "임시 행동을 먼저 선택함", function: [provisional-action], contexts: [food], difficulty: beginner, source: editorial-audit, status: published, episodes: [{ id: s01e06, role: keyPoint }] }
+retiredExpressions:
+  - id: s01e04-maniau
+    canonical: "間に合う"
+    display: "間[ま]に合[あ]う"
+    aliases: ["まだ間に合う?"]
+    status: retired-before-learning-v2
+    replacementId: null
+    migration: preserve-history-do-not-transfer
+    note: "まだいける?와 의미가 달라 상태를 이전하지 않는다."

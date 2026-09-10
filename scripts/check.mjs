@@ -360,3 +360,4 @@ if (problems === 0 && notes === 0) {
   if (notes) console.log(c.dim('확인 항목은 일부러 그런 것이면 넘어가도 됩니다 (복습용 반복 등)'));
 }
 console.log(c.dim(`회차 ${episodes.length}개 · 누적 단어 ${past.words.size}개`));
+if (problems > 0) process.exitCode = 1;
