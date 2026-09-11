@@ -17,7 +17,7 @@ describe('review queue', () => {
     const state = createEmptyState(NOW); ids.forEach((id) => { state.expressions[id] = expr('2026-09-01'); });
     const daily = getOrCreateReviewFlow(state, registry, '2026-09-10', NOW);
     const refreshed = getOrCreateReviewFlow(daily.state, registry, '2026-09-10', NOW);
-    expect(refreshed.changed).toBe(false); expect(refreshed.flow.batches[0].expressionIds).toEqual(['s01e01-baiiyo', 's01e01-gaman', 's01e01-temoii']);
+    expect(refreshed.changed).toBe(false); expect(refreshed.flow.batches[0].expressionIds).toEqual(['s01e01-temoii', 's01e01-gaman', 's01e01-baiiyo']);
     expect(createExtraBatch(daily.state, registry, '2026-09-10', NOW).flow.batches).toHaveLength(1);
     const completed = daily.flow.batches[0].expressionIds.reduce(
       (current, expressionId) => markReviewFlowAnswered(current, expressionId, NOW),
@@ -25,7 +25,7 @@ describe('review queue', () => {
     );
     expect(completed.reviewFlow?.baseCompletedAt).toBe(NOW);
     const extra = createExtraBatch(completed, registry, '2026-09-10', NOW);
-    expect(extra.flow.batches[1].expressionIds).toEqual(['s01e02-moraeba', 's01e02-natteru']);
+    expect(extra.flow.batches[1].expressionIds).toEqual(['s01e02-natteru', 's01e02-moraeba']);
     const extraCompleted = extra.flow.batches[1].expressionIds.reduce(
       (current, expressionId) => markReviewFlowAnswered(current, expressionId, '2026-09-10T04:00:00.000Z'),
       extra.state,

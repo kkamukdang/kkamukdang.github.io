@@ -3,19 +3,43 @@ import {
   LocalStorageAdapter,
   getKstDate,
   type ExpressionId,
+  type LearningStateV2,
+  type ReviewStage,
+  type SeasonId,
   type StorageLike,
 } from '../learning';
 
+export interface BrowserReviewPrompt {
+  id: string;
+  stage: ReviewStage;
+  mode: 'scene' | 'cued-recall' | 'choice';
+  cue: string;
+  answer: string;
+  answerHtml: string;
+  clozeHtml?: string;
+  source: string;
+  memoryScene?: string;
+  memoryCue?: { asset: string; alt: string };
+  scene?: { who: string; kr: string; jpHtml: string };
+  explanation?: string;
+}
+
 export interface BrowserExpression {
   id: ExpressionId;
+  jp: string;
+  kr: string;
+  emoji: string;
   no: number;
   season: number;
+  slug: string;
   registry: { active: boolean } | null;
+  prompts?: Record<ReviewStage, BrowserReviewPrompt> | null;
 }
 
 export interface LearningClient {
   service: LearningService;
   expressions: BrowserExpression[];
+  byId: Record<ExpressionId, BrowserExpression>;
 }
 
 export function createLearningClient(
@@ -43,7 +67,63 @@ export function createLearningClient(
       episodeExpressions,
     }),
     expressions: active,
+    byId: Object.fromEntries(active.map((item) => [item.id, item])) as Record<ExpressionId, BrowserExpression>,
   };
+}
+
+export interface StampSummary {
+  completedEpisodes: Set<number>;
+  seasonCompleted: boolean;
+}
+
+export function stampSummary(
+  storage: StorageLike,
+  state: LearningStateV2,
+  seasonId: SeasonId,
+): StampSummary {
+  const completedEpisodes = new Set(
+    Object.entries(state.episodes)
+      .filter(([episodeId, value]) => episodeId.startsWith(`${seasonId}e`) && value.completed)
+      .map(([episodeId]) => Number(episodeId.slice(-2))),
+  );
+  let legacy: { episodes?: unknown; completed?: unknown } = {};
+  try {
+    const parsed = JSON.parse(storage.getItem(`kkmd:stamps:s${Number(seasonId.slice(1))}`) ?? '{}') as unknown;
+    if (parsed && typeof parsed === 'object') legacy = parsed as typeof legacy;
+  } catch {
+    legacy = {};
+  }
+  if (Array.isArray(legacy.episodes)) {
+    legacy.episodes.forEach((value) => {
+      const episodeNo = Number(value);
+      // #001은 v2만 권위값으로 사용하고, 아직 v1인 #002~#006만 합칩니다.
+      if (Number.isInteger(episodeNo) && episodeNo >= 2 && episodeNo <= 6) completedEpisodes.add(episodeNo);
+    });
+  }
+  return {
+    completedEpisodes,
+    seasonCompleted: Boolean(state.seasons[seasonId]?.completed || legacy.completed),
+  };
+}
+
+export function reviewableExpressions(expressions: BrowserExpression[]): BrowserExpression[] {
+  return expressions.filter((item) => item.registry?.active
+    && item.prompts?.R1
+    && item.prompts.R2
+    && item.prompts.R3);
+}
+
+export function currentReviewItem(state: LearningStateV2): ExpressionId | null {
+  const flow = state.reviewFlow;
+  const batch = flow?.batches.find((item) => item.id === flow.activeBatchId);
+  return batch?.expressionIds.find((id) => !batch.answeredIds.includes(id)) ?? null;
+}
+
+export function activeBatchProgress(state: LearningStateV2): { current: number; total: number } {
+  const flow = state.reviewFlow;
+  const batch = flow?.batches.find((item) => item.id === flow.activeBatchId);
+  const total = batch?.expressionIds.length ?? 0;
+  return { current: total ? Math.min((batch?.answeredIds.length ?? 0) + 1, total) : 0, total };
 }
 
 export function makeEpisodeEventId(episodeId: string): string {

@@ -17,6 +17,7 @@ const memoryCue = z.object({
 const stageReviewPrompt = z.object({
   cue: z.string().trim().min(1).max(120),
   answer: z.string().trim().min(1).max(120),
+  answerHighlight: z.string().trim().min(1).max(80).optional(),
   explanation: z.string().trim().max(160).optional(),
   mode: z.enum(['cued-recall', 'choice']).default('cued-recall'),
 });

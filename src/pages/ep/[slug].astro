@@ -212,6 +212,8 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
         var s = Kkmd.getStamps(season);
         board.querySelectorAll('.stamp-cell[data-no]').forEach(function (cell) {
           var no = Number(cell.dataset.no);
+          // #001은 모든 Episode에서 v2 학습 상태만 권위값으로 사용합니다.
+          if (no === 1) return;
           var on = s.episodes.indexOf(no) >= 0;
           cell.classList.toggle('on', on);
           if (on && no === justNo) cell.classList.add('just');
@@ -221,7 +223,9 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
 
         var prog = board.querySelector('[data-progress]');
         if (prog) {
-          prog.textContent = (s.episodes.length + (s.completed ? 1 : 0)) + ' / 7';
+          var paintedEpisodes = board.querySelectorAll('.stamp-cell[data-no].on').length;
+          var paintedFinal = board.querySelector('.stamp-cell[data-final].on') ? 1 : 0;
+          prog.textContent = (paintedEpisodes + paintedFinal) + ' / 7';
         }
       }
 

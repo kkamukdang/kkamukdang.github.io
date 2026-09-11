@@ -10,6 +10,7 @@ import {
 import { loadExpressionRegistry } from '../../src/lib/content/expression-registry';
 import type { EpisodeData } from '../../src/lib/content/episode-types';
 import { resolveReviewPrompt, validateEpisodeReviewContent } from '../../src/lib/learning/review-content';
+import { toRuby, toRubyReviewTarget } from '../../src/lib/furigana';
 import type { ExpressionId, ExpressionStateV2, ReviewStage } from '../../src/lib/learning/types';
 import { MemoryStorage } from '../helpers';
 
@@ -17,8 +18,12 @@ const now = '2026-09-10T00:00:00.000Z';
 const ids = ['s01e01-temoii', 's01e01-gaman', 's01e01-baiiyo'] as const;
 const catalog = ids.map((id) => ({
   id,
+  jp: id,
+  kr: id,
+  emoji: '🍗',
   no: 1,
   season: 1,
+  slug: '001-late-night-food',
   registry: { active: true },
 })) satisfies BrowserExpression[];
 
@@ -71,10 +76,39 @@ describe('Work 2-1 #001 콘텐츠 계약', () => {
       expect(r1.memoryScene).toBe(episode.memoryScene);
       expect(r1.memoryCue).toEqual(keyPoint.memoryCue);
       await access(`public${keyPoint.memoryCue!.asset}`);
-      expect(resolveReviewPrompt({ episode, keyPoint, registry: registryEntry, state: stageState('R2') }).source).toBe('apply');
-      expect(resolveReviewPrompt({ episode, keyPoint, registry: registryEntry, state: stageState('R3') }).source).toBe('reviewPrompt.R3');
+      const r2 = resolveReviewPrompt({ episode, keyPoint, registry: registryEntry, state: stageState('R2') });
+      const r3 = resolveReviewPrompt({ episode, keyPoint, registry: registryEntry, state: stageState('R3') });
+      expect(r2.source).toBe('apply');
+      expect(r2.cue).toBe(episode.apply[keyPoint.applyIndex!].kr);
+      expect(r2).not.toHaveProperty('answerKr');
+      expect(r3.source).toBe('reviewPrompt.R3');
+      expect(r3.answerHighlight).toBeTruthy();
+      const target = toRubyReviewTarget(r3.answer, r3.answerHighlight);
+      expect(target.answerHtml).toContain(`<strong class="q-answer-target">${toRuby(r3.answerHighlight!)}</strong>`);
+      expect(target.clozeHtml).toContain('<span class="cloze-blank" aria-label="빈칸">______</span>');
+      expect(r2.cue).not.toBe(r3.cue);
+      expect(r2.answer).not.toBe(r3.answer);
       expect(keyPoint.reviewPrompt).not.toHaveProperty('R1');
     }
+
+    const baiiyo = episode.keyPoints.find((keyPoint) => keyPoint.id === 's01e01-baiiyo')!;
+    const registryEntry = registry.expressions.find((expression) => expression.id === baiiyo.id)!;
+    const r3 = resolveReviewPrompt({ episode, keyPoint: baiiyo, registry: registryEntry, state: stageState('R3') });
+    expect(r3.cue).toBe('내일부터 다시 시작하면 돼.');
+    expect(r3.answerHighlight).toBe('始[はじ]めればいいよ');
+    expect(r3.explanation).toBe('始まる는 저절로 시작되는 것, 始める는 누군가가 의도적으로 시작하는 것이에요. 여기서는 누군가의 의지와 행동으로 시작하는 거니까 始める 쪽이 맞아요. 〜ばいい는 “~하면 돼”라는 뜻이라서 始めればいい가 됩니다.');
+    expect(toRubyReviewTarget(r3.answer, r3.answerHighlight).answerHtml).toContain(
+      '<strong class="q-answer-target"><ruby>始<rt>はじ</rt></ruby>めればいいよ</strong>',
+    );
+
+    const temoii = episode.keyPoints.find((keyPoint) => keyPoint.id === 's01e01-temoii')!;
+    const temoiiRegistry = registry.expressions.find((expression) => expression.id === temoii.id)!;
+    const temoiiR3 = resolveReviewPrompt({ episode, keyPoint: temoii, registry: temoiiRegistry, state: stageState('R3') });
+    const temoiiTarget = toRubyReviewTarget(temoiiR3.answer, temoiiR3.answerHighlight);
+    expect(temoiiR3.answerHighlight).toBe('でもいい');
+    expect(temoiiTarget.clozeHtml).toContain('ん<span class="cloze-blank"');
+    expect(temoiiTarget.clozeHtml).not.toContain('んで<span class="cloze-blank"');
+    expect(temoiiTarget.answerHtml).toContain('<strong class="q-answer-target">でもいい</strong>?');
   });
 });
 

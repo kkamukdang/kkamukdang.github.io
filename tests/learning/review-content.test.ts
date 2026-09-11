@@ -25,5 +25,17 @@ describe('stage별 reviewPrompt resolver', () => {
     expect(validateEpisodeReviewContent(broken).some((issue) => issue.includes('R2 resolver 없음'))).toBe(true);
     expect(validateEpisodeReviewContent(broken).some((issue) => issue.includes('R3 resolver 없음'))).toBe(true);
   });
+  it('정답 강조 구간이 실제 정답에 없으면 validation 오류로 처리한다', () => {
+    const broken = {
+      ...episode,
+      keyPoints: [{
+        ...keyPoint,
+        reviewPrompt: { R3: { cue: 'cue', answer: 'answer', answerHighlight: 'missing' } },
+      }, episode.keyPoints[1], episode.keyPoints[2]],
+    };
+    expect(validateEpisodeReviewContent(broken).some((issue) => issue.includes('answerHighlight가 answer에 없음'))).toBe(true);
+  });
+  it('명시형 R3에 정답 강조 구간이 없으면 validation 오류로 처리한다', () => {
+    expect(validateEpisodeReviewContent(episode).some((issue) => issue.includes('reviewPrompt.R3.answerHighlight 필수'))).toBe(true);
+  });
 });
-

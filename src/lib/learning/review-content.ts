@@ -4,12 +4,12 @@ import type { ExpressionStateV2, ReviewStage } from './types';
 
 export interface ReviewPrompt {
   id: string; stage: ReviewStage; mode: 'scene' | 'cued-recall' | 'choice';
-  cue: string; answer: string; explanation?: string; source: 'scene' | 'apply' | 'reviewPrompt.R2' | 'reviewPrompt.R3' | 'quiz' | 'compare';
+  cue: string; answer: string; answerHighlight?: string; explanation?: string; source: 'scene' | 'apply' | 'reviewPrompt.R2' | 'reviewPrompt.R3' | 'quiz' | 'compare';
   scene?: EpisodeData['scene'][number]; memoryScene?: string; memoryCue?: MemoryCue; cueBoost: boolean;
 }
 
 function explicit(stage: 'R2' | 'R3', prompt: StageReviewPrompt, keyPoint: KeyPoint, cueBoost: boolean): ReviewPrompt {
-  return { id: `${keyPoint.id}:${stage}:explicit`, stage, mode: prompt.mode ?? 'cued-recall', cue: prompt.cue, answer: prompt.answer, explanation: prompt.explanation, source: `reviewPrompt.${stage}`, cueBoost };
+  return { id: `${keyPoint.id}:${stage}:explicit`, stage, mode: prompt.mode ?? 'cued-recall', cue: prompt.cue, answer: prompt.answer, answerHighlight: prompt.answerHighlight, explanation: prompt.explanation, source: `reviewPrompt.${stage}`, cueBoost };
 }
 
 export function resolveReviewPrompt(args: { episode: EpisodeData; keyPoint: KeyPoint; registry: RegistryExpression; state: ExpressionStateV2 }): ReviewPrompt {
@@ -52,9 +52,17 @@ export function validateEpisodeReviewContent(episode: EpisodeData): string[] {
     if (keyPoint.compareIndex !== undefined && !episode.compare[keyPoint.compareIndex]) issues.push(`${keyPoint.id}: compareIndex 범위 오류`);
     if (keyPoint.quizIndex !== undefined && !episode.quiz[keyPoint.quizIndex]) issues.push(`${keyPoint.id}: quizIndex 범위 오류`);
     if (keyPoint.reviewPrompt && 'R1' in keyPoint.reviewPrompt) issues.push(`${keyPoint.id}: reviewPrompt.R1은 허용하지 않음`);
+    for (const stage of ['R2', 'R3'] as const) {
+      const prompt = keyPoint.reviewPrompt?.[stage];
+      if (prompt?.answerHighlight && !prompt.answer.includes(prompt.answerHighlight)) {
+        issues.push(`${keyPoint.id}: reviewPrompt.${stage}.answerHighlight가 answer에 없음`);
+      }
+    }
+    if (keyPoint.reviewPrompt?.R3 && !keyPoint.reviewPrompt.R3.answerHighlight) {
+      issues.push(`${keyPoint.id}: reviewPrompt.R3.answerHighlight 필수`);
+    }
     if (keyPoint.applyIndex === undefined && !keyPoint.reviewPrompt?.R2) issues.push(`${keyPoint.id}: R2 resolver 없음`);
     if (!keyPoint.reviewPrompt?.R3 && keyPoint.quizIndex === undefined && keyPoint.compareIndex === undefined) issues.push(`${keyPoint.id}: R3 resolver 없음`);
   }
   return issues;
 }
-

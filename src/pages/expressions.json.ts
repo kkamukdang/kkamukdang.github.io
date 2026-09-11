@@ -13,9 +13,27 @@
  */
 import type { APIRoute } from 'astro';
 import { getListed } from '../lib/episodes';
-import { toChunks, toRubyCloze, toRuby, toKanji } from '../lib/furigana';
+import { toChunks, toRubyCloze, toRuby, toRubyReviewTarget, toKanji } from '../lib/furigana';
 import { createRegistryIndex, loadExpressionRegistry } from '../lib/content/expression-registry';
-import type { ExpressionId } from '../lib/learning/types';
+import type { EpisodeData, KeyPoint } from '../lib/content/episode-types';
+import { resolveReviewPrompt } from '../lib/learning/review-content';
+import type { ExpressionId, ExpressionStateV2, ReviewStage } from '../lib/learning/types';
+import { url } from '../lib/site';
+
+const reviewStages: ReviewStage[] = ['R1', 'R2', 'R3'];
+
+function promptState(reviewStage: ReviewStage): ExpressionStateV2 {
+  return {
+    registeredAt: '2000-01-01T00:00:00.000Z',
+    registeredSource: 'episode',
+    reviewStage,
+    rememberStreak: reviewStage === 'R1' ? 0 : reviewStage === 'R2' ? 1 : 2,
+    lastRating: null,
+    cueBoost: 0,
+    graduated: false,
+    nextReviewDate: '2000-01-01',
+  };
+}
 
 export const GET: APIRoute = async () => {
   const episodes = await getListed();
@@ -30,6 +48,29 @@ export const GET: APIRoute = async () => {
       const cloze = line
         ? toRubyCloze(line.jp, [toChunks(kp.jp)])
         : { html: '', answer: '' };
+      let prompts = null;
+      if (d.no === 1 && registry.active[expressionId]) {
+        prompts = Object.fromEntries(reviewStages.map((stage) => {
+          const prompt = resolveReviewPrompt({
+            episode: d as EpisodeData,
+            keyPoint: kp as KeyPoint,
+            registry: registry.active[expressionId],
+            state: promptState(stage),
+          });
+          const target = toRubyReviewTarget(prompt.answer, prompt.answerHighlight);
+          return [stage, {
+            ...prompt,
+            answerHtml: target.answerHtml,
+            clozeHtml: stage === 'R3' ? target.clozeHtml : undefined,
+            memoryCue: prompt.memoryCue ? { ...prompt.memoryCue, asset: url(prompt.memoryCue.asset) } : undefined,
+            scene: prompt.scene ? {
+              who: prompt.scene.who,
+              kr: prompt.scene.kr,
+              jpHtml: toRuby(prompt.scene.jp),
+            } : undefined,
+          }];
+        }));
+      }
 
       return {
         id: kp.id,
@@ -60,6 +101,7 @@ export const GET: APIRoute = async () => {
         season: d.season,
         slug: ep.id,
         subtitle: d.subtitle,
+        prompts,
         registry: registryEntry ? {
           canonical: registryEntry.canonical,
           display: registryEntry.display,

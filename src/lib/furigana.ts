@@ -57,6 +57,22 @@ export function toRuby(text: string): string {
   );
 }
 
+export interface ReviewTargetHtml { answerHtml: string; clozeHtml: string }
+
+/** 하나의 콘텐츠 target으로 문제의 빈칸과 정답의 강조 구간을 함께 만듭니다. */
+export function toRubyReviewTarget(text: string, target?: string): ReviewTargetHtml {
+  if (!target) return { answerHtml: toRuby(text), clozeHtml: '' };
+  const at = text.indexOf(target);
+  if (at < 0) return { answerHtml: toRuby(text), clozeHtml: '' };
+  const before = toRuby(text.slice(0, at));
+  const targetHtml = toRuby(target);
+  const after = toRuby(text.slice(at + target.length));
+  return {
+    answerHtml: `${before}<strong class="q-answer-target">${targetHtml}</strong>${after}`,
+    clozeHtml: `${before}<span class="cloze-blank" aria-label="빈칸">______</span>${after}`,
+  };
+}
+
 /**
  * 설명문용. 후리가나 표기는 바꿔주되 <b>, <br> 같은 인라인 태그는 살려둡니다.
  * 원고에 직접 쓰는 내용에만 사용하세요.

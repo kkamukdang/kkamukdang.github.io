@@ -34,6 +34,25 @@
   font-variant-numeric:tabular-nums;
 }
 
+.q-memory{
+  margin:0 0 18px; padding:0;
+  overflow:hidden;
+  background:var(--bg-soft); border:1px solid var(--line); border-radius:16px;
+}
+.q-memory-image{
+  display:block; width:100%; max-height:220px; object-fit:cover;
+}
+.q-memory-text{
+  padding:11px 14px; font-size:var(--fs-sm); color:var(--muted);
+}
+.q-scene-card{
+  display:flex; gap:8px; align-items:baseline; justify-content:center;
+  margin:0 0 15px; padding:12px 14px;
+  font-size:var(--fs-sm); line-height:1.65;
+  background:var(--bg-soft); border-radius:13px;
+}
+.q-scene-card strong{ flex:none; color:var(--accent-ink); }
+
 /* 질문 아래 고정 문구 — 무엇을 떠올려야 하는지 알려줍니다 */
 .q-prompt{
   margin-top:9px; font-size:var(--fs-md); color:var(--muted-2);
@@ -45,11 +64,16 @@
   word-break:keep-all;
 }
 
+.q-cloze{
+  margin-top:8px; font-size:19px; font-weight:700;
+  line-height:1.65; word-break:keep-all;
+}
+.q-cloze rt{ font-size:.45em; color:var(--ruby); font-weight:400; }
+
 /* 빈칸형 문항을 쓸 때를 위해 남겨둡니다 */
 .cloze-blank{
   display:inline-block; min-width:74px;
-  color:var(--hot); letter-spacing:.04em;
-  border-bottom:2px solid var(--hot);
+  letter-spacing:.04em;
 }
 
 .q-reveal{
@@ -71,7 +95,17 @@
   line-height:1.7; word-break:keep-all; color: var(--hot-ink);
 }
 .q-ans-jp rt{ font-size:.45em; color:var(--ruby); font-weight:400; }
+.q-answer-target{ color:var(--accent-ink); font-weight:800; }
 .q-ans-kr{ font-size:var(--fs-md); font-weight:500; color:var(--muted); }
+.q-scene-answer{
+  margin-bottom:12px; font-size:var(--fs-md); line-height:1.7; color:var(--muted);
+}
+.q-explanation{
+  margin:16px 0 0; font-size:var(--fs-sm); line-height:1.7; color:var(--muted);
+}
+.q-grade-notice{
+  margin:14px 0 0; font-size:var(--fs-sm); line-height:1.7; color:var(--muted-2);
+}
 /* 정답은 크게 하나만 보여줍니다. 설명은 그 편에서 보게 해요. */
 .q-ans-src{
   display:inline-block; margin-top:18px;
@@ -235,12 +269,14 @@
 /* 정답 아래 — 오늘 챙길 표현을 작게 한 번 더 */
 .q-ans-expr{
   display:flex; align-items:baseline; justify-content:center;
-  gap:9px; flex-wrap:wrap; margin-top:16px;
+  gap:7px; flex-wrap:wrap; margin-top:16px;
+  padding-top:13px; border-top:1px solid var(--line);
 }
 .q-ans-expr .jp{
-  font-family:var(--font-jp); font-size:var(--fs-lg); font-weight:700;
+  font-family:var(--font-jp); font-size:var(--fs-md); font-weight:600;
   color:var(--muted);
 }
+.q-ans-expr .q-ans-kr::before{ content:'\00b7'; margin-right:7px; color:var(--muted-2); }
 .q-ans-expr .jp rt{ font-size:.45em; font-weight:400; }
 
 /* 채점 피드백 — 버튼이 있던 자리에 잠깐 */

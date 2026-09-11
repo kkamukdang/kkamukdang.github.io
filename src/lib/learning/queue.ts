@@ -16,6 +16,9 @@ export function selectDueExpressions(
   excluded = new Set<ExpressionId>(),
   limit = 3,
 ): ExpressionId[] {
+  const contentOrder = new Map(
+    (Object.keys(registry) as ExpressionId[]).map((id, index) => [id, index]),
+  );
   return (Object.entries(state.expressions) as [ExpressionId, LearningStateV2['expressions'][ExpressionId]][])
     .filter(([id, value]) => registry[id]?.active && !value.graduated && isDue(value.nextReviewDate, today) && !excluded.has(id))
     .sort(([idA, a], [idB, b]) => {
@@ -26,7 +29,10 @@ export function selectDueExpressions(
       const reviewed = String(a.lastReviewedAt ?? '').localeCompare(String(b.lastReviewedAt ?? ''));
       if (reviewed) return reviewed;
       const episode = registry[idA].episodeId.localeCompare(registry[idB].episodeId);
-      return episode || idA.localeCompare(idB);
+      if (episode) return episode;
+      const yamlOrder = (contentOrder.get(idA) ?? Number.MAX_SAFE_INTEGER)
+        - (contentOrder.get(idB) ?? Number.MAX_SAFE_INTEGER);
+      return yamlOrder || idA.localeCompare(idB);
     })
     .slice(0, Math.max(0, limit))
     .map(([id]) => id);
