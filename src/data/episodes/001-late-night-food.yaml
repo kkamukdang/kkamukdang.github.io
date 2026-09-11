@@ -195,6 +195,14 @@ keyPoints:
     note: 허락을 구하는 표현. て와 で는 앞 동사의 て형이 정해줘요.
     compareIndex: 0     # 頼む / 注文する
     applyIndex: 2       # お酒飲んでもいい?
+    memoryCue:
+      asset: /characters/memory/s01e01-night-chicken.svg
+      alt: 초승달이 뜬 밤 11시, 다이어트 중 치킨을 앞에 두고 고민하는 장면
+    reviewPrompt:
+      R3:
+        cue: "오늘 밤 치킨 시켜도 될까? 今夜チキン頼んで ______ ?"
+        answer: "今夜[こんや]チキン頼[たの]んでもいい?"
+        explanation: "가볍게 허락을 구할 때 동사의 て형 뒤에 もいい?를 붙여요."
 
   - id: s01e01-gaman
     jp: 我慢[がまん]できない
@@ -203,6 +211,14 @@ keyPoints:
     note: 의지가 아니라 한계를 말합니다. 我慢しない 와 뜻이 달라요.
     compareIndex: 2     # 我慢しない / 我慢できない
     applyIndex: 0       # コーヒー、我慢できない
+    memoryCue:
+      asset: /characters/memory/s01e01-night-chicken.svg
+      alt: 초승달이 뜬 밤 11시, 다이어트 중 치킨을 앞에 두고 고민하는 장면
+    reviewPrompt:
+      R3:
+        cue: "안 참겠다는 선택이 아니라, 더는 참을 수 없는 한계일 때 뭐라고 했더라?"
+        answer: "我慢[がまん]できない"
+        explanation: "我慢しない는 안 참겠다는 선택, 我慢できない는 못 참겠다는 한계예요."
 
   - id: s01e01-baiiyo
     jp: 〜ばいいよ
@@ -211,6 +227,14 @@ keyPoints:
     note: 부담 없이 가볍게 조언할 때. 위로처럼 들리는 말투예요.
     compareIndex: 3     # 始まる / 始める
     applyIndex: 1       # 運動も明日から
+    memoryCue:
+      asset: /characters/memory/s01e01-night-chicken.svg
+      alt: 초승달이 뜬 밤 11시, 다이어트 중 치킨을 앞에 두고 고민하는 장면
+    reviewPrompt:
+      R3:
+        cue: "내일부터 다시 시작하면 돼. 明日からまた ______。"
+        answer: "明日[あした]からまた始[はじ]めればいいよ。"
+        explanation: "여기서는 ‘다시 시작하다’이므로 始める → 始めれば를 사용해요."
 
 # 001 은 복습할 이전 회차가 없습니다. 그 자리에 "여긴 이런 곳" 소개가 들어갑니다.
 reviewTargets: []

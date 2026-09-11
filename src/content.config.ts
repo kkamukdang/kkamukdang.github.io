@@ -11,7 +11,7 @@ import { glob } from 'astro/loaders';
 
 const jp = z.string(); // 후리가나 단축 표기가 허용되는 일본어 문자열
 const memoryCue = z.object({
-  asset: z.string().regex(/^\/characters\/[a-z0-9/_-]+\.(webp|png)$/),
+  asset: z.string().regex(/^\/characters\/[a-z0-9/_-]+\.(webp|png|svg)$/),
   alt: z.string().trim().min(10).max(120),
 });
 const stageReviewPrompt = z.object({

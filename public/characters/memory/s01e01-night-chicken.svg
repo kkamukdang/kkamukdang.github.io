@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 405" role="img" aria-labelledby="title description">
+  <title id="title">밤 11시의 치킨 유혹</title>
+  <desc id="description">초승달이 뜬 밤, 11시를 가리키는 시계 옆에 치킨 바구니가 놓인 장면</desc>
+  <rect width="720" height="405" rx="36" fill="#211b3a"/>
+  <circle cx="598" cy="88" r="48" fill="#ffe8a3"/>
+  <circle cx="620" cy="69" r="48" fill="#211b3a"/>
+  <g fill="#f7f1ff" opacity=".8">
+    <circle cx="92" cy="70" r="4"/><circle cx="174" cy="104" r="3"/><circle cx="510" cy="54" r="3"/>
+  </g>
+  <circle cx="178" cy="206" r="74" fill="#fff8e8" stroke="#f3b65b" stroke-width="10"/>
+  <line x1="178" y1="206" x2="178" y2="160" stroke="#563f37" stroke-width="10" stroke-linecap="round"/>
+  <line x1="178" y1="206" x2="220" y2="225" stroke="#563f37" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="178" cy="206" r="9" fill="#563f37"/>
+  <path d="M385 181h154l-18 145H403z" fill="#ef6a5b" stroke="#f9c765" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M405 181c-21-17-13-52 14-58 5-32 48-39 64-13 27-6 49 26 32 49 10 6 17 13 20 22z" fill="#d9973c" stroke="#6f432e" stroke-width="9" stroke-linejoin="round"/>
+  <path d="M431 229h78M425 263h88" stroke="#fff3d0" stroke-width="12" stroke-linecap="round"/>
+  <path d="M280 332c57-26 105-30 164-4 57 25 103 24 157-1" fill="none" stroke="#8575b9" stroke-width="9" stroke-linecap="round" opacity=".65"/>
+</svg>

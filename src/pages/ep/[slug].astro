@@ -92,7 +92,12 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
   ogImage={`/og/${ep.id}.png`}
   nav="episode"
 >
-  <div class="wrap reading" data-pagefind-body>
+  <div
+    class="wrap reading"
+    data-pagefind-body
+    data-learning-v2={d.no === 1 ? 'true' : 'false'}
+    data-catalog-url={url('/expressions.json')}
+  >
     <meta data-pagefind-meta={`no:${d.no}`} />
 
     <Hero emoji={d.emoji} title={d.title} subtitle={d.subtitle} meta={heroMeta} />
@@ -196,6 +201,7 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
       var board = document.querySelector('.stampboard');
       var end = document.getElementById('todayEnd');
       if (!board || !end || !window.Kkmd) return;
+      if (board.closest('[data-learning-v2="true"]')) return;
 
       var season = Number(board.dataset.season);
       var markNo = Number(board.dataset.mark);
@@ -259,6 +265,7 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
     /* ---------- 자신 없어요 ---------- */
     (function () {
       if (!window.Kkmd) return;
+      if (document.querySelector('[data-learning-v2="true"]')) return;
       document.querySelectorAll('[data-unsure]').forEach(function (btn) {
         btn.addEventListener('click', function () {
           if (btn.dataset.done) return;
@@ -283,5 +290,9 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
         bottom.classList.toggle('show', !entries[0].isIntersecting);
       }, { rootMargin: '-60px 0px 0px 0px' }).observe(top);
     })();
+  </script>
+  <script>
+    import { initEpisodeLearningPage } from '../../lib/client/episode-learning';
+    initEpisodeLearningPage();
   </script>
 </Base>
