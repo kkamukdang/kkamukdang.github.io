@@ -49,9 +49,23 @@ import '../styles/again.css';
           <p class="q-explanation" id="qExplanation" hidden></p>
         </div>
 
-        <p class="q-grade-notice" id="qGradeNotice" hidden>
-          정답을 확인했어요. 기억 상태 선택은 다음 단계에서 이어집니다.
-        </p>
+        <div class="q-grade" id="qGrade" aria-label="기억 상태 선택" hidden>
+          <button class="g-btn ok" type="button" data-rating="remembered">
+            <span class="g-emoji" aria-hidden="true">💡</span>
+            <span class="g-label">기억나요</span>
+          </button>
+          <button class="g-btn vague" type="button" data-rating="fuzzy">
+            <span class="g-emoji" aria-hidden="true">🌫️</span>
+            <span class="g-label">가물가물</span>
+          </button>
+          <button class="g-btn lost" type="button" data-rating="unfamiliar">
+            <span class="g-emoji" aria-hidden="true">🌱</span>
+            <span class="g-label">낯설어요</span>
+          </button>
+        </div>
+
+        <p class="q-feedback" id="qFeedback" aria-live="polite" hidden></p>
+        <button class="q-next" id="qNext" type="button" hidden>다음 표현</button>
       </article>
 
       <section class="restcard" id="rest" hidden aria-labelledby="restText">
@@ -72,6 +86,12 @@ import '../styles/again.css';
           <span class="c-label">졸업</span>
         </div>
       </div>
+
+      <section class="reactivation" id="reactivation" aria-labelledby="reactivationTitle" hidden>
+        <h2 id="reactivationTitle">잠시 쉬는 표현</h2>
+        <p>다시 만나기를 누르면 잠시 쉬기를 마치고, 이틀 뒤 다시 만나요.</p>
+        <div class="reactivation-list" id="reactivationList"></div>
+      </section>
 
       <StampBoard season={1} />
 

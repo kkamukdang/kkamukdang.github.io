@@ -9,7 +9,13 @@ import {
   type BrowserExpression,
   type BrowserReviewPrompt,
 } from './learning-client';
-import { STORAGE_KEYS, type ExpressionId, type LearningStateV2 } from '../learning';
+import {
+  STORAGE_KEYS,
+  type ExpressionId,
+  type ExpressionStateV2,
+  type LearningStateV2,
+  type Rating,
+} from '../learning';
 
 export type ReviewScreenModel =
   | { kind: 'question'; expression: BrowserExpression; prompt: BrowserReviewPrompt; current: number; total: number }
@@ -39,6 +45,39 @@ export function reviewInstruction(prompt: BrowserReviewPrompt): string {
     : '빈칸에 들어갈 표현을 떠올려 보세요.';
 }
 
+export function makeReviewEventId(state: LearningStateV2, expressionId: ExpressionId): string {
+  const batchId = state.reviewFlow?.activeBatchId ?? state.reviewFlow?.date ?? 'unbatched';
+  return `ui:review:${batchId}:${expressionId}`;
+}
+
+export function makeReactivationEventId(expressionId: ExpressionId, graduatedAt: string): string {
+  return `ui:reactivate:${expressionId}:${graduatedAt}`;
+}
+
+function koreanDate(date: string | null): string {
+  if (!date) return '';
+  const [, month, day] = date.split('-').map(Number);
+  return `${month}월 ${day}일`;
+}
+
+export function reviewFeedback(rating: Rating, expression: ExpressionStateV2): string {
+  if (expression.graduated) {
+    return '세 번 연속 떠올렸어요. 이 표현은 이제 기본 다시 만나기에서 잠시 쉬어가요.';
+  }
+  const nextDate = koreanDate(expression.nextReviewDate);
+  if (rating === 'remembered') {
+    return `기억하고 있었네요. ${nextDate}에 다시 만나요.`;
+  }
+  if (rating === 'fuzzy') {
+    return `한 번 더 만나기로 해요. ${nextDate}에 다시 만나요.`;
+  }
+  return `떠오르지 않아도 괜찮아요. ${nextDate}에 다시 만나요.`;
+}
+
+export function graduatedExpressionCount(state: LearningStateV2): number {
+  return Object.values(state.expressions).filter((expression) => expression.graduated).length;
+}
+
 function element<T extends HTMLElement>(id: string): T {
   const found = document.getElementById(id);
   if (!found) throw new Error(`#${id} 요소가 없음`);
@@ -57,8 +96,14 @@ export async function initReviewFlowPage(): Promise<void> {
   const restMore = element<HTMLButtonElement>('restMore');
   const reveal = element<HTMLButtonElement>('qReveal');
   const answer = element<HTMLElement>('qAnswer');
-  const gradeNotice = element<HTMLElement>('qGradeNotice');
+  const grade = element<HTMLElement>('qGrade');
+  const feedback = element<HTMLElement>('qFeedback');
+  const next = element<HTMLButtonElement>('qNext');
+  const reactivation = element<HTMLElement>('reactivation');
+  const reactivationList = element<HTMLElement>('reactivationList');
   let client: ReturnType<typeof createLearningClient> | null = null;
+  let latestState: LearningStateV2 | null = null;
+  let ratingLocked = false;
 
   function announce(message: string, error = false): void {
     const live = element<HTMLElement>('qLive');
@@ -77,15 +122,42 @@ export async function initReviewFlowPage(): Promise<void> {
 
     const reviewCount = state.history.filter((event) => event.type === 'review_answered').length;
     element<HTMLElement>('cReunions').textContent = String(reviewCount);
-    element<HTMLElement>('cGraduated').textContent = String(
-      Object.values(state.expressions).filter((expression) => expression.graduated).length,
-    );
+    element<HTMLElement>('cGraduated').textContent = String(graduatedExpressionCount(state));
     const reviewLink = element<HTMLAnchorElement>('reviewLink');
     reviewLink.hidden = summary.completedEpisodes.size < 6;
   }
 
+  function paintReactivation(state: LearningStateV2): void {
+    if (!client) return;
+    const graduated = client.expressions.filter((item) => item.no === 1 && state.expressions[item.id]?.graduated);
+    reactivation.hidden = graduated.length === 0;
+    reactivationList.replaceChildren(...graduated.map((expression) => {
+      const row = document.createElement('div');
+      row.className = 'reactivation-item';
+      const label = document.createElement('div');
+      label.className = 'reactivation-expression';
+      const jp = document.createElement('span');
+      jp.className = 'jp';
+      jp.lang = 'ja';
+      jp.innerHTML = expression.jp;
+      const kr = document.createElement('span');
+      kr.className = 'reactivation-kr';
+      kr.textContent = expression.kr;
+      label.append(jp, kr);
+      const button = document.createElement('button');
+      button.className = 'reactivation-button';
+      button.type = 'button';
+      button.dataset.expressionId = expression.id;
+      button.textContent = '다시 만나기';
+      row.append(label, button);
+      return row;
+    }));
+  }
+
   function render(state: LearningStateV2): void {
+    latestState = state;
     paintSummary(state);
+    paintReactivation(state);
     let model: ReviewScreenModel;
     try {
       model = buildReviewScreenModel(state, client?.byId ?? {});
@@ -116,11 +188,7 @@ export async function initReviewFlowPage(): Promise<void> {
     rest.hidden = true;
     lead.textContent = '떠오르지 않아도 괜찮아요. 기억은 이렇게 다시 만들어지는 거니까요.';
     element<HTMLElement>('qEmoji').textContent = expression.emoji || '📮';
-    element<HTMLElement>('qStage').textContent = {
-      R1: '첫 번째 다시 만나기',
-      R2: '두 번째 다시 만나기',
-      R3: '세 번째 다시 만나기',
-    }[prompt.stage];
+    element<HTMLElement>('qStage').textContent = '다시 만난 표현';
     element<HTMLElement>('qProgress').textContent = `${model.current} / ${model.total}`;
     element<HTMLElement>('qAsk').textContent = prompt.stage === 'R1'
       ? '이럴 때 뭐라고 했더라?'
@@ -160,7 +228,13 @@ export async function initReviewFlowPage(): Promise<void> {
 
     reveal.hidden = false;
     answer.hidden = true;
-    gradeNotice.hidden = true;
+    grade.hidden = true;
+    feedback.hidden = true;
+    feedback.textContent = '';
+    feedback.className = 'q-feedback';
+    next.hidden = true;
+    ratingLocked = false;
+    grade.querySelectorAll<HTMLButtonElement>('button[data-rating]').forEach((button) => { button.disabled = false; });
     element<HTMLElement>('qAnsJp').innerHTML = prompt.answerHtml;
     element<HTMLElement>('qAnsExpr').innerHTML = expression.jp;
     element<HTMLElement>('qAnsKr').textContent = expression.kr;
@@ -196,8 +270,76 @@ export async function initReviewFlowPage(): Promise<void> {
   reveal.addEventListener('click', () => {
     reveal.hidden = true;
     answer.hidden = false;
-    gradeNotice.hidden = false;
+    grade.hidden = false;
     answer.focus();
+  });
+
+  grade.addEventListener('click', (event) => {
+    const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-rating]');
+    if (!button || !client || !latestState || ratingLocked) return;
+    const expressionId = currentReviewItem(latestState);
+    const rating = button.dataset.rating as Rating | undefined;
+    const promptId = expressionId ? client.byId[expressionId]?.prompts?.[latestState.expressions[expressionId]?.reviewStage]?.id : undefined;
+    if (!expressionId || !rating) return;
+
+    ratingLocked = true;
+    grade.querySelectorAll<HTMLButtonElement>('button[data-rating]').forEach((item) => { item.disabled = true; });
+    const result = client.service.rateReview({
+      eventId: makeReviewEventId(latestState, expressionId),
+      now: new Date().toISOString(),
+      expressionId,
+      rating,
+      source: 'again',
+      ...(promptId ? { promptId } : {}),
+    });
+    if (!result.ok) {
+      ratingLocked = false;
+      grade.querySelectorAll<HTMLButtonElement>('button[data-rating]').forEach((item) => { item.disabled = false; });
+      announce(mutationErrorMessage(result.code), true);
+      return;
+    }
+
+    latestState = result.state;
+    paintSummary(result.state);
+    paintReactivation(result.state);
+    grade.hidden = true;
+    feedback.textContent = reviewFeedback(rating, result.state.expressions[expressionId]);
+    feedback.classList.add(rating === 'remembered' ? 'ok' : rating === 'fuzzy' ? 'vague' : 'lost');
+    feedback.hidden = false;
+    next.hidden = false;
+    announce(feedback.textContent);
+  });
+
+  next.addEventListener('click', () => {
+    if (latestState) render(latestState);
+  });
+
+  reactivationList.addEventListener('click', (event) => {
+    const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-expression-id]');
+    if (!button || !client) return;
+    const expressionId = button.dataset.expressionId as ExpressionId | undefined;
+    if (!expressionId || client.byId[expressionId]?.no !== 1) return;
+    const graduatedAt = latestState?.expressions[expressionId]?.graduatedAt;
+    if (!graduatedAt) {
+      announce('현재 졸업 상태를 확인하지 못했어요. 새로고침한 뒤 다시 시도해 주세요.', true);
+      return;
+    }
+    button.disabled = true;
+    const now = new Date().toISOString();
+    const result = client.service.reactivate({
+      eventId: makeReactivationEventId(expressionId, graduatedAt),
+      now,
+      expressionId,
+    });
+    if (!result.ok) {
+      button.disabled = false;
+      announce(mutationErrorMessage(result.code), true);
+      return;
+    }
+    latestState = result.state;
+    paintSummary(result.state);
+    paintReactivation(result.state);
+    announce('졸업한 표현을 다시 만나기로 돌려놓았어요.');
   });
 
   restMore.addEventListener('click', () => {

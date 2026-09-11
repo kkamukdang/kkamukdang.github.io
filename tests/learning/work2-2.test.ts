@@ -206,7 +206,7 @@ describe('Work 2-2 reviewFlow 화면 계약', () => {
     expect(flow.state.episodes.s01e01.completed).toBe(true);
   });
 
-  it('/again/이 v2 controller를 사용하며 평가 mutation을 연결하지 않는다', async () => {
+  it('/again/이 v2 controller와 stage별 문항 연결을 유지한다', async () => {
     const page = await readFile('src/pages/again.astro', 'utf8');
     const controller = await readFile('src/lib/client/review-flow.ts', 'utf8');
     expect(page).toContain('data-review-v2="true"');
@@ -215,7 +215,7 @@ describe('Work 2-2 reviewFlow 화면 계약', () => {
     expect(controller).toContain('getOrCreateReviewFlow');
     expect(controller).toContain("card.dataset.reviewStage = prompt.stage");
     expect(controller).toContain("card.dataset.promptSource = prompt.source");
-    expect(controller).not.toContain('rateReview(');
+    expect(controller).toContain('client.service.rateReview');
   });
 
   it('모든 공통 도장판이 v2 #001과 기존 v1 #002~#006을 같은 기준으로 합친다', async () => {

@@ -103,9 +103,6 @@
 .q-explanation{
   margin:16px 0 0; font-size:var(--fs-sm); line-height:1.7; color:var(--muted);
 }
-.q-grade-notice{
-  margin:14px 0 0; font-size:var(--fs-sm); line-height:1.7; color:var(--muted-2);
-}
 /* 정답은 크게 하나만 보여줍니다. 설명은 그 편에서 보게 해요. */
 .q-ans-src{
   display:inline-block; margin-top:18px;
@@ -124,8 +121,17 @@
 .g-emoji{ font-size:22px; line-height:1; }
 .g-label{ font-size:12px; font-weight:600; color:var(--muted); }
 .g-btn:hover{ border-color:var(--line-2); background:var(--bg-soft); }
+.g-btn:disabled{ cursor:default; opacity:.55; }
 /* .g-btn.ok:hover{ border-color:var(--accent-ink); }
 .g-btn.lost:hover{ border-color:var(--hot); } */
+
+.q-next{
+  display:block; width:100%; margin-top:12px; padding:14px;
+  font-family:var(--font-kr); font-size:14.5px; font-weight:700;
+  color:var(--text); background:var(--bg-soft);
+  border:1px solid var(--line-2); border-radius:14px; cursor:pointer;
+}
+.q-next:hover{ background:var(--card); }
 
 /* ---------- 쉬는 카드 ---------- */
 .restcard{
@@ -158,6 +164,29 @@
   display:flex; gap:8px; justify-content:center; margin-top:16px;
 }
 .again-links .pill {padding: 8px 24px;}
+
+.reactivation{
+  margin-top:12px; padding:18px;
+  background:var(--card); border:1px solid var(--line); border-radius:14px;
+}
+.reactivation h2{ margin:0 0 5px; font-size:var(--fs-base); }
+.reactivation > p{ margin:0; font-size:var(--fs-sm); line-height:1.65; color:var(--muted-2); }
+.reactivation-list{ display:flex; flex-direction:column; gap:8px; margin-top:12px; }
+.reactivation-item{
+  display:flex; align-items:center; gap:8px; padding:11px 12px;
+  background:var(--bg-soft); border-radius:12px;
+}
+.reactivation-expression{ min-width:0; display:flex; align-items:baseline; gap:7px; flex-wrap:wrap; }
+.reactivation-expression .jp{ font-family:var(--font-jp); font-weight:700; color:var(--right); }
+.reactivation-expression rt{ font-size:.45em; color:var(--ruby); font-weight:400; }
+.reactivation-kr{ font-size:var(--fs-sm); color:var(--muted); }
+.reactivation-button{
+  flex:none; margin-left:auto; padding:8px 12px;
+  font-family:var(--font-kr); font-size:var(--fs-sm); font-weight:700;
+  color:var(--accent-ink); background:var(--card);
+  border:1px solid var(--line-2); border-radius:999px; cursor:pointer;
+}
+.reactivation-button:disabled{ cursor:default; opacity:.55; }
 
 /* 한 손 조작 — 상태 버튼은 화면 아래쪽 절반에 오도록 여백을 둡니다 */
 .q-grade .g-btn{ min-height:56px; }
