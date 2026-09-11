@@ -143,5 +143,6 @@ export function mutationErrorMessage(code: string): string {
   if (code === 'storage-unavailable') return '이 브라우저에서는 기록을 저장할 수 없어요. 저장 허용 여부를 확인해 주세요.';
   if (code === 'write-failed') return '기록을 저장하지 못했어요. 잠시 뒤 다시 시도해 주세요.';
   if (code === 'invalid-state') return '저장된 기록을 안전하게 읽지 못했어요. 기존 기록은 덮어쓰지 않았습니다.';
+  if (code === 'invalid-command') return '요청 정보가 올바르지 않아 기록을 바꾸지 않았어요. 새로고침한 뒤 다시 시도해 주세요.';
   return '요청을 반영하지 못했어요. 새로고침한 뒤 다시 시도해 주세요.';
 }

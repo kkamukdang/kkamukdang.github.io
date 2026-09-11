@@ -34,7 +34,7 @@ import '../styles/again.css';
           <span id="qSceneKr"></span>
         </div>
 
-        <h2 class="q-ask" id="qAsk"></h2>
+        <h2 class="q-ask" id="qAsk" tabindex="-1"></h2>
         <div class="q-cloze jp" id="qCloze" lang="ja" hidden></div>
         <p class="q-prompt" id="qPrompt">일본어로 뭐라고 했더라?</p>
         <button class="q-reveal" id="qReveal" type="button">정답 보기</button>
@@ -70,13 +70,13 @@ import '../styles/again.css';
 
       <section class="restcard" id="rest" hidden aria-labelledby="restText">
         <div class="rest-emoji"><img src={url('/cha-rest-2.webp')} alt="" width="90" height="90" /></div>
-        <h2 class="rest-text" id="restText"></h2>
+        <h2 class="rest-text" id="restText" tabindex="-1"></h2>
         <button class="pill" id="restMore" type="button" hidden>조금 더 만나볼까요?</button>
       </section>
     </div>
 
     <div id="bottom" class="again-bottom">
-      <div class="counters" aria-label="학습 기록">
+      <div class="counters" id="learningSummary" aria-label="학습 기록" tabindex="-1">
         <div class="counter">
           <span class="c-num" id="cReunions">0</span>
           <span class="c-label">다시 만남</span>

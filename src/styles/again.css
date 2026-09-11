@@ -66,7 +66,7 @@
 
 .q-cloze{
   margin-top:8px; font-size:19px; font-weight:700;
-  line-height:1.65; word-break:keep-all;
+  line-height:1.65; overflow-wrap:anywhere;
 }
 .q-cloze rt{ font-size:.45em; color:var(--ruby); font-weight:400; }
 
@@ -92,7 +92,7 @@
 }
 .q-ans-jp{
   font-family:var(--font-jp); font-size:var(--fs-xl); font-weight: 700;
-  line-height:1.7; word-break:keep-all; color: var(--hot-ink);
+  line-height:1.7; overflow-wrap:anywhere; color: var(--hot-ink);
 }
 .q-ans-jp rt{ font-size:.45em; color:var(--ruby); font-weight:400; }
 .q-answer-target{ color:var(--accent-ink); font-weight:800; }
@@ -112,7 +112,7 @@
 /* ---------- 상태 버튼 ---------- */
 .q-grade{ display:flex; gap:7px; margin-top:20px; }
 .g-btn{
-  flex:1 1 0; display:flex; flex-direction:column; align-items:center; gap:5px;
+  min-width:0; flex:1 1 0; display:flex; flex-direction:column; align-items:center; gap:5px;
   padding:13px 6px;
   font-family:var(--font-kr); cursor:pointer;
   background:var(--card); border:1px solid var(--line); border-radius:14px;
@@ -177,7 +177,10 @@
   background:var(--bg-soft); border-radius:12px;
 }
 .reactivation-expression{ min-width:0; display:flex; align-items:baseline; gap:7px; flex-wrap:wrap; }
-.reactivation-expression .jp{ font-family:var(--font-jp); font-weight:700; color:var(--right); }
+.reactivation-expression .jp{
+  font-family:var(--font-jp); font-weight:700; color:var(--right);
+  overflow-wrap:anywhere;
+}
 .reactivation-expression rt{ font-size:.45em; color:var(--ruby); font-weight:400; }
 .reactivation-kr{ font-size:var(--fs-sm); color:var(--muted); }
 .reactivation-button{

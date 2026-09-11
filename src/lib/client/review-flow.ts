@@ -78,6 +78,18 @@ export function graduatedExpressionCount(state: LearningStateV2): number {
   return Object.values(state.expressions).filter((expression) => expression.graduated).length;
 }
 
+export function reviewMutationStatusMessage(status: 'duplicate' | 'no-change'): string {
+  return status === 'duplicate'
+    ? '이 선택은 이미 기록되어 있어요.'
+    : '표현 상태가 이미 바뀌어 이번 선택은 반영하지 않았어요. 새로고침한 뒤 다시 확인해 주세요.';
+}
+
+export function reactivationStatusMessage(status: 'duplicate' | 'no-change'): string {
+  return status === 'duplicate'
+    ? '이 표현은 이미 다시 만나기로 돌아왔어요.'
+    : '현재는 다시 만나기로 돌릴 수 있는 졸업 상태가 아니에요.';
+}
+
 function element<T extends HTMLElement>(id: string): T {
   const found = document.getElementById(id);
   if (!found) throw new Error(`#${id} 요소가 없음`);
@@ -99,6 +111,7 @@ export async function initReviewFlowPage(): Promise<void> {
   const grade = element<HTMLElement>('qGrade');
   const feedback = element<HTMLElement>('qFeedback');
   const next = element<HTMLButtonElement>('qNext');
+  const summary = element<HTMLElement>('learningSummary');
   const reactivation = element<HTMLElement>('reactivation');
   const reactivationList = element<HTMLElement>('reactivationList');
   let client: ReturnType<typeof createLearningClient> | null = null;
@@ -299,19 +312,32 @@ export async function initReviewFlowPage(): Promise<void> {
       return;
     }
 
+    if (result.status === 'no-change') {
+      ratingLocked = false;
+      grade.querySelectorAll<HTMLButtonElement>('button[data-rating]').forEach((item) => { item.disabled = false; });
+      announce(reviewMutationStatusMessage(result.status), true);
+      return;
+    }
+
     latestState = result.state;
     paintSummary(result.state);
     paintReactivation(result.state);
     grade.hidden = true;
-    feedback.textContent = reviewFeedback(rating, result.state.expressions[expressionId]);
+    feedback.textContent = result.status === 'duplicate'
+      ? reviewMutationStatusMessage(result.status)
+      : reviewFeedback(rating, result.state.expressions[expressionId]);
     feedback.classList.add(rating === 'remembered' ? 'ok' : rating === 'fuzzy' ? 'vague' : 'lost');
     feedback.hidden = false;
     next.hidden = false;
+    next.focus();
     announce(feedback.textContent);
   });
 
   next.addEventListener('click', () => {
-    if (latestState) render(latestState);
+    if (!latestState) return;
+    render(latestState);
+    if (!card.hidden) element<HTMLElement>('qAsk').focus();
+    else restText.focus();
   });
 
   reactivationList.addEventListener('click', (event) => {
@@ -339,7 +365,10 @@ export async function initReviewFlowPage(): Promise<void> {
     latestState = result.state;
     paintSummary(result.state);
     paintReactivation(result.state);
-    announce('졸업한 표현을 다시 만나기로 돌려놓았어요.');
+    summary.focus();
+    announce(result.status === 'applied'
+      ? '졸업한 표현을 다시 만나기로 돌려놓았어요.'
+      : reactivationStatusMessage(result.status));
   });
 
   restMore.addEventListener('click', () => {
