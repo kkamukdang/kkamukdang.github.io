@@ -33,19 +33,29 @@ import EpisodeFooter from '../../components/EpisodeFooter.astro';
 import CorrectionNote from '../../components/CorrectionNote.astro';
 import { toPlain, toChunks } from '../../lib/furigana';
 import { SITE, url } from '../../lib/site';
+import { createRegistryIndex, loadExpressionRegistry } from '../../lib/content/expression-registry';
+import type { EpisodeData } from '../../lib/content/episode-types';
+import { isEpisodeReviewReady } from '../../lib/learning/review-content';
 import '../../styles/keypoints.css';
 
 export async function getStaticPaths() {
   const all = await getPages();
+  const registry = createRegistryIndex(await loadExpressionRegistry());
+  const v2EpisodeNumbers = all
+    .filter((episode) => isEpisodeReviewReady(episode.data as EpisodeData, registry.active))
+    .map((episode) => episode.data.no);
   // 이전/다음 편은 회차 번호 순서로 자동 연결됩니다.
   return all.map((ep, i) => ({
     params: { slug: ep.id },
-    props: { ep, prev: all[i - 1] ?? null, next: all[i + 1] ?? null },
+    props: { ep, prev: all[i - 1] ?? null, next: all[i + 1] ?? null, v2EpisodeNumbers },
   }));
 }
 
-const { ep, prev, next } = Astro.props;
+const { ep, prev, next, v2EpisodeNumbers } = Astro.props;
 const d = ep.data;
+const episodeId = `s${String(d.season).padStart(2, '0')}e${String(d.no).padStart(2, '0')}`;
+const seasonId = `s${String(d.season).padStart(2, '0')}`;
+const isLearningV2 = v2EpisodeNumbers.includes(d.no);
 const plainTitle = toPlain(d.title);
 const hasKanji = d.kanjiPractice.length > 0;
 
@@ -95,7 +105,11 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
   <div
     class="wrap reading"
     data-pagefind-body
-    data-learning-v2={d.no === 1 ? 'true' : 'false'}
+    data-learning-v2={isLearningV2 ? 'true' : 'false'}
+    data-episode-id={episodeId}
+    data-season-id={seasonId}
+    data-episode-no={d.no}
+    data-v2-episodes={v2EpisodeNumbers.join(',')}
     data-catalog-url={url('/expressions.json')}
   >
     <meta data-pagefind-meta={`no:${d.no}`} />
@@ -125,7 +139,8 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
       season={d.season}
       markNo={d.no}
       exprIds={d.keyPoints.map((k) => k.id)}
-      note="여기까지 읽으면 오늘의 표현 3개가 사흘 뒤 다시만나기 약속에 등록됩니다."
+      note="여기까지 읽으면 오늘의 표현 3개가 다시 만나기 약속에 등록됩니다."
+      subnote="기본은 사흘 뒤, 자신 없는 표현은 내일 다시 만나요."
     />
 
     <TodayEnd />
@@ -206,14 +221,16 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
       var season = Number(board.dataset.season);
       var markNo = Number(board.dataset.mark);
       var exprs = (board.dataset.exprs || '').split(',').filter(Boolean);
+      var v2Episodes = new Set((board.closest('[data-v2-episodes]').dataset.v2Episodes || '')
+        .split(',').map(Number).filter(Number.isInteger));
 
       /** 저장된 기록대로 도장판을 칠합니다. justNo 칸은 찍히는 모션을 붙여요. */
       function paint(justNo) {
         var s = Kkmd.getStamps(season);
         board.querySelectorAll('.stamp-cell[data-no]').forEach(function (cell) {
           var no = Number(cell.dataset.no);
-          // #001은 모든 Episode에서 v2 학습 상태만 권위값으로 사용합니다.
-          if (no === 1) return;
+          // v2 준비가 끝난 Episode는 모든 화면에서 v2 학습 상태만 권위값으로 사용합니다.
+          if (v2Episodes.has(no)) return;
           var on = s.episodes.indexOf(no) >= 0;
           cell.classList.toggle('on', on);
           if (on && no === justNo) cell.classList.add('just');

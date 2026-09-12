@@ -1,7 +1,7 @@
 import type { ExpressionId, ReviewStage } from '../learning/types';
 
 export interface MemoryCue { asset: string; alt: string }
-export interface StageReviewPrompt { cue: string; answer: string; answerHighlight?: string; explanation?: string; mode?: 'cued-recall' | 'choice' }
+export interface StageReviewPrompt { cue: string; answer: string; answerHighlight?: string; explanation?: string; mode?: 'cloze' | 'cued-recall' | 'choice' }
 export interface KeyPoint {
   id: ExpressionId;
   jp: string;

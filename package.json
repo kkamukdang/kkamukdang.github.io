@@ -7,7 +7,8 @@
     "build": "npm run check && npm run test && astro build",
     "preview": "astro preview",
     "check": "node scripts/check.mjs && astro sync && tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "audit:season1": "node scripts/audit-season1.mjs"
   },
   "dependencies": {
     "astro": "^5.13.0",

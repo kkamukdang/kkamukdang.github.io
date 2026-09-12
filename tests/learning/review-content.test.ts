@@ -35,7 +35,20 @@ describe('stage별 reviewPrompt resolver', () => {
     };
     expect(validateEpisodeReviewContent(broken).some((issue) => issue.includes('answerHighlight가 answer에 없음'))).toBe(true);
   });
-  it('명시형 R3에 정답 강조 구간이 없으면 validation 오류로 처리한다', () => {
-    expect(validateEpisodeReviewContent(episode).some((issue) => issue.includes('reviewPrompt.R3.answerHighlight 필수'))).toBe(true);
+  it('회상형 R3는 정답 강조 구간 없이도 사용할 수 있다', () => {
+    expect(validateEpisodeReviewContent(episode).some((issue) => issue.includes('answerHighlight 필수'))).toBe(false);
+  });
+  it('cloze 형식에 빈칸으로 만들 정답 강조 구간이 없으면 validation 오류로 처리한다', () => {
+    const broken = {
+      ...episode,
+      keyPoints: [{
+        ...keyPoint,
+        reviewPrompt: {
+          R2: { cue: '새 상황', answer: '新しい文', mode: 'cloze' as const },
+          R3: { cue: '의미 단서', answer: '〜ばいいよ', answerHighlight: '〜ばいいよ' },
+        },
+      }, episode.keyPoints[1], episode.keyPoints[2]],
+    };
+    expect(validateEpisodeReviewContent(broken).some((issue) => issue.includes('reviewPrompt.R2 cloze는 answerHighlight 필수'))).toBe(true);
   });
 });

@@ -12,7 +12,7 @@ import {
 export interface BrowserReviewPrompt {
   id: string;
   stage: ReviewStage;
-  mode: 'scene' | 'cued-recall' | 'choice';
+  mode: 'scene' | 'cloze' | 'cued-recall' | 'choice';
   cue: string;
   answer: string;
   answerHtml: string;
@@ -76,10 +76,32 @@ export interface StampSummary {
   seasonCompleted: boolean;
 }
 
+export function reviewReadyEpisodeNumbers(
+  expressions: BrowserExpression[],
+  seasonId: SeasonId,
+): Set<number> {
+  const season = Number(seasonId.slice(1));
+  const grouped = expressions.reduce((episodes, item) => {
+    if (!item.registry?.active || item.season !== season) return episodes;
+    const key = `${item.season}:${item.no}`;
+    const values = episodes.get(key) ?? [];
+    values.push(item);
+    episodes.set(key, values);
+    return episodes;
+  }, new Map<string, BrowserExpression[]>());
+
+  return new Set([...grouped.values()]
+    .filter((items) => items.length === 3 && items.every((item) => (
+      item.prompts?.R1 && item.prompts.R2 && item.prompts.R3
+    )))
+    .map((items) => items[0].no));
+}
+
 export function stampSummary(
   storage: StorageLike,
   state: LearningStateV2,
   seasonId: SeasonId,
+  v2EpisodeNumbers: ReadonlySet<number>,
 ): StampSummary {
   const completedEpisodes = new Set(
     Object.entries(state.episodes)
@@ -96,8 +118,12 @@ export function stampSummary(
   if (Array.isArray(legacy.episodes)) {
     legacy.episodes.forEach((value) => {
       const episodeNo = Number(value);
-      // #001은 v2만 권위값으로 사용하고, 아직 v1인 #002~#006만 합칩니다.
-      if (Number.isInteger(episodeNo) && episodeNo >= 2 && episodeNo <= 6) completedEpisodes.add(episodeNo);
+      if (Number.isInteger(episodeNo)
+        && episodeNo >= 1
+        && episodeNo <= 6
+        && !v2EpisodeNumbers.has(episodeNo)) {
+        completedEpisodes.add(episodeNo);
+      }
     });
   }
   return {

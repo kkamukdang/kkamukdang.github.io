@@ -218,22 +218,23 @@ describe('Work 2-2 reviewFlow 화면 계약', () => {
     expect(controller).toContain('client.service.rateReview');
   });
 
-  it('모든 공통 도장판이 v2 #001과 기존 v1 #002~#006을 같은 기준으로 합친다', async () => {
+  it('모든 공통 도장판이 v2 준비 회차와 기존 v1 회차를 같은 기준으로 합친다', async () => {
     const storage = new MemoryStorage();
     storage.setItem('kkmd:stamps:s1', JSON.stringify({ episodes: [1, 2, 3], completed: false }));
     const state = createEmptyState(NOW);
-    expect([...stampSummary(storage, state, 's01').completedEpisodes]).toEqual([2, 3]);
+    const v2Episodes = new Set([1, 2]);
+    expect([...stampSummary(storage, state, 's01', v2Episodes).completedEpisodes]).toEqual([3]);
     state.episodes.s01e01 = { completed: true, completedAt: NOW };
-    expect([...stampSummary(storage, state, 's01').completedEpisodes]).toEqual([1, 2, 3]);
+    expect([...stampSummary(storage, state, 's01', v2Episodes).completedEpisodes]).toEqual([1, 3]);
     storage.setItem('kkmd:stamps:s1', 'null');
-    expect([...stampSummary(storage, state, 's01').completedEpisodes]).toEqual([1]);
+    expect([...stampSummary(storage, state, 's01', v2Episodes).completedEpisodes]).toEqual([1]);
 
     const page = await readFile('src/pages/ep/[slug].astro', 'utf8');
     const controller = await readFile('src/lib/client/episode-learning.ts', 'utf8');
     const again = await readFile('src/lib/client/review-flow.ts', 'utf8');
-    expect(page).toContain('if (no === 1) return;');
-    expect(controller).toContain("stampSummary(window.localStorage, state, seasonId)");
-    expect(again).toContain("stampSummary(window.localStorage, state, 's01')");
+    expect(page).toContain('if (v2Episodes.has(no)) return;');
+    expect(controller).toContain('stampSummary(window.localStorage, state, seasonId, v2EpisodeNumbers)');
+    expect(again).toContain("reviewReadyEpisodeNumbers(client?.expressions ?? [], 's01')");
   });
 
   it('R1은 scene 문장을 반복하지 않고 상황 회상 질문을 표시한다', async () => {
@@ -246,11 +247,11 @@ describe('Work 2-2 reviewFlow 화면 계약', () => {
     expect(page).not.toContain('id="qAnsMeaning"');
   });
 
-  it('R3는 한국어 cue와 데이터 기반 cloze를 별도 요소로 렌더한다', async () => {
+  it('R2는 새로운 상황 cue와 데이터 기반 cloze를 별도 요소로 렌더한다', async () => {
     const page = await readFile('src/pages/again.astro', 'utf8');
     const controller = await readFile('src/lib/client/review-flow.ts', 'utf8');
     expect(page).toContain('id="qCloze"');
     expect(controller).toContain("cloze.innerHTML = prompt.clozeHtml ?? ''");
-    expect(controller).toContain("cloze.hidden = prompt.stage !== 'R3' || !prompt.clozeHtml");
+    expect(controller).toContain("cloze.hidden = prompt.mode !== 'cloze' || !prompt.clozeHtml");
   });
 });

@@ -19,7 +19,7 @@ const stageReviewPrompt = z.object({
   answer: z.string().trim().min(1).max(120),
   answerHighlight: z.string().trim().min(1).max(80).optional(),
   explanation: z.string().trim().max(160).optional(),
-  mode: z.enum(['cued-recall', 'choice']).default('cued-recall'),
+  mode: z.enum(['cloze', 'cued-recall', 'choice']).default('cued-recall'),
 });
 const reviewPrompt = z.object({
   R2: stageReviewPrompt.optional(),

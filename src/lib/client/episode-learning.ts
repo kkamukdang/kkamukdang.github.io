@@ -3,11 +3,12 @@ import {
   makeEpisodeEventId,
   makeUnsureEventId,
   mutationErrorMessage,
+  reviewReadyEpisodeNumbers,
   stampSummary,
   todayKst,
   type BrowserExpression,
 } from './learning-client';
-import type { ExpressionId, LearningStateV2, SeasonId } from '../learning';
+import { asEpisodeId, asSeasonId, type ExpressionId, type LearningStateV2, type SeasonId } from '../learning';
 
 function announce(element: HTMLElement | null, message: string, error = false): void {
   if (!element) return;
@@ -20,8 +21,9 @@ function paintStampBoard(
   board: HTMLElement,
   state: LearningStateV2,
   seasonId: SeasonId,
+  v2EpisodeNumbers: ReadonlySet<number>,
 ): void {
-  const summary = stampSummary(window.localStorage, state, seasonId);
+  const summary = stampSummary(window.localStorage, state, seasonId, v2EpisodeNumbers);
   board.querySelectorAll<HTMLElement>('.stamp-cell[data-no]').forEach((cell) => {
     const episodeNo = Number(cell.dataset.no);
     cell.classList.toggle('on', summary.completedEpisodes.has(episodeNo));
@@ -42,7 +44,14 @@ export async function initEpisodeLearningPage(): Promise<void> {
   const board = root?.querySelector<HTMLElement>('.stampboard');
   if (!root || !board) return;
   const isV2Episode = root.dataset.learningV2 === 'true';
+  const episodeId = asEpisodeId(root.dataset.episodeId ?? '');
+  const seasonId = asSeasonId(root.dataset.seasonId ?? '');
+  const episodeNo = Number(root.dataset.episodeNo);
   const status = board.querySelector<HTMLElement>('.stamp-said');
+  if (isV2Episode && (!episodeId || !seasonId || !Number.isInteger(episodeNo))) {
+    announce(status, '이 회차의 학습 정보를 확인하지 못했어요. 기록은 변경하지 않았습니다.', true);
+    return;
+  }
   let list: BrowserExpression[];
   try {
     const response = await fetch(root.dataset.catalogUrl!);
@@ -54,8 +63,8 @@ export async function initEpisodeLearningPage(): Promise<void> {
   }
 
   const client = createLearningClient(window.localStorage, list);
+  const v2EpisodeNumbers = reviewReadyEpisodeNumbers(list, seasonId ?? 's01');
   const expressionIds = (board.dataset.exprs ?? '').split(',').filter(Boolean) as ExpressionId[];
-  const episodeId = 's01e01';
 
   function paint(): void {
     const read = client.service.getSnapshot();
@@ -65,7 +74,7 @@ export async function initEpisodeLearningPage(): Promise<void> {
       }
       return;
     }
-    paintStampBoard(board!, read.value, 's01');
+    paintStampBoard(board!, read.value, seasonId ?? 's01', v2EpisodeNumbers);
     if (!isV2Episode) return;
 
     expressionIds.forEach((id) => {
@@ -83,14 +92,20 @@ export async function initEpisodeLearningPage(): Promise<void> {
   }
 
   paint();
-  if (!isV2Episode || board.dataset.mark !== '1') return;
+  if (!isV2Episode || !episodeId || !seasonId || Number(board.dataset.mark) !== episodeNo) return;
+  if (expressionIds.length !== 3) {
+    announce(status, '이 회차의 핵심 표현 3개를 확인하지 못했어요. 기록은 변경하지 않았습니다.', true);
+    return;
+  }
+  const v2EpisodeId = episodeId;
+  const v2SeasonId = seasonId;
 
   function complete(): void {
     const result = client.service.completeEpisode({
-      eventId: makeEpisodeEventId(episodeId),
+      eventId: makeEpisodeEventId(v2EpisodeId),
       now: new Date().toISOString(),
-      episodeId,
-      seasonId: 's01',
+      episodeId: v2EpisodeId,
+      seasonId: v2SeasonId,
       expressionIds: expressionIds as [ExpressionId, ExpressionId, ExpressionId],
     });
     if (!result.ok) {
@@ -99,8 +114,8 @@ export async function initEpisodeLearningPage(): Promise<void> {
     }
     paint();
     if (result.status === 'applied') {
-      board?.querySelector('.stamp-cell[data-no="1"]')?.classList.add('just');
-      announce(status, '#001 도장을 찍었어요 · 세 표현은 사흘 뒤 다시 만나요.');
+      board?.querySelector(`.stamp-cell[data-no="${episodeNo}"]`)?.classList.add('just');
+      announce(status, `#${String(episodeNo).padStart(3, '0')} 도장을 찍었어요 · 세 표현은 사흘 뒤 다시 만나요.`);
     } else if (result.status === 'duplicate') {
       announce(status, '이 회차의 도장과 약속은 이미 기록되어 있어요.');
     } else {

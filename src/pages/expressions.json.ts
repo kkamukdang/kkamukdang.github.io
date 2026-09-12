@@ -16,7 +16,7 @@ import { getListed } from '../lib/episodes';
 import { toChunks, toRubyCloze, toRuby, toRubyReviewTarget, toKanji } from '../lib/furigana';
 import { createRegistryIndex, loadExpressionRegistry } from '../lib/content/expression-registry';
 import type { EpisodeData, KeyPoint } from '../lib/content/episode-types';
-import { resolveReviewPrompt } from '../lib/learning/review-content';
+import { isEpisodeReviewReady, resolveReviewPrompt } from '../lib/learning/review-content';
 import type { ExpressionId, ExpressionStateV2, ReviewStage } from '../lib/learning/types';
 import { url } from '../lib/site';
 
@@ -41,6 +41,7 @@ export const GET: APIRoute = async () => {
 
   const out = episodes.flatMap((ep) => {
     const d = ep.data;
+    const reviewReady = isEpisodeReviewReady(d as EpisodeData, registry.active);
     return d.keyPoints.map((kp) => {
       const expressionId = kp.id as ExpressionId;
       const registryEntry = registry.active[expressionId] ?? registry.retired[expressionId];
@@ -49,7 +50,7 @@ export const GET: APIRoute = async () => {
         ? toRubyCloze(line.jp, [toChunks(kp.jp)])
         : { html: '', answer: '' };
       let prompts = null;
-      if (d.no === 1 && registry.active[expressionId]) {
+      if (reviewReady && registry.active[expressionId]) {
         prompts = Object.fromEntries(reviewStages.map((stage) => {
           const prompt = resolveReviewPrompt({
             episode: d as EpisodeData,
@@ -61,7 +62,7 @@ export const GET: APIRoute = async () => {
           return [stage, {
             ...prompt,
             answerHtml: target.answerHtml,
-            clozeHtml: stage === 'R3' ? target.clozeHtml : undefined,
+            clozeHtml: prompt.mode === 'cloze' ? target.clozeHtml : undefined,
             memoryCue: prompt.memoryCue ? { ...prompt.memoryCue, asset: url(prompt.memoryCue.asset) } : undefined,
             scene: prompt.scene ? {
               who: prompt.scene.who,

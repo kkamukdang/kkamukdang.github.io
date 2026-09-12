@@ -3,6 +3,7 @@ import {
   createLearningClient,
   currentReviewItem,
   mutationErrorMessage,
+  reviewReadyEpisodeNumbers,
   reviewableExpressions,
   stampSummary,
   todayKst,
@@ -39,10 +40,10 @@ export function buildReviewScreenModel(
 
 export function reviewInstruction(prompt: BrowserReviewPrompt): string {
   if (prompt.stage === 'R1') return '일본어로 뭐라고 했더라?';
-  if (prompt.stage === 'R2') return '응용 문장을 일본어로 떠올려 보세요.';
-  return prompt.mode === 'choice'
-    ? '맞는 표현을 골라 보세요.'
-    : '빈칸에 들어갈 표현을 떠올려 보세요.';
+  if (prompt.mode === 'choice') return '맞는 표현을 골라 보세요.';
+  if (prompt.mode === 'cloze') return '빈칸에 들어갈 표현을 떠올려 보세요.';
+  if (prompt.stage === 'R2') return '새로운 상황에 어울리는 표현을 떠올려 보세요.';
+  return '일본어로 뭐라고 했더라?';
 }
 
 export function makeReviewEventId(state: LearningStateV2, expressionId: ExpressionId): string {
@@ -125,7 +126,12 @@ export async function initReviewFlowPage(): Promise<void> {
   }
 
   function paintSummary(state: LearningStateV2): void {
-    const summary = stampSummary(window.localStorage, state, 's01');
+    const summary = stampSummary(
+      window.localStorage,
+      state,
+      's01',
+      reviewReadyEpisodeNumbers(client?.expressions ?? [], 's01'),
+    );
     page.querySelectorAll<HTMLElement>('.stamp-cell[data-no]').forEach((cell) => {
       cell.classList.toggle('on', summary.completedEpisodes.has(Number(cell.dataset.no)));
     });
@@ -142,7 +148,7 @@ export async function initReviewFlowPage(): Promise<void> {
 
   function paintReactivation(state: LearningStateV2): void {
     if (!client) return;
-    const graduated = client.expressions.filter((item) => item.no === 1 && state.expressions[item.id]?.graduated);
+    const graduated = client.expressions.filter((item) => state.expressions[item.id]?.graduated);
     reactivation.hidden = graduated.length === 0;
     reactivationList.replaceChildren(...graduated.map((expression) => {
       const row = document.createElement('div');
@@ -208,7 +214,7 @@ export async function initReviewFlowPage(): Promise<void> {
       : prompt.cue;
     const cloze = element<HTMLElement>('qCloze');
     cloze.innerHTML = prompt.clozeHtml ?? '';
-    cloze.hidden = prompt.stage !== 'R3' || !prompt.clozeHtml;
+    cloze.hidden = prompt.mode !== 'cloze' || !prompt.clozeHtml;
     const promptText = element<HTMLElement>('qPrompt');
     promptText.textContent = reviewInstruction(prompt);
     promptText.hidden = prompt.stage === 'R1';
@@ -344,7 +350,7 @@ export async function initReviewFlowPage(): Promise<void> {
     const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-expression-id]');
     if (!button || !client) return;
     const expressionId = button.dataset.expressionId as ExpressionId | undefined;
-    if (!expressionId || client.byId[expressionId]?.no !== 1) return;
+    if (!expressionId || !client.byId[expressionId]) return;
     const graduatedAt = latestState?.expressions[expressionId]?.graduatedAt;
     if (!graduatedAt) {
       announce('현재 졸업 상태를 확인하지 못했어요. 새로고침한 뒤 다시 시도해 주세요.', true);

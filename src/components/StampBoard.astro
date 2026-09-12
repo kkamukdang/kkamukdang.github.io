@@ -25,8 +25,9 @@ interface Props {
   /** 큐에 등록할 표현 ID 목록 (에피소드에서만) */
   exprIds?: string[];
   note?: string;
+  subnote?: string;
 }
-const { season, total = 6, markNo, exprIds = [], note } = Astro.props;
+const { season, total = 6, markNo, exprIds = [], note, subnote } = Astro.props;
 const cells = Array.from({ length: total }, (_, i) => i + 1);
 ---
 <div
@@ -52,6 +53,11 @@ const cells = Array.from({ length: total }, (_, i) => i + 1);
       <span class="stamp-label">완주</span>
     </div>
   </div>
-  {note && <p class="stamp-note">{note}</p>}
+  {note && (
+    <p class="stamp-note">
+      {note}
+      {subnote && <><br /><span>{subnote}</span></>}
+    </p>
+  )}
   <p class="stamp-said" hidden></p>
 </div>

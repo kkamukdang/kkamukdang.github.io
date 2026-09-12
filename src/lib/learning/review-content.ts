@@ -3,7 +3,7 @@ import type { RegistryExpression } from '../content/expression-registry';
 import type { ExpressionStateV2, ReviewStage } from './types';
 
 export interface ReviewPrompt {
-  id: string; stage: ReviewStage; mode: 'scene' | 'cued-recall' | 'choice';
+  id: string; stage: ReviewStage; mode: 'scene' | 'cloze' | 'cued-recall' | 'choice';
   cue: string; answer: string; answerHighlight?: string; explanation?: string; source: 'scene' | 'apply' | 'reviewPrompt.R2' | 'reviewPrompt.R3' | 'quiz' | 'compare';
   scene?: EpisodeData['scene'][number]; memoryScene?: string; memoryCue?: MemoryCue; cueBoost: boolean;
 }
@@ -20,12 +20,12 @@ export function resolveReviewPrompt(args: { episode: EpisodeData; keyPoint: KeyP
     return { id: `${keyPoint.id}:R1:scene:${keyPoint.sceneIndex}`, stage: 'R1', mode: 'scene', cue: scene.kr, answer: keyPoint.jp, source: 'scene', scene, memoryScene: episode.memoryScene, memoryCue: keyPoint.memoryCue, cueBoost: true };
   }
   if (state.reviewStage === 'R2') {
+    if (keyPoint.reviewPrompt?.R2) return explicit('R2', keyPoint.reviewPrompt.R2, keyPoint, state.cueBoost === 1);
     if (keyPoint.applyIndex !== undefined) {
       const apply = episode.apply[keyPoint.applyIndex];
       if (!apply) throw new Error(`${keyPoint.id}: R2 applyIndex를 해석할 수 없음`);
       return { id: `${keyPoint.id}:R2:apply:${keyPoint.applyIndex}`, stage: 'R2', mode: 'cued-recall', cue: apply.kr, answer: apply.jp, source: 'apply', cueBoost: state.cueBoost === 1 };
     }
-    if (keyPoint.reviewPrompt?.R2) return explicit('R2', keyPoint.reviewPrompt.R2, keyPoint, state.cueBoost === 1);
     throw new Error(`${keyPoint.id}: R2 prompt가 없음`);
   }
   if (keyPoint.reviewPrompt?.R3) return explicit('R3', keyPoint.reviewPrompt.R3, keyPoint, state.cueBoost === 1);
@@ -58,11 +58,26 @@ export function validateEpisodeReviewContent(episode: EpisodeData): string[] {
         issues.push(`${keyPoint.id}: reviewPrompt.${stage}.answerHighlight가 answer에 없음`);
       }
     }
-    if (keyPoint.reviewPrompt?.R3 && !keyPoint.reviewPrompt.R3.answerHighlight) {
-      issues.push(`${keyPoint.id}: reviewPrompt.R3.answerHighlight 필수`);
+    for (const stage of ['R2', 'R3'] as const) {
+      const prompt = keyPoint.reviewPrompt?.[stage];
+      if (prompt?.mode === 'cloze' && !prompt.answerHighlight) {
+        issues.push(`${keyPoint.id}: reviewPrompt.${stage} cloze는 answerHighlight 필수`);
+      }
     }
     if (keyPoint.applyIndex === undefined && !keyPoint.reviewPrompt?.R2) issues.push(`${keyPoint.id}: R2 resolver 없음`);
     if (!keyPoint.reviewPrompt?.R3 && keyPoint.quizIndex === undefined && keyPoint.compareIndex === undefined) issues.push(`${keyPoint.id}: R3 resolver 없음`);
   }
   return issues;
+}
+
+export function isEpisodeReviewReady(
+  episode: EpisodeData,
+  activeRegistry: Record<string, RegistryExpression | undefined>,
+): boolean {
+  return validateEpisodeReviewContent(episode).length === 0
+    && episode.keyPoints.length === 3
+    && episode.keyPoints.every((keyPoint) => (
+      Boolean(keyPoint.memoryCue)
+      && activeRegistry[keyPoint.id]?.status === 'published'
+    ));
 }
