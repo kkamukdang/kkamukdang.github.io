@@ -16,19 +16,27 @@ scene:
     kr: 야, 방금 뭐야? 안타?
   - who: 친구
     side: b
-    jp: ううん、ゲッツー。一気[いっき]に2アウト。
-    kr: 아니, 병살. 한 번에 투아웃.
+    jp: ううん、ゲッツー。
+    kr: 아니, 병살. 
+  - who: 친구
+    side: b
+    jp: 一気[いっき]に2アウト。
+    kr: 한 번에 투아웃.
   - who: 나
     side: a
     jp: え、それって最悪[さいあく]じゃない?
     kr: 어, 그거 완전 최악 아냐?
   - who: 친구
     side: b
-    jp: まあね。さっきの三振[さんしん]のほうがまだマシだったよ。
-    kr: 뭐 그렇지. 차라리 아까 삼진이 나았어.
+    jp: まあね。
+    kr: 뭐 그렇지.
+  - who: 친구
+    side: b
+    jp: さっきの三振[さんしん]のほうがまだマシだったよ。
+    kr: 차라리 아까 삼진이 나았어.
   - who: 나
     side: a
-    jp: 逆転[ぎゃくてん]、まだ間[[ま]]に合[あ]う?
+    jp: 逆転[ぎゃくてん]、間[[ま]]に合[あ]う?
     kr: 역전, 아직 가능해?
 
 wordGroups:
@@ -183,7 +191,7 @@ keyPoints:
   - id: s01e04-madamashi
     jp: 〜のほうがまだマシ
     kr: 차라리 ~가 낫다
-    sceneIndex: 3
+    sceneIndex: 5
     note: 둘 다 별로인데 그나마 덜 나쁠 때. マシ에는 "썩 좋진 않지만"이 깔려 있어요.
     compareIndex: 3
     applyIndex: 1
@@ -191,7 +199,7 @@ keyPoints:
   - id: s01e04-maniau
     jp: 間[[ま]]に合[あ]う
     kr: 늦지 않다 / 시간 안에 되다
-    sceneIndex: 4
+    sceneIndex: 6
     note: 마감·막차·역전 모두 여기에. 능력이 아니라 남은 시간을 묻는 말이에요.
     compareIndex: 4
     applyIndex: 2
