@@ -33,8 +33,8 @@ scene:
     kr: 만루홈런.
   - who: 친구
     side: b
-    jp: ちょうど席[せき]立[た]った時[とき]。
-    kr: 딱 너 자리 뜬 그 타이밍에.
+    jp: ちょうど席[せき]を立[た]った時[とき]。
+    kr: 딱 (네가) 자리 뜬 그때.
   - who: 나
     side: a
     jp: 私[わたし]が離[はな]れると必[かなら]ず点[てん]入[はい]るんだよね…
@@ -56,8 +56,8 @@ wordGroups:
         mean: 만루홈런
         note: 야구 중계 단골 표현이라 세트로 외우면 편해요.
       - jp: 席[せき]を立[た]つ
-        mean: 자리를 뜨다
-        note: <b>席立った時</b>처럼 を를 빼는 쪽이 구어체에서는 더 자연스러워요.
+        mean: 자리를 뜨다 / 자리에서 일어나다
+        note: <b>席を立つ</b>는 자리에서 일어나거나 자리를 뜨는 동작, <b>席を離れる</b>는 자리에서 떨어져 이동하는 데 초점이 있어요.
 
   - label: 💬 회화 문법
     items:
@@ -244,28 +244,27 @@ keyPoints:
         explanation: "상대에게 필요한 것이 있는지 가볍게 확인할 때 쓰는 표현이에요."
         mode: cued-recall
 
-  - id: s01e03-ndayone
-    jp: 〜んだよね
-    kr: ~하더라 / ~하단 말이지
-    sceneIndex: 6
-    note: 혼잣말에 공감을 살짝 얹는 어미예요. 빼면 담담한 설명문이 돼요.
-    applyIndex: 3       # 私が見ると必ず負けるんだよね…
+  - id: s01e03-sekiwotatsu
+    jp: 席[せき]を立[た]つ
+    kr: 자리를 뜨다 / 자리에서 일어나다
+    sceneIndex: 5
+    note: 자리에서 일어나거나 그 자리를 뜨는 동작을 나타내는 표현이에요.
     memoryCue:
       asset: /characters/memory/s01e03-baseball-beer-run.svg
-      alt: 맥주를 사러 자리를 비운 사이 만루홈런이 나와 징크스를 떠올리는 장면
+      alt: 야구장 좌석을 떠난 사이 만루홈런이 나왔다는 말을 듣는 장면
     reviewPrompt:
       R2:
-        cue: "이 가게, 전에도 왔었지."
-        answer: "この店[みせ]、前[まえ]にも来[き]たんだよね。"
-        answerHighlight: "んだよね"
-        explanation: "서로 알고 있는 배경을 꺼내면서 상대의 공감이나 확인을 구할 때 써요."
+        cue: "영화가 끝나고 바로 자리에서 일어났어."
+        answer: "映画[えいが]が終[お]わったらすぐ席[せき]を立[た]った。"
+        answerHighlight: "席[せき]を立[た]った"
+        explanation: "자리에서 일어나거나 그 자리를 뜨는 동작을 席を立つ라고 해요."
         mode: cloze
       R3:
-        cue: "전에 왔던 거지."
-        answer: "前[まえ]にも来[き]たんだよね。"
-        answerHighlight: "んだよね"
-        explanation: "이미 공유된 배경을 설명하면서 ‘그렇지?’ 하는 느낌을 더하는 말투예요."
-        mode: cloze
+        cue: "“자리를 뜨다 / 자리에서 일어나다”"
+        answer: "席[せき]を立[た]つ"
+        answerHighlight: "席[せき]を立[た]つ"
+        explanation: "자리에서 일어나거나 그 자리를 뜨는 동작을 나타내는 표현이에요."
+        mode: cued-recall
 
 reviewTargets:
   - id: s01e02-natteru

@@ -14,7 +14,7 @@ export interface RegistryExpression {
 }
 export interface RetiredRegistryExpression {
   id: ExpressionId; canonical: string; display: string; aliases: string[];
-  status: 'retired-before-learning-v2'; replacementId: ExpressionId | null;
+  status: 'retired-before-learning-v2' | 'retired-after-learning-v2'; replacementId: ExpressionId | null;
   migration: 'preserve-history-do-not-transfer'; note?: string;
 }
 export interface ExpressionRegistryData {

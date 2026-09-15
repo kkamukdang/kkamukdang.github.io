@@ -15,7 +15,7 @@ describe('Work 3-1 Season 1 expected-gap 진단', () => {
       summary: {
         episodes: 6,
         registryActive: 18,
-        registryRetired: 1,
+        registryRetired: 2,
         episodeKeyPoints: 18,
       },
     });

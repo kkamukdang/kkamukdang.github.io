@@ -9,7 +9,7 @@ import { isEpisodeReviewReady, resolveReviewPrompt, validateEpisodeReviewContent
 import type { ExpressionStateV2, ReviewStage } from '../../src/lib/learning/types';
 
 const NOW = '2026-09-15T03:00:00.000Z';
-const ids = ['s01e03-nanikairu', 's01e03-tekuru', 's01e03-ndayone'] as const;
+const ids = ['s01e03-tekuru', 's01e03-nanikairu', 's01e03-sekiwotatsu'] as const;
 
 function stageState(reviewStage: ReviewStage): ExpressionStateV2 {
   return {
@@ -24,9 +24,13 @@ function stageState(reviewStage: ReviewStage): ExpressionStateV2 {
   };
 }
 
-async function episode3(): Promise<EpisodeData & { reviewTargets: Array<{ id: string; scene: string; cloze: string; answer: string }> }> {
+async function episode3(): Promise<EpisodeData & {
+  reviewTargets: Array<{ id: string; scene: string; cloze: string; answer: string }>;
+  wordGroups: Array<{ label: string; items: Array<{ jp: string; mean: string; note?: string }> }>;
+}> {
   return yaml.load(await readFile('src/data/episodes/003-baseball-beer-run.yaml', 'utf8')) as EpisodeData & {
     reviewTargets: Array<{ id: string; scene: string; cloze: string; answer: string }>;
+    wordGroups: Array<{ label: string; items: Array<{ jp: string; mean: string; note?: string }> }>;
   };
 }
 
@@ -115,27 +119,38 @@ describe('Work 3-3 Episode #003 콘텐츠 계약', () => {
     });
   });
 
-  it('〜んだよね R2/R3가 확정값과 일치하고 잘못된 compareIndex를 사용하지 않는다', async () => {
+  it('席を立つ R1/R2/R3와 더 파보기 비교 문구가 확정값과 일치한다', async () => {
     const episode = await episode3();
-    const keyPoint = episode.keyPoints.find((item) => item.id === 's01e03-ndayone')!;
+    const keyPoint = episode.keyPoints.find((item) => item.id === 's01e03-sekiwotatsu')!;
 
+    expect(keyPoint.sceneIndex).toBe(5);
     expect(keyPoint).not.toHaveProperty('compareIndex');
+    expect(keyPoint).not.toHaveProperty('applyIndex');
     expect(keyPoint.reviewPrompt).toEqual({
       R2: {
-        cue: '이 가게, 전에도 왔었지.',
-        answer: 'この店[みせ]、前[まえ]にも来[き]たんだよね。',
-        answerHighlight: 'んだよね',
-        explanation: '서로 알고 있는 배경을 꺼내면서 상대의 공감이나 확인을 구할 때 써요.',
+        cue: '영화가 끝나고 바로 자리에서 일어났어.',
+        answer: '映画[えいが]が終[お]わったらすぐ席[せき]を立[た]った。',
+        answerHighlight: '席[せき]を立[た]った',
+        explanation: '자리에서 일어나거나 그 자리를 뜨는 동작을 席を立つ라고 해요.',
         mode: 'cloze',
       },
       R3: {
-        cue: '전에 왔던 거지.',
-        answer: '前[まえ]にも来[き]たんだよね。',
-        answerHighlight: 'んだよね',
-        explanation: '이미 공유된 배경을 설명하면서 ‘그렇지?’ 하는 느낌을 더하는 말투예요.',
-        mode: 'cloze',
+        cue: '“자리를 뜨다 / 자리에서 일어나다”',
+        answer: '席[せき]を立[た]つ',
+        answerHighlight: '席[せき]を立[た]つ',
+        explanation: '자리에서 일어나거나 그 자리를 뜨는 동작을 나타내는 표현이에요.',
+        mode: 'cued-recall',
       },
     });
+
+    expect(episode.scene[5].jp).toBe('ちょうど席[せき]を立[た]った時[とき]。');
+    const wordItem = episode.wordGroups.flatMap((group) => group.items)
+      .find((item) => item.jp === '席[せき]を立[た]つ');
+    expect(wordItem).toMatchObject({
+      mean: '자리를 뜨다 / 자리에서 일어나다',
+      note: '<b>席を立つ</b>는 자리에서 일어나거나 자리를 뜨는 동작, <b>席を離れる</b>는 자리에서 떨어져 이동하는 데 초점이 있어요.',
+    });
+    expect(JSON.stringify(episode.keyPoints)).not.toContain('s01e03-ndayone');
   });
 
   it('#003 newsletter의 s01e01-baiiyo 대상이 확정 cloze와 answer를 사용한다', async () => {
