@@ -192,15 +192,15 @@ keyPoints:
       alt: 주문 화면에서 배달 대신 포장이 선택된 것을 발견하고 당황한 장면
     reviewPrompt:
       R2:
-        cue: "배송지를 예전 주소로 잘못 설정했을 때"
-        answer: "住所[じゅうしょ]が今[いま]の家[いえ]じゃなくて前[まえ]の家[いえ]になってる!"
-        answerHighlight: "今[いま]の家[いえ]じゃなくて前[まえ]の家[いえ]になってる"
-        explanation: "A와 B만 바꿔 같은 패턴을 새로운 상황에 적용해요."
+        cue: "사이즈가 M이 아니라 L로 되어 있잖아!"
+        answer: "サイズがMじゃなくてLになってる!"
+        answerHighlight: "MじゃなくてLになってる"
+        explanation: "M과 L자리에 다른 단어를 넣어 같은 패턴을 새로운 상황에 적용해요."
         mode: cloze
       R3:
-        cue: "“A가 아니라 B로 되어 있다”"
-        answer: "Aじゃなくて Bになってる"
-        answerHighlight: "Aじゃなくて Bになってる"
+        cue: "어? 이거 배달이 아니라 포장으로 되어 있잖아!"
+        answer: "これ、配達[はいたつ]じゃなくて持[も]ち帰[かえ]りになってる!"
+        answerHighlight: "配達[はいたつ]じゃなくて持[も]ち帰[かえ]りになってる"
         explanation: "의도와 다른 상태를 발견했을 때 쓰는 패턴이에요."
 
   - id: s01e02-moraeba
@@ -215,16 +215,16 @@ keyPoints:
       alt: 포장 주문을 취소해 달라고 전화해보라며 친구가 제안하는 장면
     reviewPrompt:
       R2:
-        cue: "잘못 주문한 옷 사이즈를 바꾸고 싶을 때"
+        cue: "사이즈 교환해달라고 해보는 게 어때?"
         answer: "サイズ、交換[こうかん]してもらえば?"
         answerHighlight: "交換[こうかん]してもらえば"
-        explanation: "새 상황에서도 부탁할 행동의 て형 뒤에 もらえば?를 붙여요."
+        explanation: "부탁할 행동의 て형 뒤에 もらえば?를 붙여 부드럽게 제안해요."
         mode: cloze
       R3:
-        cue: "“~해달라고 해보는 게 어때?”"
-        answer: "〜てもらえば?"
-        answerHighlight: "〜てもらえば?"
-        explanation: "제3자에게 부탁해보라고 부드럽게 권하는 표현이에요."
+        cue: "전화해서 취소해달라고 해보는 게 어때?"
+        answer: "電話[でんわ]でキャンセルしてもらえば?"
+        answerHighlight: "キャンセルしてもらえば"
+        explanation: "상대에게 다른 사람에게 부탁해보라고 부드럽게 권하는 표현이에요."
 
   - id: s01e02-tasukaru
     jp: 助[たす]かる
@@ -238,16 +238,16 @@ keyPoints:
       alt: 가게의 친절한 응대로 주문 실수가 해결되어 안도하는 장면
     reviewPrompt:
       R2:
-        cue: "갑자기 비가 와서 친구에게 우산을 빌렸을 때"
+        cue: "우산을 빌려줘서 살았어."
         answer: "傘[かさ]を貸[か]してくれて助[たす]かった。"
         answerHighlight: "助[たす]かった"
-        explanation: "새 상황에서 도움을 받아 안도한 결과를 助かった로 말해요."
+        explanation: "도움 덕분에 위기를 벗어나 안도하게 된 결과를 助かった로 말해요."
         mode: cloze
       R3:
         cue: "“덕분에 살았다 / 큰 도움이 됐다”"
         answer: "助[たす]かった"
         answerHighlight: "助[たす]かった"
-        explanation: "도움을 받은 쪽이 곤란함을 벗어나 안도할 때 쓰는 표현이에요."
+        explanation: "도움을 받아서 곤란함을 벗어나거나 안도할 때 쓰는 표현이에요."
 
 # 메일 최상단 복습 문항. 사이트에는 나오지 않습니다.
 reviewTargets:

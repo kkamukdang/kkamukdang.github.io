@@ -78,7 +78,7 @@ describe('Work 3-2 Episode #002 콘텐츠 계약', () => {
     expect(episode.keyPoints.every((keyPoint) => registry.active[keyPoint.id]?.status === 'published')).toBe(true);
   });
 
-  it('세 표현의 R1 memory cue와 서로 다른 R2/R3 문항을 모두 해석한다', async () => {
+  it('세 표현의 R1 memory cue와 mode별 R2/R3 문항을 모두 해석한다', async () => {
     const episode = await episode2();
     const registry = createRegistryIndex(await loadExpressionRegistry());
 
@@ -101,7 +101,13 @@ describe('Work 3-2 Episode #002 콘텐츠 계약', () => {
       const r2Target = toRubyReviewTarget(r2.answer, r2.answerHighlight);
       expect(r2Target.answerHtml).toContain(`<strong class="q-answer-target">${toRuby(r2.answerHighlight!)}</strong>`);
       expect(r2Target.clozeHtml).toContain('<span class="cloze-blank" aria-label="빈칸">______</span>');
-      expect(r3.answer).toBe(r3.answerHighlight);
+      if (r3.mode === 'cloze') {
+        expect(r3.answerHighlight).toBeTruthy();
+        expect(r3.answer).toContain(r3.answerHighlight);
+        expect(r3.clozeHtml).toContain('<span class="cloze-blank');
+      } else {
+        expect(r3.mode).toBe('cued-recall');
+      }
     }
   });
 
@@ -114,7 +120,7 @@ describe('Work 3-2 Episode #002 콘텐츠 계약', () => {
       kr: '우산 빌려줘서 살았어.',
     });
     expect(keyPoint.reviewPrompt?.R2).toMatchObject({
-      cue: '갑자기 비가 와서 친구에게 우산을 빌렸을 때',
+      cue: '우산을 빌려줘서 살았어.',
       answer: '傘[かさ]を貸[か]してくれて助[たす]かった。',
       answerHighlight: '助[たす]かった',
     });

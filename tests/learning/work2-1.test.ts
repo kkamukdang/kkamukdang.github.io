@@ -96,7 +96,9 @@ describe('Work 2-1 #001 콘텐츠 계약', () => {
     const r3 = resolveReviewPrompt({ episode, keyPoint: baiiyo, registry: registryEntry, state: stageState('R3') });
     expect(r3.cue).toBe('내일부터 다시 시작하면 돼.');
     expect(r3.answerHighlight).toBe('始[はじ]めればいいよ');
-    expect(r3.explanation).toBe('始まる는 저절로 시작되는 것, 始める는 누군가가 의도적으로 시작하는 것이에요. 여기서는 누군가의 의지와 행동으로 시작하는 거니까 始める 쪽이 맞아요. 〜ばいい는 “~하면 돼”라는 뜻이라서 始めればいい가 됩니다.');
+    expect(r3.explanation).toBe(
+      '〜ばいい는 “~하면 돼”라는 뜻이라서, 始める → 始めればいい가 돼요.'
+    );
     expect(toRubyReviewTarget(r3.answer, r3.answerHighlight).answerHtml).toContain(
       '<strong class="q-answer-target"><ruby>始<rt>はじ</rt></ruby>めればいいよ</strong>',
     );
@@ -104,11 +106,24 @@ describe('Work 2-1 #001 콘텐츠 계약', () => {
     const temoii = episode.keyPoints.find((keyPoint) => keyPoint.id === 's01e01-temoii')!;
     const temoiiRegistry = registry.expressions.find((expression) => expression.id === temoii.id)!;
     const temoiiR3 = resolveReviewPrompt({ episode, keyPoint: temoii, registry: temoiiRegistry, state: stageState('R3') });
-    const temoiiTarget = toRubyReviewTarget(temoiiR3.answer, temoiiR3.answerHighlight);
-    expect(temoiiR3.answerHighlight).toBe('でもいい');
-    expect(temoiiTarget.clozeHtml).toContain('ん<span class="cloze-blank"');
-    expect(temoiiTarget.clozeHtml).not.toContain('んで<span class="cloze-blank"');
-    expect(temoiiTarget.answerHtml).toContain('<strong class="q-answer-target">でもいい</strong>?');
+    const temoiiTarget = toRubyReviewTarget(
+          temoiiR3.answer,
+          temoiiR3.answerHighlight
+        );
+
+        expect(temoiiR3.answerHighlight).toBe('頼[たの]んでもいい');
+
+        expect(temoiiTarget.clozeHtml).toContain(
+          'チキン<span class="cloze-blank"'
+        );
+
+        expect(temoiiTarget.clozeHtml).not.toContain(
+          '<ruby>頼<rt>たの</rt></ruby>'
+        );
+
+        expect(temoiiTarget.answerHtml).toContain(
+          '<strong class="q-answer-target"><ruby>頼<rt>たの</rt></ruby>んでもいい</strong>'
+        );
   });
 });
 
