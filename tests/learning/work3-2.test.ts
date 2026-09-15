@@ -142,7 +142,8 @@ describe('Work 3-2 Episode #002 콘텐츠 계약', () => {
       cwd: process.cwd(),
       encoding: 'utf8',
     }));
-    expect(result).toMatchObject({ ok: true, summary: { expectedGaps: 16, actualGaps: 16 } });
+    expect(result).toMatchObject({ ok: true, matchedExpectedGaps: true });
+    expect(result.summary.actualGaps).toBe(result.summary.expectedGaps);
     expect(result.gaps.some((gap: { episodeId: string }) => gap.episodeId === 's01e02')).toBe(false);
   });
 });

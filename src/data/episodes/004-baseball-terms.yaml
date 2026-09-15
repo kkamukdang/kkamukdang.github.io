@@ -36,7 +36,7 @@ scene:
     kr: 차라리 아까 삼진이 나았어.
   - who: 나
     side: a
-    jp: 逆転[ぎゃくてん]、間[[ま]]に合[あ]う?
+    jp: 逆転[ぎゃくてん]、まだいける?
     kr: 역전, 아직 가능해?
 
 wordGroups:
@@ -85,10 +85,7 @@ wordGroups:
         note: 둘 다 별로인데 그나마 덜 나쁠 때. <b>マシ</b>에는 "썩 좋진 않지만"이 깔려 있어요.
       - jp: まだ
         mean: ① 그나마 ② 아직
-        note: 뜻이 두 가지인데 오늘 대화에 둘 다 나와요.<br><b>まだマシ</b> = 그나마 (정도), <b>まだ間[[ま]]に合[あ]う?</b> = 아직 (시간).
-      - jp: 間[[ま]]に合[あ]う
-        mean: 늦지 않다 / 시간 안에 되다
-        note: 마감·막차·역전 모두 여기에. <b>まだ間に合う?</b> 통째로 외우기.
+        note: 오늘 대화에서는 두 쓰임이 나와요.<br><b>まだマシ</b> = 그나마 낫다, <b>まだいける?</b> = 아직 괜찮아? / 아직 가능해?
 
 compare:
   - title: 今の何? — 방금 그 상황을 물을 때
@@ -124,13 +121,14 @@ compare:
       jp: 三振[さんしん]のほうがまだマシ
     tip: <b>よりはいい</b>는 "적어도 저것보단 낫다"며 어느 정도 긍정하는 말, <b>マシ</b>는 "썩 좋진 않지만 덜 나쁘다"는 말이에요. 여기에 <b>まだ</b>(그나마)가 붙으면 아쉬움이 더 살아나요.
 
-  - title: 間に合う / できる — 아직 늦지 않았냐고 물을 때
+  - title: できる? / いける?
     bad:
-      mark: ✕
-      jp: 逆転[ぎゃくてん]、まだできる?
+      mark: △
+      jp: できる?
+      aside: 능력·수행 가능성
     good:
-      jp: 逆転[ぎゃくてん]、まだ間[[ま]]に合[あ]う?
-    tip: <b>できる</b>는 "능력상 가능하냐"라서 "역전할 실력이 되냐?"로 들려요. 지금 묻는 건 남은 시간 안에 되느냐니까 <b>間[[ま]]に合[あ]う</b>가 맞아요. <b>終電[しゅうでん]に間に合う</b>(막차 시간 맞추다)와 같은 감각!
+      jp: いける?
+    tip: <b>できる?</b>는 어떤 일을 할 수 있는지, 또는 해낼 수 있는지를 비교적 직접적으로 물어요.<br><b>いける?</b>는 지금 상황이나 여력을 보고 “아직 괜찮아?”, “아직 할 만해?”처럼 직관적인 판단을 묻는 회화 표현이에요.<br>두 표현은 완전히 배타적이라기보다 회화에서 묻는 초점이 달라요.
 
 apply:
   - situation: 📺 드라마 보다가 놓쳤을 때
@@ -139,45 +137,15 @@ apply:
   - situation: 😴 밤샘 vs 새벽 기상
     jp: 徹夜[てつや]より、早起[はやお]きのほうがまだマシ。
     kr: 밤새우느니 차라리 일찍 일어나는 게 낫지.
-  - situation: 🚃 막차 놓칠까 봐
-    jp: まだ終電[しゅうでん]に間[[ま]]に合[あ]う?
-    kr: 아직 막차 시간 돼?
+  - situation: 🍻 술자리나 모임에서 2차 갈까 고민할 때
+    jp: もう一軒[いっけん]、まだいける?
+    kr: 한 군데 더 갈 수 있어?
   - situation: 🧹 주말에 몰아서 집안일
     jp: 洗濯[せんたく]、一気[いっき]に終[お]わらせた。
     kr: 빨래, 한 번에 다 끝냈어.
   - situation: 🙄 반쯤만 동의할 때
     jp: まあね。でも私[わたし]はそう思[おも]わないけど。
     kr: 뭐 그렇지. 근데 난 그렇게 생각 안 하는데.
-
-quiz:
-  - q: 화면 속 상황을 보고 "방금 뭐야?"라고 물을 때 맞는 표현은?
-    options:
-      - label: a)
-        jp: 今[いま]、何[[なに]]?
-      - label: b)
-        jp: 今[いま]の何[[なに]]?
-        correct: true
-  - q: "친구가 「ヒット?」라고 물었을 때, \"아니, 병살\"이라고 답하는 자연스러운 표현은?"
-    options:
-      - label: a)
-        jp: いいえ、ゲッツー。
-      - label: b)
-        jp: ううん、ゲッツー。
-        correct: true
-  - q: "\"한 번에 투아웃\"이라고 할 때 맞는 표현은?"
-    options:
-      - label: a)
-        jp: 早[はや]く2アウト
-      - label: b)
-        jp: 一気[いっき]に2アウト
-        correct: true
-  - q: "\"역전, 아직 가능해?\" — 남은 시간 안에 되느냐고 물을 때는?"
-    options:
-      - label: a)
-        jp: 逆転[ぎゃくてん]、まだできる?
-      - label: b)
-        jp: 逆転[ぎゃくてん]、まだ間[[ま]]に合[あ]う?
-        correct: true
 
 keyPoints:
   - id: s01e04-imanonani
@@ -187,6 +155,22 @@ keyPoints:
     note: 今[いま]の만으로 "방금 그거"가 돼요. 실황 리액션 국룰 표현.
     compareIndex: 0
     applyIndex: 0
+    memoryCue:
+      asset: /characters/memory/s01e04-baseball-reaction.svg
+      alt: 야구 중계의 방금 장면을 놓쳐 친구에게 무엇이었는지 묻는 모습
+    reviewPrompt:
+      R2:
+        cue: 방금 뭐야? 한 번 더 보고 싶어.
+        answer: 今[いま]の何[[なに]]?もう一回[いっかい]見[み]たい。
+        answerHighlight: 今[いま]の何[[なに]]
+        explanation: 今の는 ‘방금 그거’를 가리켜서, 방금 본 상황을 물을 때 자연스럽게 쓸 수 있어요.
+        mode: cloze
+      R3:
+        cue: “방금 뭐야?”
+        answer: 今[いま]の何[[なに]]?
+        answerHighlight: 今[いま]の何[[なに]]
+        explanation: 방금 본 장면이나 상황이 무엇이었는지 물을 때 쓰는 표현이에요.
+        mode: cued-recall
 
   - id: s01e04-madamashi
     jp: 〜のほうがまだマシ
@@ -195,14 +179,45 @@ keyPoints:
     note: 둘 다 별로인데 그나마 덜 나쁠 때. マシ에는 "썩 좋진 않지만"이 깔려 있어요.
     compareIndex: 3
     applyIndex: 1
+    memoryCue:
+      asset: /characters/memory/s01e04-baseball-reaction.svg
+      alt: 병살을 본 뒤 아까 삼진이 그나마 나았다고 비교하는 야구 관중의 모습
+    reviewPrompt:
+      R2:
+        cue: 밤새우느니 차라리 일찍 일어나는 게 낫지.
+        answer: 徹夜[てつや]より、早起[はやお]きのほうがまだマシ。
+        answerHighlight: のほうがまだマシ
+        explanation: 둘 다 썩 좋지는 않지만 그중 덜 나쁜 쪽을 고를 때 〜のほうがまだマシ를 써요.
+        mode: cloze
+      R3:
+        cue: 차라리 아까 삼진이 나았어.
+        answer: さっきの三振[さんしん]のほうがまだマシだったよ。
+        answerHighlight: のほうがまだマシ
+        explanation: 둘 다 좋지는 않지만 그나마 덜 나쁜 쪽을 말할 때 쓰는 표현이에요.
+        mode: cloze
 
-  - id: s01e04-maniau
-    jp: 間[[ま]]に合[あ]う
-    kr: 늦지 않다 / 시간 안에 되다
+  - id: s01e04-madaikeru
+    jp: まだいける?
+    kr: 아직 가능해?
     sceneIndex: 6
-    note: 마감·막차·역전 모두 여기에. 능력이 아니라 남은 시간을 묻는 말이에요.
-    compareIndex: 4
+    note: 지금 상황이나 여력을 보고 아직 괜찮은지, 더 해볼 수 있는지 가볍게 물어요.
     applyIndex: 2
+    memoryCue:
+      asset: /characters/memory/s01e04-baseball-reaction.svg
+      alt: 경기 막판 역전 가능성이 남았는지 친구에게 가볍게 묻는 야구 관중의 모습
+    reviewPrompt:
+      R2:
+        cue: 한 군데 더 갈 수 있어?
+        answer: もう一軒[いっけん]、まだいける?
+        answerHighlight: まだいける
+        explanation: 지금 상황이나 여력을 보고 아직 더 할 수 있는지 가볍게 물을 때 まだいける?라고 해요.
+        mode: cloze
+      R3:
+        cue: “아직 가능해?”
+        answer: まだいける?
+        answerHighlight: まだいける
+        explanation: 아직 괜찮은지, 더 해볼 수 있는지 가볍게 묻는 회화 표현이에요.
+        mode: cued-recall
 
 reviewTargets:
   - id: s01e03-tekuru
@@ -213,33 +228,6 @@ reviewTargets:
     scene: "다이어트 3일차 밤 11시, 치킨 앞에서"
     cloze: "もう我慢[がまん]______"
     answer: "できない"
-
-kanjiPractice:
-  - w: 三振
-    kana: さんしん
-    ko: 삼진
-    ex: また三振だった。
-    exko: 또 삼진이었어.
-  - w: 逆転
-    kana: ぎゃくてん
-    ko: 역전
-    ex: 逆転できるかな。
-    exko: 역전할 수 있으려나.
-  - w: 一気
-    kana: いっき
-    ko: 단숨
-    ex: 一気に2アウト。
-    exko: 한 번에 투아웃.
-  - w: 最悪
-    kana: さいあく
-    ko: 최악
-    ex: それって最悪じゃない?
-    exko: 그거 완전 최악 아냐?
-  - w: 間に合う
-    kana: まにあう
-    ko: 늦지 않다
-    ex: まだ間に合う?
-    exko: 아직 시간 돼?
 
 nextPreview: >-
   다음 편은 <b>드라마 스포</b>예요. 아껴뒀던 최종화를 오늘 밤에 보려고 했는데,

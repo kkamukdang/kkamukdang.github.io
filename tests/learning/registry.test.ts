@@ -5,7 +5,11 @@ describe('Expression Registry', () => {
   it('production YAML을 검증하고 active/retired index를 만든다', async () => {
     const registry = await loadExpressionRegistry(); const index = createRegistryIndex(registry);
     expect(Object.keys(index.active)).toHaveLength(18);
-    expect(index.retired['s01e04-maniau'].replacementId).toBeNull();
+    expect(index.retired['s01e04-maniau']).toMatchObject({
+      status: 'retired-before-learning-v2',
+      replacementId: null,
+      migration: 'preserve-history-do-not-transfer',
+    });
     expect(index.active['s01e03-sekiwotatsu']).toBeTruthy();
     expect(index.active['s01e03-ndayone']).toBeUndefined();
     expect(index.retired['s01e03-ndayone']).toMatchObject({
@@ -13,7 +17,11 @@ describe('Expression Registry', () => {
       replacementId: null,
       migration: 'preserve-history-do-not-transfer',
     });
-    expect(index.active['s01e04-madaikeru']).toBeTruthy();
+    expect(index.active['s01e04-madaikeru']).toMatchObject({
+      status: 'published',
+      episodes: [{ id: 's01e04', role: 'keyPoint' }],
+    });
+    expect(index.active['s01e04-maniau']).toBeUndefined();
   });
   it('NFC/공백/ASCII 물결만 정규화하고 일본어 구두점은 보존한다', () => {
     expect(normalizeExpression(' ~ てもいい? ')).toBe('〜てもいい?');

@@ -2,8 +2,6 @@
   "schemaVersion": 1,
   "baselineCommit": "04a32b8e21dd8f7ad4fee2a93b99d36463d5db2c",
   "gaps": [
-    { "code": "content.memory-cue-missing", "expressionId": "s01e04-imanonani", "episodeId": "s01e04", "detail": "memoryCue asset/alt가 없음" },
-    { "code": "content.memory-cue-missing", "expressionId": "s01e04-madamashi", "episodeId": "s01e04", "detail": "memoryCue asset/alt가 없음" },
     { "code": "content.memory-cue-missing", "expressionId": "s01e05-chatta", "episodeId": "s01e05", "detail": "memoryCue asset/alt가 없음" },
     { "code": "content.memory-cue-missing", "expressionId": "s01e05-noni", "episodeId": "s01e05", "detail": "memoryCue asset/alt가 없음" },
     { "code": "content.memory-cue-missing", "expressionId": "s01e05-yamete", "episodeId": "s01e05", "detail": "memoryCue asset/alt가 없음" },
@@ -14,9 +12,6 @@
     { "code": "content.r2-resolver-missing", "expressionId": "s01e06-majide", "episodeId": "s01e06", "detail": "applyIndex 또는 reviewPrompt.R2가 없음" },
     { "code": "contract.s01e05-confirmed-apply", "expressionId": "s01e05-noni", "episodeId": "s01e05", "detail": "확정 응용문 まだ食べてるのに、下げられちゃった。가 없음" },
     { "code": "contract.s01e06-ashitakara-display", "expressionId": "s01e06-ashitakara", "episodeId": "s01e06", "detail": "확정 표시값 また明日から / 또 내일부터와 다름" },
-    { "code": "registry.active-missing-from-episode", "expressionId": "s01e04-madaikeru", "episodeId": "s01e04", "detail": "active Registry 표현이 Episode keyPoint에 없음" },
-    { "code": "registry.pending-status", "expressionId": "s01e04-madaikeru", "episodeId": "s01e04", "detail": "Registry status가 approved-pending-yaml" },
-    { "code": "registry.pending-status", "expressionId": "s01e06-ashitakara", "episodeId": "s01e06", "detail": "Registry status가 approved-pending-display-update" },
-    { "code": "registry.retired-used-as-keypoint", "expressionId": "s01e04-maniau", "episodeId": "s01e04", "detail": "retired 표현이 현재 Episode keyPoint에 남아 있음" }
+    { "code": "registry.pending-status", "expressionId": "s01e06-ashitakara", "episodeId": "s01e06", "detail": "Registry status가 approved-pending-display-update" }
   ]
 }

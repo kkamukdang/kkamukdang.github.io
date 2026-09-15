@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 405" role="img" aria-labelledby="title desc">
+  <title id="title">야구 중계를 보며 방금 장면과 경기 가능성을 묻는 두 사람</title>
+  <desc id="desc">병살 장면이 나온 야구 중계 화면 앞에서 한 사람은 물음표를 띄우고, 다른 사람은 아까 삼진과 비교하며 경기 막판 가능성을 살핀다.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e6f4ff"/>
+      <stop offset="1" stop-color="#fff0c9"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#24435b" flood-opacity=".2"/>
+    </filter>
+  </defs>
+  <rect width="720" height="405" rx="28" fill="url(#bg)"/>
+  <path d="M0 305c128-34 253-32 376 0s238 31 344-3v103H0Z" fill="#82b77b"/>
+  <g filter="url(#shadow)">
+    <rect x="176" y="38" width="368" height="210" rx="18" fill="#253a4a"/>
+    <rect x="194" y="56" width="332" height="174" rx="9" fill="#f9f4d9"/>
+    <path d="M213 205c42-87 252-87 294 0" fill="#77b778"/>
+    <path d="m360 203-58-57 58-57 58 57Z" fill="#d8aa72" stroke="#fff" stroke-width="6"/>
+    <circle cx="360" cy="146" r="15" fill="#fff" stroke="#d9574f" stroke-width="5"/>
+    <rect x="213" y="72" width="92" height="38" rx="8" fill="#fff"/>
+    <text x="259" y="98" text-anchor="middle" font-family="sans-serif" font-size="21" font-weight="700" fill="#334b5d">2 OUT</text>
+    <path d="M299 248h122l18 46H281Z" fill="#415d70"/>
+  </g>
+  <g transform="translate(74 232)">
+    <circle cx="78" cy="36" r="33" fill="#f2bd91"/>
+    <path d="M44 31c5-42 65-48 72-4-18-15-48-14-72 4Z" fill="#45362f"/>
+    <path d="M22 166c2-67 25-99 56-99s54 32 56 99Z" fill="#f07a67"/>
+    <path d="M101 12c28-35 76-12 69 25-4 22-25 25-34 43" fill="none" stroke="#465f70" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="134" cy="104" r="7" fill="#465f70"/>
+  </g>
+  <g transform="translate(522 232)">
+    <circle cx="61" cy="36" r="33" fill="#e6ad81"/>
+    <path d="M28 28c7-40 66-43 70 2-20-13-49-13-70-2Z" fill="#3c302c"/>
+    <path d="M7 166c2-67 24-99 54-99s52 32 54 99Z" fill="#547eb4"/>
+    <path d="m111 70 17 17 35-43" fill="none" stroke="#4d9160" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g fill="#fff" stroke="#405a6e" stroke-width="5">
+    <circle cx="473" cy="276" r="11"/>
+    <circle cx="497" cy="276" r="11"/>
+    <circle cx="521" cy="276" r="11"/>
+  </g>
+</svg>
