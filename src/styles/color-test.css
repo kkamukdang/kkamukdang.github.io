@@ -1,0 +1,367 @@
+/* ==========================================================
+   KKAMUKDANG
+   Light Mode Neutral Color Test
+
+   실제 tokens.css는 수정하지 않는다.
+   이 파일은 design/color-test 전용 테스트 파일.
+   ========================================================== */
+
+
+/* ----------------------------------------------------------
+   테스트 페이지 공통
+   ---------------------------------------------------------- */
+
+.color-test-page {
+  background: #f1f1ef;
+}
+
+.color-test {
+  width: min(100% - 32px, 1480px);
+  margin: 0 auto;
+  padding: 48px 0 96px;
+}
+
+.test-header {
+  max-width: 720px;
+  margin-bottom: 40px;
+}
+
+.test-kicker {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.test-header h1 {
+  margin: 0 0 12px;
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.test-header > p:last-child {
+  margin: 0;
+  line-height: 1.7;
+}
+
+
+/* ----------------------------------------------------------
+   A/B/C 비교 레이아웃
+   ---------------------------------------------------------- */
+
+.theme-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.theme-preview {
+  min-width: 0;
+}
+
+.theme-label {
+  margin-bottom: 12px;
+  color: #353535;
+}
+
+.theme-label strong,
+.theme-label span {
+  display: block;
+}
+
+.theme-label strong {
+  font-size: 14px;
+}
+
+.theme-label span {
+  margin-top: 3px;
+  font-size: 12px;
+  opacity: .65;
+}
+
+
+/* ----------------------------------------------------------
+   CURRENT
+   현재 tokens.css의 라이트모드 기준값
+   ---------------------------------------------------------- */
+
+.theme-current {
+  --test-bg: #fafafa;
+  --test-surface: #fffefc;
+  --test-surface-subtle: #f3f5f0;
+
+  --test-text: #3b3d43;
+  --test-text-secondary: #878787;
+
+  --test-border: #dedcc5;
+}
+
+
+/* ----------------------------------------------------------
+   A · Warm Paper
+
+   현재는 비교 구조 확인용으로 CURRENT와 같은 값.
+   다음 단계에서 Neutral A 팔레트 적용.
+   ---------------------------------------------------------- */
+
+.theme-a {
+  --test-bg: #F8F5EE;
+  --test-surface: #FFFCF7;
+  --test-surface-subtle: #F1ECE2;
+
+  --test-text: #34312F;
+  --test-text-secondary: #6F6A64;
+
+  --test-border: #DFD7CA;
+}
+
+
+/* ----------------------------------------------------------
+   B · Soft Neutral
+   ---------------------------------------------------------- */
+
+.theme-b {
+  --test-bg: #F6F6F3;
+  --test-surface: #FFFFFC;
+  --test-surface-subtle: #EFEFEB;
+
+  --test-text: #333538;
+  --test-text-secondary: #6F7276;
+
+  --test-border: #D9DAD4;
+}
+
+
+/* ----------------------------------------------------------
+   C · Cream Character
+   ---------------------------------------------------------- */
+
+.theme-c {
+  --test-bg: #F9F3E8;
+  --test-surface: #FFFBF3;
+  --test-surface-subtle: #F3E7D5;
+
+  --test-text: #3A342F;
+  --test-text-secondary: #766D65;
+
+  --test-border: #E0D2BE;
+}
+
+.theme-c2 {
+  --test-bg: #F8F4EC;
+  --test-surface: #FFFDF8;
+  --test-surface-subtle: #F1E9DD;
+
+  --test-text: #37322F;
+  --test-text-secondary: #817A74;
+
+  --test-border: #DDD4C7;
+}
+
+.theme-c3 {
+  --test-bg: #F8F3EB;
+  --test-surface: #FFFDF8;
+  --test-surface-subtle: #F1E5D7;
+
+  --test-text: #39342F;
+  --test-text-secondary: #766F68;
+
+  --test-border: #DED4C8;
+  --brand-primary: #D9782E;
+  --brand-soft: #F3DDCA;
+  --on-brand-soft: #B95F1E;
+}
+/* 
+.brand-a {--brand-soft: #F6DCC5;}
+.brand-b {--brand-soft: #F4D8BF; --on-brand-soft: #C46620;}
+.brand-c {--brand-soft: #F3DDCA;} */
+
+/* ----------------------------------------------------------
+   샘플 화면
+
+   일부러 새로운 감성 UI 스타일을 만들지 않는다.
+   현재 UI의 카드 / 테두리 중심 구조를 단순 재현한다.
+   ---------------------------------------------------------- */
+
+.sample-page {
+  padding: 22px 18px 32px;
+  background: var(--test-bg);
+  color: var(--test-text);
+  border-radius: 18px;
+  min-height: 720px;
+}
+
+.sample-hero {
+  padding: 18px 2px 24px;
+}
+
+.sample-eyebrow {
+  margin: 0 0 8px;
+  color: var(--test-text-secondary);
+  font-size: 12px;
+}
+
+.sample-eyebrow strong {
+  color: var(--brand-primary);
+}
+
+.sample-hero h2 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.35;
+}
+
+.sample-subtitle {
+  margin: 9px 0 0;
+  color: var(--test-text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.sample-section-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 26px 0 12px;
+}
+
+.sample-section-head h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.sample-badge {
+  padding: 3px 7px;
+  /* background: var(--test-surface-subtle); */
+  border-radius: 999px;
+  /* color: var(--test-text-secondary); */
+  font-size: 10px;
+  font-weight: 800;
+  /* background: var(--test-brand);
+  color: var(--test-on-brand); */
+  background: var(--brand-soft);
+  color: var(--on-brand-soft);
+}
+
+.sample-dialogue {
+  display: grid;
+  gap: 8px;
+}
+
+.sample-bubble {
+  padding: 14px 15px;
+  background: var(--test-surface);
+  border: 1px solid var(--test-border);
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.sample-bubble-alt {
+  background: var(--test-surface-subtle);
+}
+
+.sample-bubble rt {
+  color: var(--test-text-secondary);
+  font-size: .58em;
+}
+
+.translation {
+  display: block;
+  margin-top: 5px;
+  color: var(--test-text-secondary);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.sample-lead {
+  margin: -4px 0 12px;
+  color: var(--test-text-secondary);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.sample-card {
+  display: flex;
+  gap: 12px;
+  padding: 15px;
+  margin-bottom: 9px;
+  background: var(--test-surface);
+  border: 1px solid var(--test-border);
+  border-radius: 16px;
+}
+
+.sample-number {
+  flex: 0 0 auto;
+  /* color: var(--test-text-secondary); */
+  color: var(--brand-primary);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.sample-card p,
+.sample-card small {
+  margin: 0;
+}
+
+.sample-jp {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 17px;
+}
+
+.sample-card p {
+  font-size: 14px;
+}
+
+.sample-card small {
+  display: block;
+  margin-top: 7px;
+  color: var(--test-text-secondary);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.sample-soft {
+  margin-top: 18px;
+  padding: 15px;
+  background: var(--test-surface-subtle);
+  border-radius: 16px;
+}
+
+.sample-soft strong {
+  font-size: 13px;
+}
+
+.sample-soft p {
+  margin: 5px 0 0;
+  color: var(--test-text-secondary);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+
+/* ----------------------------------------------------------
+   반응형
+   ---------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  .theme-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .color-test {
+    width: min(100% - 24px, 480px);
+    padding-top: 32px;
+  }
+
+  .theme-list {
+    grid-template-columns: 1fr;
+  }
+
+  .sample-page {
+    min-height: auto;
+  }
+}

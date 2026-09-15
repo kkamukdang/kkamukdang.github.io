@@ -1,0 +1,113 @@
+---
+import Base from '../../layouts/Base.astro';
+import '../../styles/color-test.css';
+
+const themes = [
+  { id: 'current', name: 'CURRENT', desc: '현재 라이트모드' },
+ 
+  { id: 'c3', name: 'C3 · Cream Character', desc: '캐릭터 친화적인 크림 계열' },
+  { id: 'c3', name: 'C3 · Cream Character', desc: '캐릭터 친화적인 크림 계열' },
+  { id: 'c3', name: 'C3 · Cream Character', desc: '캐릭터 친화적인 크림 계열' },
+];
+---
+
+<Base
+  title="Neutral Color Test — 까먹당"
+  description="까먹당 라이트모드 Neutral 컬러 비교용 테스트 페이지"
+  bodyClass="color-test-page"
+  noindex
+>
+  <main class="color-test">
+    <header class="test-header">
+      <p class="test-kicker">KKAMUKDANG · COLOR TEST</p>
+      <h1>Light Mode Neutral</h1>
+      <p>
+        구조와 컴포넌트 디자인은 바꾸지 않고
+        배경·Surface·텍스트·Border만 비교합니다.
+      </p>
+    </header>
+
+    <div class="theme-list">
+      {themes.map((theme) => (
+        <section class={`theme-preview theme-${theme.id}`}>
+          <div class="theme-label">
+            <strong>{theme.name}</strong>
+            <span>{theme.desc}</span>
+          </div>
+
+          <div class="sample-page">
+
+            <!-- Hero -->
+            <div class="sample-hero">
+              <p class="sample-eyebrow">시즌 1 · <strong>#003</strong> · 9월 17일</p>
+              <h2>오늘 뭐 먹을까?</h2>
+              <p class="sample-subtitle">
+                별거 아닌 대화인데, 막상 일본어로 하려면 생각이 안 나요.
+              </p>
+            </div>
+
+            <!-- Section title -->
+            <div class="sample-section-head">
+              <span class="sample-badge">SCENE</span>
+              <h3>오늘의 대화</h3>
+            </div>
+
+            <!-- Dialogue -->
+            <div class="sample-dialogue">
+              <div class="sample-bubble">
+                <ruby>
+                  何<rt>なに</rt>
+                </ruby>
+                かいる？
+                <span class="translation">뭐 필요한 거 있어?</span>
+              </div>
+
+              <div class="sample-bubble sample-bubble-alt">
+                コンビニに行ってくる。
+                <span class="translation">편의점 좀 다녀올게.</span>
+              </div>
+            </div>
+
+            <!-- Key points -->
+            <div class="sample-section-head">
+              <span class="sample-badge">TODAY</span>
+              <h3>이번 편에서 딱 3개</h3>
+            </div>
+
+            <p class="sample-lead">
+              여기 나온 표현은 사흘 뒤에 다시 만나게 돼요.
+            </p>
+
+            <div class="sample-card">
+              <span class="sample-number">01</span>
+              <div>
+                <strong class="sample-jp">何かいる？</strong>
+                <p>뭐 필요한 거 있어?</p>
+                <small>상대에게 필요한 것이 있는지 가볍게 물을 때</small>
+              </div>
+            </div>
+
+            <div class="sample-card">
+              <span class="sample-number">02</span>
+              <div>
+                <strong class="sample-jp">〜てくる</strong>
+                <p>~하고 올게</p>
+                <small>잠깐 나갔다가 다시 돌아올 때</small>
+              </div>
+            </div>
+
+            <!-- Surface subtle -->
+            <div class="sample-soft">
+              <strong>기억해 둘 것</strong>
+              <p>
+                오늘 다 외우지 않아도 괜찮아요.
+                필요할 때 다시 만나면 돼요.
+              </p>
+            </div>
+
+          </div>
+        </section>
+      ))}
+    </div>
+  </main>
+</Base>
