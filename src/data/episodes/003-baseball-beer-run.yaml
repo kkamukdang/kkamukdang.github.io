@@ -196,28 +196,76 @@ kanjiPractice:
     exko: 자리를 뜬 때.
 
 keyPoints:
-  - id: s01e03-nanikairu
-    jp: 何[[なに]]かいる?
-    kr: 뭐 필요한 거 있어?
-    sceneIndex: 1
-    note: 여기서 いる는 "있다"가 아니라 "필요하다"예요. 통째로 외워두면 편해요.
-    compareIndex: 0     # 必要? / いる?
-    applyIndex: 0       # コンビニ行ってくる。何かいる?
-
   - id: s01e03-tekuru
     jp: 〜てくる
     kr: ~하고 오다 / ~해 올게
     sceneIndex: 0
     note: 잠깐 나갔다가 돌아온다는 뉘앙스라 자리를 비울 때 꼭 필요해요.
     compareIndex: 1     # 買いに行く / 買ってくる
+    applyIndex: 0       # コンビニ行ってくる。何かいる?
+    memoryCue:
+      asset: /characters/memory/s01e03-baseball-beer-run.svg
+      alt: 야구장 좌석에서 맥주를 사러 갔다가 돌아오겠다고 말하며 일어나는 장면
+    reviewPrompt:
+      R2:
+        cue: "편의점 갔다 올게."
+        answer: "コンビニ行[い]ってくる。"
+        answerHighlight: "行[い]ってくる"
+        explanation: "어떤 곳에 갔다가 다시 돌아올 때 行く가 아니라 行ってくる라고 해요."
+        mode: cloze
+      R3:
+        cue: "잠깐 갔다 올게."
+        answer: "ちょっと行[い]ってくる。"
+        answerHighlight: "行[い]ってくる"
+        explanation: "〜てくる의 여러 뜻 중 여기서는 ‘갔다가 돌아오는 이동’ 의미를 익혀요."
+        mode: cloze
+
+  - id: s01e03-nanikairu
+    jp: 何[なに]かいる?
+    kr: 뭐 필요한 거 있어?
+    sceneIndex: 1
+    note: 여기서 いる는 "있다"가 아니라 "필요하다"예요. 통째로 외워두면 편해요.
+    compareIndex: 0     # 必要? / いる?
+    applyIndex: 0       # コンビニ行ってくる。何かいる?
+    memoryCue:
+      asset: /characters/memory/s01e03-baseball-beer-run.svg
+      alt: 야구장에서 맥주를 사러 가기 전 친구에게 필요한 것이 있는지 묻는 장면
+    reviewPrompt:
+      R2:
+        cue: "편의점 가는데, 뭐 필요한 거 있어?"
+        answer: "コンビニ行[い]くけど、何[なに]かいる?"
+        answerHighlight: "何[なに]かいる"
+        explanation: "何かいる?는 なにかいる?로 읽고, 일상 회화에서는 何か가 なんか가 되어 なんかいる?처럼도 자주 말해요."
+        mode: cloze
+      R3:
+        cue: "“뭐 필요한 거 있어?”"
+        answer: "何[なに]かいる?"
+        answerHighlight: "何[なに]かいる"
+        explanation: "상대에게 필요한 것이 있는지 가볍게 확인할 때 쓰는 표현이에요."
+        mode: cued-recall
 
   - id: s01e03-ndayone
     jp: 〜んだよね
     kr: ~하더라 / ~하단 말이지
     sceneIndex: 6
     note: 혼잣말에 공감을 살짝 얹는 어미예요. 빼면 담담한 설명문이 돼요.
-    compareIndex: 4     # 〜んだよね 붙이고 안 붙이고
     applyIndex: 3       # 私が見ると必ず負けるんだよね…
+    memoryCue:
+      asset: /characters/memory/s01e03-baseball-beer-run.svg
+      alt: 맥주를 사러 자리를 비운 사이 만루홈런이 나와 징크스를 떠올리는 장면
+    reviewPrompt:
+      R2:
+        cue: "이 가게, 전에도 왔었지."
+        answer: "この店[みせ]、前[まえ]にも来[き]たんだよね。"
+        answerHighlight: "んだよね"
+        explanation: "서로 알고 있는 배경을 꺼내면서 상대의 공감이나 확인을 구할 때 써요."
+        mode: cloze
+      R3:
+        cue: "전에 왔던 거지."
+        answer: "前[まえ]にも来[き]たんだよね。"
+        answerHighlight: "んだよね"
+        explanation: "이미 공유된 배경을 설명하면서 ‘그렇지?’ 하는 느낌을 더하는 말투예요."
+        mode: cloze
 
 reviewTargets:
   - id: s01e02-natteru
@@ -226,8 +274,8 @@ reviewTargets:
     answer: "なってる"
   - id: s01e01-baiiyo
     scene: "다이어트 3일차, 친구의 위로"
-    cloze: "明日からまた始めれ______"
-    answer: "ばいいよ"
+    cloze: "明日からまた______。"
+    answer: "始めればいいよ"
 
 nextPreview: >-
   다음 편은 <b>야구 용어 특집</b>이에요. ヒット(안타), 三振(삼진), ゲッツー(병살),

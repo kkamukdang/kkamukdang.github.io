@@ -104,7 +104,13 @@ describe('Work 3-2 Episode #002 콘텐츠 계약', () => {
       if (r3.mode === 'cloze') {
         expect(r3.answerHighlight).toBeTruthy();
         expect(r3.answer).toContain(r3.answerHighlight);
-        expect(r3.clozeHtml).toContain('<span class="cloze-blank');
+
+        const r3Target = toRubyReviewTarget(
+          r3.answer,
+          r3.answerHighlight
+        );
+
+        expect(r3Target.clozeHtml).toContain('<span class="cloze-blank');
       } else {
         expect(r3.mode).toBe('cued-recall');
       }
@@ -131,12 +137,12 @@ describe('Work 3-2 Episode #002 콘텐츠 계약', () => {
     });
   });
 
-  it('audit에서 #002 gap 4건이 제거되고 남은 21건은 fixture와 일치한다', () => {
+  it('audit 결과가 expected-gap fixture와 일치한다', () => {
     const result = JSON.parse(execFileSync(process.execPath, ['scripts/audit-season1.mjs', '--json'], {
       cwd: process.cwd(),
       encoding: 'utf8',
     }));
-    expect(result).toMatchObject({ ok: true, summary: { expectedGaps: 21, actualGaps: 21 } });
+    expect(result).toMatchObject({ ok: true, summary: { expectedGaps: 16, actualGaps: 16 } });
     expect(result.gaps.some((gap: { episodeId: string }) => gap.episodeId === 's01e02')).toBe(false);
   });
 });

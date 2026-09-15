@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 405" role="img" aria-labelledby="title desc">
+  <title id="title">야구장에서 맥주를 사러 자리를 비운 사이 나온 만루홈런</title>
+  <desc id="desc">야구장 좌석과 맥주 컵, 편의점 봉투, 만루홈런이 표시된 전광판으로 세 학습 표현의 공통 장면을 보여준다.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dff2ff"/>
+      <stop offset="1" stop-color="#fff1cf"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#29445a" flood-opacity=".2"/>
+    </filter>
+  </defs>
+  <rect width="720" height="405" rx="28" fill="url(#sky)"/>
+  <path d="M0 245c120-46 240-50 360-14s240 32 360-8v182H0Z" fill="#71ad73"/>
+  <path d="M0 285c130-38 262-33 390 2s238 29 330 0v118H0Z" fill="#d7b07a"/>
+  <path d="M0 326c143-24 285-15 426 14s239 23 294 7v58H0Z" fill="#6f9bc0"/>
+
+  <g filter="url(#shadow)">
+    <rect x="225" y="38" width="270" height="112" rx="16" fill="#273848"/>
+    <rect x="242" y="55" width="236" height="78" rx="8" fill="#fff8d8"/>
+    <path d="M263 76h194M263 96h194M263 116h194" stroke="#d6cfad" stroke-width="5"/>
+    <circle cx="300" cy="95" r="25" fill="#f5f0d0" stroke="#dc594f" stroke-width="6"/>
+    <path d="M277 95h46M300 72c-8 14-8 32 0 46M300 72c8 14 8 32 0 46" fill="none" stroke="#dc594f" stroke-width="4"/>
+    <path d="m358 108 14-28 14 28 14-28 14 28" fill="none" stroke="#e15a43" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="444" cy="94" r="19" fill="#ffd65a"/>
+    <path d="m435 95 7 7 13-17" fill="none" stroke="#5b4a20" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g transform="translate(58 189)" filter="url(#shadow)">
+    <path d="M10 37h130l-11 137H21Z" fill="#fff" stroke="#406d8d" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M34 37c0-30 82-30 82 0" fill="none" stroke="#406d8d" stroke-width="8" stroke-linecap="round"/>
+    <path d="M48 91h55M48 111h37" stroke="#ed825d" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="112" cy="133" r="15" fill="#ffd65a"/>
+  </g>
+
+  <g transform="translate(520 186)" filter="url(#shadow)">
+    <path d="M18 18h112l-14 155H32Z" fill="#f8d36a" stroke="#8a632a" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M30 47h88" stroke="#fff8d8" stroke-width="13"/>
+    <path d="M45 18 56 0h47l12 18" fill="#fff" stroke="#8a632a" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M73 0v-29h57" fill="none" stroke="#8a632a" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <g transform="translate(269 203)" filter="url(#shadow)">
+    <path d="M11 48h172l-15 123H26Z" fill="#e4554f" stroke="#8f3433" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M29 48 53 8h88l24 40" fill="#f7fbff" stroke="#8f3433" stroke-width="6" stroke-linejoin="round"/>
+    <circle cx="97" cy="103" r="31" fill="#fff"/>
+    <path d="M71 103h52M97 77c-9 15-9 37 0 52M97 77c9 15 9 37 0 52" fill="none" stroke="#dc594f" stroke-width="5"/>
+  </g>
+
+  <path d="M201 244c25-23 46-32 67-37" fill="none" stroke="#e2694e" stroke-width="7" stroke-linecap="round" stroke-dasharray="3 15"/>
+  <path d="m257 197 18 7-12 15" fill="none" stroke="#e2694e" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M453 207c24 7 43 19 61 38" fill="none" stroke="#e2694e" stroke-width="7" stroke-linecap="round" stroke-dasharray="3 15"/>
+  <path d="m507 232 11 17-19 5" fill="none" stroke="#e2694e" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
