@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 405" role="img" aria-labelledby="title desc">
+  <title id="title">체중계를 보고 다이어트를 결심하다가 치킨을 떠올리는 장면</title>
+  <desc id="desc">체중계의 늘어난 숫자에 놀란 사람이 내일부터 다시 다이어트하겠다고 다짐하지만 옆에는 오늘 밤 먹을 치킨이 떠오른다.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e7f4f1"/>
+      <stop offset="1" stop-color="#fff0d5"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#36524f" flood-opacity=".18"/>
+    </filter>
+  </defs>
+  <rect width="720" height="405" rx="28" fill="url(#bg)"/>
+  <path d="M0 310c126-25 247-24 364 1s236 26 356-4v98H0Z" fill="#b6d0c8"/>
+  <g filter="url(#shadow)">
+    <rect x="78" y="235" width="222" height="128" rx="30" fill="#f8fbfa" stroke="#688f89" stroke-width="6"/>
+    <rect x="121" y="258" width="136" height="58" rx="14" fill="#243c3a"/>
+    <text x="189" y="299" text-anchor="middle" font-family="sans-serif" font-size="38" font-weight="700" fill="#ffce6a">+2.4</text>
+  </g>
+  <g transform="translate(275 78)">
+    <circle cx="112" cy="66" r="49" fill="#efb78c"/>
+    <path d="M64 60c4-62 91-68 98-6-27-19-67-19-98 6Z" fill="#44362f"/>
+    <path d="M25 287c3-108 40-160 87-160s84 52 87 160Z" fill="#e97c6b"/>
+    <circle cx="94" cy="66" r="5" fill="#44362f"/>
+    <circle cx="130" cy="66" r="5" fill="#44362f"/>
+    <path d="M99 92c9 7 18 7 27 0" fill="none" stroke="#44362f" stroke-width="6" stroke-linecap="round"/>
+    <path d="M65 153 20 112M159 153l45-41" fill="none" stroke="#efb78c" stroke-width="22" stroke-linecap="round"/>
+    <path d="m10 104 13-25M214 104l-13-25" fill="none" stroke="#44362f" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  <path d="M362 35v28M323 49l17 23M401 49l-17 23" fill="none" stroke="#e4645c" stroke-width="9" stroke-linecap="round"/>
+  <g filter="url(#shadow)">
+    <path d="M520 72c-58 2-96 35-93 81 2 34 29 59 67 61l20 33 16-35c52-8 80-38 74-79-5-38-36-62-84-61Z" fill="#fff" stroke="#6d7770" stroke-width="5"/>
+    <ellipse cx="514" cy="145" rx="53" ry="31" fill="#f0b04f"/>
+    <path d="M472 139c10-31 36-50 61-38 19 9 21 31 9 48-14 20-46 24-70-10Z" fill="#d97b42"/>
+    <path d="M535 134c20-27 47-26 57-7 8 16-4 36-22 42-19 6-36-7-35-35Z" fill="#e68b49"/>
+    <circle cx="492" cy="164" r="7" fill="#fff4cf"/>
+    <circle cx="521" cy="171" r="6" fill="#fff4cf"/>
+    <circle cx="555" cy="166" r="7" fill="#fff4cf"/>
+  </g>
+</svg>

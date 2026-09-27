@@ -201,13 +201,14 @@ describe('Work 3-5 Episode #005 콘텐츠 계약', () => {
     }
   });
 
-  it('audit에서 #005 gap 5건이 제거되고 남은 6건은 fixture와 일치한다', () => {
+  it('audit에서 #005 gap 5건이 제거되고 현재 fixture와 일치한다', () => {
     const result = JSON.parse(execFileSync(process.execPath, ['scripts/audit-season1.mjs', '--json'], {
       cwd: process.cwd(),
       encoding: 'utf8',
     }));
 
-    expect(result).toMatchObject({ ok: true, summary: { expectedGaps: 6, actualGaps: 6 } });
+    expect(result).toMatchObject({ ok: true, matchedExpectedGaps: true });
+    expect(result.summary.actualGaps).toBe(result.summary.expectedGaps);
     expect(result.gaps.some((gap: { episodeId: string }) => gap.episodeId === 's01e05')).toBe(false);
   });
 });

@@ -175,12 +175,12 @@ async function collectGaps() {
 
   const episode6 = episodes.find((entry) => entry.episodeId === 's01e06')?.data;
   const ashitakara = episode6?.keyPoints?.find((entry) => entry.id === 's01e06-ashitakara');
-  if (bare(ashitakara?.jp) !== 'また明日から' || ashitakara?.kr !== '또 내일부터') {
+  if (bare(ashitakara?.jp) !== 'また〜から' || ashitakara?.kr !== '또 ~부터') {
     gaps.push(gap(
       'contract.s01e06-ashitakara-display',
       's01e06-ashitakara',
       's01e06',
-      '확정 표시값 また明日から / 또 내일부터와 다름'
+      '확정 표시값 また〜から / 또 ~부터와 다름'
     ));
   }
 

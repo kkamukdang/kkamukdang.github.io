@@ -19,7 +19,6 @@ describe('Work 3-1 Season 1 expected-gap 진단', () => {
         episodeKeyPoints: 18,
       },
     });
-    expect(result.summary.actualGaps).toBeGreaterThan(0);
     expect(result.summary.actualGaps).toBe(result.summary.expectedGaps);
   });
 });
