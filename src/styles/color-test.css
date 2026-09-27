@@ -165,16 +165,16 @@
 
   --test-text: #39342F;
   --test-text-secondary: #766F68;
-
   --test-border: #DED4C8;
-  --brand-primary: #D9782E;
-  --brand-soft: #F3DDCA;
-  --on-brand-soft: #B95F1E;
+  --test-brand: #D9782E;
+  --test-brand-soft: #F3DDCA;
+  --test-on-brand-soft: #B95F1E;
+  --test-on-brand: #FFFDF8;
 }
 /* 
-.brand-a {--brand-soft: #F6DCC5;}
-.brand-b {--brand-soft: #F4D8BF; --on-brand-soft: #C46620;}
-.brand-c {--brand-soft: #F3DDCA;} */
+.brand-a {--test-brand-soft: #F6DCC5;}
+.brand-b {--test-brand-soft: #F4D8BF; --test-on-brand-soft: #C46620;}
+.brand-c {--test-brand-soft: #F3DDCA;} */
 
 /* ----------------------------------------------------------
    샘플 화면
@@ -239,8 +239,18 @@
   font-weight: 800;
   /* background: var(--test-brand);
   color: var(--test-on-brand); */
-  background: var(--brand-soft);
-  color: var(--on-brand-soft);
+  background: var(--test-brand-soft);
+  color: var(--test-on-brand-soft);
+}
+
+.theme-c3 .sample-badge {
+  background: var(--test-brand-soft);
+  color: var(--test-on-brand-soft);
+}
+
+.theme-c3 .sample-number,
+.theme-c3 .sample-eyebrow strong {
+  color: var(--test-brand);
 }
 
 .sample-dialogue {
@@ -338,6 +348,43 @@
   color: var(--test-text-secondary);
   font-size: 12px;
   line-height: 1.6;
+}
+
+.sample-cta-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.sample-cta {
+  min-height: 46px;
+  padding: 0 18px;
+  border: 1px solid var(--test-brand);
+  border-radius: 14px;
+
+  background: var(--test-brand);
+  color: var(--test-on-brand);
+
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.sample-cta-secondary {
+  background: var(--test-brand-soft);
+  border-color: var(--test-brand-soft);
+  color: var(--test-on-brand-soft);
+}
+
+.sample-cta:hover {
+  filter: brightness(.97);
+}
+
+.sample-cta:active {
+  transform: translateY(1px);
 }
 
 
