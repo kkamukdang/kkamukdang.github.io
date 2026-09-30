@@ -150,7 +150,7 @@ describe('Work 3-4 Episode #004 콘텐츠 계약', () => {
     expect(source).not.toContain('まだ終電[しゅうでん]に間[[ま]]に合[あ]う?');
     expect(episode.compare.some((item) => item.title.includes('間に合う / できる'))).toBe(false);
     expect(episode).not.toHaveProperty('quiz');
-    expect(episode).not.toHaveProperty('kanjiPractice');
+    expect(episode.kanjiPractice).not.toContainEqual(expect.objectContaining({ w: '間に合う' }));
   });
 
   it('더 파보기에서 まだ의 두 쓰임만 남기고 できる? / いける?를 헷갈리는 것들로 옮긴다', async () => {
