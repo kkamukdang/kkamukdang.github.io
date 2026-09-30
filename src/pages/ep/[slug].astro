@@ -8,9 +8,9 @@
  *   → 이번 편에서 딱 3개
  *   → 도장판                       ← 도장·복습 큐 등록 트리거 (2-B 에서 추가)
  *   → ── 오늘 몫은 여기까지 ──
- *   → 나중에 찾아볼 것(접힘) → 다음 편 예고 → 회차 이동 → 구독 CTA
+ *   → 더 파보기(접힘) → 다음 편 예고 → 회차 이동 → 구독 CTA
  *
- * 위쪽만 읽어도 그 주 몫은 끝납니다. 아래는 사전이에요.
+ * 위쪽만 읽어도 그 주 몫은 끝납니다. 아래는 선택형 보충 내용입니다.
  */
 import { getPages } from '../../lib/episodes';
 import Base from '../../layouts/Base.astro';
@@ -26,7 +26,6 @@ import LaterBox from '../../components/LaterBox.astro';
 import LaterPart from '../../components/LaterPart.astro';
 import WordGroup from '../../components/WordGroup.astro';
 import Compare from '../../components/Compare.astro';
-import Apply from '../../components/Apply.astro';
 import SubscribeCta from '../../components/SubscribeCta.astro';
 import NextCard from '../../components/NextCard.astro';
 import EpisodeFooter from '../../components/EpisodeFooter.astro';
@@ -36,6 +35,7 @@ import { SITE, url } from '../../lib/site';
 import { createRegistryIndex, loadExpressionRegistry } from '../../lib/content/expression-registry';
 import type { EpisodeData } from '../../lib/content/episode-types';
 import { isEpisodeReviewReady } from '../../lib/learning/review-content';
+import { getVisibleMoreContent } from '../../lib/content/more-content';
 import '../../styles/keypoints.css';
 
 export async function getStaticPaths() {
@@ -59,38 +59,12 @@ const isLearningV2 = v2EpisodeNumbers.includes(d.no);
 const plainTitle = toPlain(d.title);
 const hasKanji = d.kanjiPractice.length > 0;
 
-/**
- * 「더 파보기」에는 전부 그대로 둡니다.
- * 위에서 3개를 골라 올렸다고 해서 아래에서 빼지 않아요 —
- * 여기는 나중에 찾아보는 사전이라, 없으면 오히려 당황하게 됩니다.
- */
-const allCompare = d.compare;
-const allApply = d.apply;
-
-const wordCount = d.wordGroups.reduce((n, g) => n + g.items.length, 0);
+const more = getVisibleMoreContent(d);
 
 // 대화에서 밑줄 칠 조각. 「딱 3개」의 표제에서 뽑습니다.
 const specs = d.keyPoints.map((k) => toChunks(k.jp)).filter((c) => c.length > 0);
 
-// 접는 버튼 한 줄에 들어갈 요약: "단어 10 · 비교 4 · 한자 5 · 연습 퀴즈"
-/**
- * 「더 파보기」 안의 목차.
- * 열면 맨 위에 칩이 뜨고, 누르면 그 섹션으로 내려갑니다.
- * 한자 쓰기에서 돌아올 때도 이 앵커(#later-kanji)를 씁니다.
- */
-const parts = [
-  wordCount > 0 ? { id: 'later-words', label: `단어와 문법 ${wordCount}` } : null,
-  allCompare.length > 0 ? { id: 'later-compare', label: `헷갈리는 것 ${allCompare.length}` } : null,
-  allApply.length > 0 ? { id: 'later-apply', label: `다른 상황 ${allApply.length}` } : null,
-  hasKanji ? { id: 'later-kanji', label: `한자 쓰기 ${d.kanjiPractice.length}` } : null,
-].filter(Boolean) as { id: string; label: string }[];
-
-const summaryParts = [
-  wordCount > 0 ? `단어 ${wordCount}` : null,
-  allCompare.length > 0 ? `비교 ${allCompare.length}` : null,
-  allApply.length > 0 ? `응용 ${allApply.length}` : null,
-  hasKanji ? `한자 ${d.kanjiPractice.length}` : null,
-].filter(Boolean).join(' · ');
+const summaryParts = '장면과 궁금증';
 
 const fmtDate = new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric' });
 const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${fmtDate.format(d.date)}`;
@@ -147,46 +121,24 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
 
     <div class="later-list">
       <LaterBox summary={summaryParts}>
-        {d.wordGroups.length > 0 && (
-          <LaterPart
-            id="later-words"
-            title="단어와 문법 전부"
-            note="✨ 오늘 안 외워도 괜찮아요. 필요할 때 여기서 찾으면 돼요."
-          >
-            <nav class="later-toc">
-              {parts.map((p) => <a class="toc-chip" href={`#${p.id}`}>{p.label}</a>)}
-            </nav>
-            {d.wordGroups.map((g, i) => (
-              <WordGroup label={g.label} items={g.items} term={i === 0} />
-            ))}
+        {more.sceneWords.length > 0 && (
+          <LaterPart id="later-words" title="장면을 이해하는 말">
+            <WordGroup label="장면을 이해하는 말" items={more.sceneWords} showLabel={false} term={false} />
           </LaterPart>
         )}
 
-        {allCompare.length > 0 && (
-          <LaterPart id="later-compare" title="😵‍💫 헷갈리는 것들">
-            {allCompare.map((c, i) => (
-              <Compare
-                title={`${String(i + 1).padStart(2, '0')}. ${c.title}`}
-                bad={c.bad}
-                good={c.good}
-                tip={c.tip}
-              />
+        {more.questions.length > 0 && (
+          <LaterPart id="later-questions" title="이 대화에서 조금 더 궁금한 것">
+            {more.questions.map((question) => (
+              <Compare title={question.title} tip={question.answer} />
             ))}
-          </LaterPart>
-        )}
-
-        {allApply.length > 0 && (
-          <LaterPart id="later-apply" title="📝 다른 상황에서도">
-            <Apply items={allApply} />
           </LaterPart>
         )}
 
         {hasKanji && (
-          <LaterPart id="later-kanji" title="✍️ 한자 써보기" note="✨ 손으로 한 번 써보면 눈으로 볼 때와 다르게 남아요.">
-            <a class="write-link" href={url(`/ep/${ep.id}/write/`)}>
-              <span class="jp" lang="ja">{d.kanjiPractice.map((w) => w.w).join(' · ')}</span>
-            </a>
-          </LaterPart>
+          <div class="later-kanji-link" id="later-kanji">
+            <a href={url(`/ep/${ep.id}/write/`)}>글자도 써보고 싶다면 →</a>
+          </div>
         )}
 
       </LaterBox>

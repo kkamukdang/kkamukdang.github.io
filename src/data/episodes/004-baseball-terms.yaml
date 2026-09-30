@@ -176,7 +176,7 @@ keyPoints:
     jp: 〜のほうがまだマシ
     kr: 차라리 ~가 낫다
     sceneIndex: 5
-    note: 둘 다 별로인데 그나마 덜 나쁠 때. マシ에는 "썩 좋진 않지만"이 깔려 있어요.
+    note: 둘 다 별로인데 그나마 덜 나쁠 때. マシ에는 "썩 좋진 않지만"이 깔려 있어요. 단순히 “A보다 B가 낫다”는 비교라면 ~よりはいい도 쓸 수 있어요.
     compareIndex: 3
     applyIndex: 1
     memoryCue:

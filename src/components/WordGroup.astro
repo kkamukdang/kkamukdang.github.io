@@ -6,10 +6,11 @@ interface Props {
   label: string;
   items: { jp: string; mean: string; note?: string; speak?: string }[];
   term?: boolean;
+  showLabel?: boolean;
 }
-const { label, items, term = true } = Astro.props;
+const { label, items, term = true, showLabel = true } = Astro.props;
 ---
-<div class="sub-label">{label}</div>
+{showLabel && <div class="sub-label">{label}</div>}
 <div class="word-list">
   {items.map((it) => (
     <div class={term ? 'word-card term' : 'word-card'}>
