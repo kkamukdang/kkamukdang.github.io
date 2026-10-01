@@ -55,7 +55,7 @@
     letter-spacing:-.01em; line-height:1.35;
   }
   .hero h1 ruby rt{font-size:11px; color:var(--text); font-weight:700;}
-  .hero p{color:var(--text); font-size:var(--fs-sm); margin:0 0 14px; opacity: 0.5;}
+  .hero p{color:var(--text); font-size:var(--fs-sm); margin:0 0 14px;}
   /* .hero-hint{
     display:inline-flex; align-items:center; gap:6px;
     font-size:12.5px; color:var(--text); background:var(--accent-soft);
@@ -112,13 +112,12 @@
   .bubble{max-width:86%; padding:12px 14px; border-radius:16px; font-size:15px;}
   .bubble-row.a .bubble{
     background:var(--bubble); border:1px solid var(--line);
-    font-weight:600; border-bottom-left-radius:4px; color:var(--text);
+    border-bottom-left-radius:4px; color:var(--text);
   }
   .bubble-row.b .bubble{
     background:var(--bubble-b); color:var(--text);
-    font-weight:600; border-bottom-right-radius:4px;
+    border-bottom-right-radius:4px;
   }
-  html[data-theme="light"] .phone {background-color: var(--card);}
 
   .who{font-size:var(--fs-xs); color:var(--muted); margin-bottom:4px; font-weight:800; letter-spacing:.05em;}
   .bubble-row.b .who{text-align:right; color:var(--on-bubble-dim);}
@@ -126,9 +125,8 @@
   .jp{font-family:var(--font-jp);}
   .jp ruby rt{font-size:10px; font-weight:700; opacity: .9;}
   .bubble-row .jp {line-height: 2.1;}
-  .bubble-row.b .jp ruby rt{color:var(--text);}
   .kr{font-size:var(--fs-sm); color:var(--muted); font-style:normal;}
-  .bubble-row.b .kr{color:var(--on-bubble-dim); font-weight:600;}
+  .bubble-row.b .kr{color:var(--on-bubble-dim);}
 
   /* Word cards */
   .word-list{display:flex; flex-direction:column; gap:12px;}

@@ -14,21 +14,20 @@
  */
 import { getPages } from '../../lib/episodes';
 import Base from '../../layouts/Base.astro';
-import Hero from '../../components/Hero.astro';
+import EpisodeHero from '../../components/EpisodeHero.astro';
 import EpisodeNav from '../../components/EpisodeNav.astro';
 import SectionTitle from '../../components/SectionTitle.astro';
 import SectionLead from '../../components/SectionLead.astro';
-import Scene from '../../components/Scene.astro';
-import KeyPoints from '../../components/KeyPoints.astro';
+import Scene from '../../components/EpisodeScene.astro';
+import KeyPoints from '../../components/EpisodeKeyPoints.astro';
 import TodayEnd from '../../components/TodayEnd.astro';
 import StampBoard from '../../components/StampBoard.astro';
 import LaterBox from '../../components/LaterBox.astro';
 import LaterPart from '../../components/LaterPart.astro';
 import WordGroup from '../../components/WordGroup.astro';
-import Compare from '../../components/Compare.astro';
+import EpisodeQuestion from '../../components/EpisodeQuestion.astro';
 import SubscribeCta from '../../components/SubscribeCta.astro';
 import NextCard from '../../components/NextCard.astro';
-import EpisodeFooter from '../../components/EpisodeFooter.astro';
 import CorrectionNote from '../../components/CorrectionNote.astro';
 import { toPlain, toChunks } from '../../lib/furigana';
 import { SITE, url } from '../../lib/site';
@@ -37,6 +36,7 @@ import type { EpisodeData } from '../../lib/content/episode-types';
 import { isEpisodeReviewReady } from '../../lib/learning/review-content';
 import { getVisibleMoreContent } from '../../lib/content/more-content';
 import '../../styles/keypoints.css';
+import '../../styles/episode-redesign.css';
 
 export async function getStaticPaths() {
   const all = await getPages();
@@ -75,6 +75,7 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
   ogTitle={`${SITE.brand ?? SITE.name} — ${d.subtitle}`}
   ogImage={`/og/${ep.id}.png`}
   nav="episode"
+  bodyClass="episode-redesign" lightOnly
 >
   <div
     class="wrap reading"
@@ -88,11 +89,9 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
   >
     <meta data-pagefind-meta={`no:${d.no}`} />
 
-    <Hero emoji={d.emoji} title={d.title} subtitle={d.subtitle} meta={heroMeta} />
+    <EpisodeHero slug={ep.id} emoji={d.emoji} title={d.title} subtitle={d.subtitle} meta={heroMeta} />
 
     <EpisodeNav prev={prev} next={next} id="navTop" />
-
-    <EpisodeFooter keyPoints={d.keyPoints} />
 
     {d.scene.length > 0 && (
       <>
@@ -103,7 +102,7 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
 
     {d.keyPoints.length > 0 && (
       <>
-        <SectionTitle badge="TODAY" title="이번 편에서 딱 3개" />
+        <SectionTitle badge="POINT" title="이번 편에서 딱 3개" />
         <SectionLead text="✨ 여기 나온 표현은 사흘 뒤에 다시 만나게 돼요. 자신 없는 표현은 내일 바로 만나요." />
         <KeyPoints points={d.keyPoints} scene={d.scene} />
       </>
@@ -113,14 +112,14 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
       season={d.season}
       markNo={d.no}
       exprIds={d.keyPoints.map((k) => k.id)}
-      note="여기까지 읽으면 오늘의 표현 3개가 다시 만나기 약속에 등록됩니다."
+      note="여기까지 읽으면 이번 편에서 딱 3개가 다시 만나기 약속에 등록됩니다."
       subnote="기본은 사흘 뒤, 자신 없는 표현은 내일 다시 만나요."
     />
 
     <TodayEnd />
 
     <div class="later-list">
-      <LaterBox summary={summaryParts}>
+      <LaterBox summary={summaryParts} heading>
         {more.sceneWords.length > 0 && (
           <LaterPart id="later-words" title="장면을 이해하는 말">
             <WordGroup label="장면을 이해하는 말" items={more.sceneWords} showLabel={false} term={false} />
@@ -130,7 +129,7 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
         {more.questions.length > 0 && (
           <LaterPart id="later-questions" title="이 대화에서 조금 더 궁금한 것">
             {more.questions.map((question) => (
-              <Compare title={question.title} tip={question.answer} />
+              <EpisodeQuestion season={d.season} no={d.no} question={question} />
             ))}
           </LaterPart>
         )}
@@ -145,7 +144,10 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
     </div>
 
     {d.nextPreview && (
-      <NextCard text={d.nextPreview} next={next ? { slug: next.id, no: next.data.no } : null} />
+      <section class="episode-next" aria-label="다음 이야기">
+        <SectionTitle badge="NEXT" title="다음 이야기" />
+        <NextCard text={d.nextPreview} next={next ? { slug: next.id, no: next.data.no } : null} />
+      </section>
     )}
 
     <EpisodeNav prev={prev} next={next} sticky id="navBottom" />

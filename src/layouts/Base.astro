@@ -80,7 +80,7 @@ const ogUrl = new URL(ogImage ?? '/og-default.png', canonical);
 
   <slot />
 
-  <SiteFooter pointFontCredit={bodyClass?.split(' ').includes('home-redesign')} />
+  <SiteFooter pointFontCredit={bodyClass?.split(' ').some((name) => name === 'home-redesign' || name === 'episode-redesign')} />
 
   <script is:inline>
     /* ---------- 테마 ---------- */

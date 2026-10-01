@@ -1,0 +1,13 @@
+---
+import Hero from './Hero.astro';
+import { episodeRepresentative } from '../lib/ui/episode-assets';
+import { url } from '../lib/site';
+interface Props { slug: string; emoji: string; title: string; subtitle: string; meta: string }
+const { slug, emoji, title, subtitle, meta } = Astro.props;
+const image = episodeRepresentative(slug);
+const srcset = image?.srcset.split(', ').map((entry) => { const [path, size] = entry.split(' '); return `${url(path)} ${size}`; }).join(', ');
+---
+<section class="episode-hero" aria-label="에피소드 소개">
+  <Hero emoji={emoji} title={title} subtitle={subtitle} meta={meta} />
+  {image && <img class="episode-representative" src={url(image.src)} srcset={srcset} sizes="(min-width: 840px) 800px, calc(100vw - 40px)" width={image.width} height={image.height} alt="" fetchpriority="high" decoding="async" />}
+</section>

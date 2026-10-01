@@ -192,7 +192,7 @@ keyPoints:
     jp: 〜でもいい?
     kr: ~해도 돼?
     sceneIndex: 0
-    note: 허락을 구하는 표현. て와 で는 앞 동사의 て형이 정해줘요.
+    note: 허락을 구하는 표현.<br> て와 で는 앞 동사의 て형이 정해줘요.
     compareIndex: 0     # 頼む / 注文する
     applyIndex: 2       # お酒飲んでもいい?
     memoryCue:
@@ -210,7 +210,7 @@ keyPoints:
     jp: 我慢[がまん]できない
     kr: 못 참겠어
     sceneIndex: 3
-    note: 의지가 아니라 한계를 말합니다. 我慢しない 와 뜻이 달라요.
+    note: 의지가 아니라 한계를 말합니다. <br>我慢しない 와 뜻이 달라요.
     compareIndex: 2     # 我慢しない / 我慢できない
     applyIndex: 0       # コーヒー、我慢できない
     memoryCue:
@@ -228,7 +228,7 @@ keyPoints:
     jp: 〜ばいいよ
     kr: ~하면 돼
     sceneIndex: 4
-    note: 부담 없이 가볍게 조언할 때. 위로처럼 들리는 말투예요.
+    note: 부담 없이 가볍게 조언할 때. <br>위로처럼 들리는 말투예요.
     compareIndex: 3     # 始まる / 始める
     applyIndex: 1       # 運動も明日から
     memoryCue:
@@ -246,6 +246,6 @@ keyPoints:
 reviewTargets: []
 
 nextPreview: >-
-  치킨은 시켰는데 다음 편에서 사고가 납니다. 주문 완료 화면을 보니 <b>配達</b>가 아니라
-  <b>持ち帰り</b>로 되어 있어요. 잠옷 차림에 가게까지는 걸어서 15분.
-  이럴 때 친구가 건네는 한마디가 <b>「キャンセルしてもらえば?」</b>예요.
+  치킨은 시켰는데 다음 편에서 사고가 납니다. 주문 완료 화면을 보니 <span class='jp'>配達</span>가 아니라
+  <span class='jp'>持ち帰り</span>로 되어 있어요. 잠옷 차림에 가게까지는 걸어서 15분.
+  <br>이럴 때 친구가 건네는 한마디가「<span class='jp'>キャンセルしてもらえば?</span>」예요.
