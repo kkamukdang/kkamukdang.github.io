@@ -6,6 +6,9 @@
 import { SITE, url } from '../lib/site';
 import { getListed } from '../lib/episodes';
 
+interface Props { pointFontCredit?: boolean }
+const { pointFontCredit = false } = Astro.props;
+
 const year = new Date().getFullYear();
 const span = year > SITE.since ? `${SITE.since}–${year}` : `${SITE.since}`;
 
@@ -29,5 +32,6 @@ const corrLabel = lastCorr
   <p class="foot-license">
     획순 데이터: <a href="https://kanjivg.tagaini.net/" target="_blank" rel="noopener">KanjiVG</a> (CC BY-SA 3.0)
   </p>
+  {pointFontCredit && <p class="foot-font-credit">이 페이지에는 차이커뮤니케이션에서 제공한 차이 활짝체가 적용되어 있습니다.</p>}
   <p class="foot-copy">© {span} {SITE.name}</p>
 </footer>

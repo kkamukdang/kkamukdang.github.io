@@ -9,7 +9,9 @@ import type { GetStaticPaths } from 'astro';
 import { getListed } from '../lib/episodes';
 import Base from '../layouts/Base.astro';
 import SubscribeCta from '../components/SubscribeCta.astro';
-import AgainBlock from '../components/AgainBlock.astro';
+import HomeIntro from '../components/HomeIntro.astro';
+import EpisodeCard from '../components/EpisodeCard.astro';
+import '../styles/home-redesign.css';
 import { toPlain, toKanji } from '../lib/furigana';
 import { SITE, url } from '../lib/site';
 import { SEASONAL, BONUS } from '../lib/taglines';
@@ -75,118 +77,44 @@ const TAGLINES = {
 ---
 <Base
   title={isFirst ? `${SITE.name} — ${SITE.tagline}` : `${SITE.name} — ${page.currentPage}페이지`}
-  nav="home"
+  nav="home" bodyClass="home-redesign" lightOnly
 >
-  <div class="wrap">
-    {isFirst && (
-      <div class="home-hero">
-        <div class="hero-eyebrow">까먹당 · 일본어</div>
-        <h1 id="tagline">{SITE.tagline}</h1>
-        <p id="taglineKo">{SITE.description}</p>
+  <main>
+    {isFirst && <>
+      <div class="home-ambient" aria-hidden="true"><span class="home-glow home-glow-left"></span><span class="home-glow home-glow-right"></span></div>
+      <section class="home-greeting home-container" aria-label="오늘의 인사">
+        <img src={url('/ui/greeting-autumn.webp')} width="342" height="227" alt="" fetchpriority="high" />
+        <div><p id="tagline">{SITE.tagline}</p><p id="taglineKo">{SITE.description}</p></div>
+      </section>
+      <HomeIntro />
+    </>}
+    <section class="home-episodes" aria-label="에피소드 목록">
+      <svg class="home-wave" viewBox="0 0 1440 72" preserveAspectRatio="none" aria-hidden="true"><path d="M0 35C160-35 240 105 400 40S620 65 790 43 1000 65 1140 38 1320 70 1440 24V72H0Z" /></svg>
+      <div class="home-container">
+        <div id="episodes" class="home-episode-heading"><h2>SEASON {currentSeason} · <strong>에피소드</strong></h2><p class="home-season-description">{SEASON_NAME[currentSeason] ? `이번 시즌은 ${SEASON_NAME[currentSeason]} 대화하는 에피소드를 만나요.` : '일상 속 일본어를 에피소드로 만나요.'}</p></div>
+        <div class="search-box">
+          <div class="search-field"><input type="search" id="q" placeholder="표현이나 에피소드 찾기" autocomplete="off" aria-label="회차 검색" /></div>
+          <div id="search-status" class="search-status"></div>
+          <div id="results" class="results"></div>
+        </div>
+        {tags.length > 0 && <div class="tag-row" id="tagRow">
+          <button class="tag-chip on" data-tag="">전체</button>
+          {tags.map((t, i) => <button class={i < TAGS_SHOWN ? 'tag-chip' : 'tag-chip extra'} data-tag={t}>{t}</button>)}
+          {tags.length > TAGS_SHOWN && <button class="tag-chip more" id="tagMore" type="button">{`+${tags.length - TAGS_SHOWN}`}</button>}
+        </div>}
+        <div class="ep-list" id="epList">
+          {seasons.map(([season, list]) => seasons.length === 1 ? list.map((ep) => <EpisodeCard ep={ep} />) : <details class="season" open={season === currentSeason}><summary><span class="season-title">{`시즌 ${season}`}</span><span class="season-count">{`${list.length}편`}</span></summary><div class="season-body">{list.map((ep) => <EpisodeCard ep={ep} />)}</div></details>)}
+        </div>
+        {page.data.length === 0 && <p class="empty">아직 발행한 회차가 없어요.</p>}
+        {page.lastPage > 1 && <div class="pager" id="pager">
+          {page.url.prev ? <a class="pill" href={page.url.prev}>← 최신</a> : <span class="pill ghost">← 최신</span>}
+          <span class="pager-count">{`${page.currentPage} / ${page.lastPage}`}</span>
+          {page.url.next ? <a class="pill" href={page.url.next}>이전 →</a> : <span class="pill ghost">이전 →</span>}
+        </div>}
+        {isFirst && <SubscribeCta title="배우고, 까먹고, 다시 만나는 일본어" variant="home" />}
       </div>
-    )}
-
-    <div class="search-box">
-      <div class="search-field">
-        <input
-          type="search"
-          id="q"
-          placeholder="我慢, てもいい, 배달, 부탁하기"
-          autocomplete="off"
-          aria-label="회차 검색"
-        />
-      </div>
-      <div id="search-status" class="search-status"></div>
-      <div id="results" class="results"></div>
-    </div>
-
-    {isFirst && (
-      <>
-        <SubscribeCta
-          title="배우고, 까먹고, 다시 만나는 일본어"
-          lead="매주 딱 3개만 배우세요.<br />까먹으면 다시 찾아드릴게요."
-          closable
-        />
-        <AgainBlock />
-      </>
-    )}
-
-    <h2 class="home-sec" id="episodes">에피소드</h2>
-
-
-    {tags.length > 0 && (
-      <div class="tag-row" id="tagRow">
-        <button class="tag-chip on" data-tag="">전체</button>
-        {tags.map((t, i) => (
-          <button class={i < TAGS_SHOWN ? 'tag-chip' : 'tag-chip extra'} data-tag={t}>{t}</button>
-        ))}
-        {tags.length > TAGS_SHOWN && (
-          <button class="tag-chip more" id="tagMore" type="button">
-            {`+${tags.length - TAGS_SHOWN}`}
-          </button>
-        )}
-      </div>
-    )}
-
-    <div class="ep-list" id="epList">
-      {seasons.map(([season, list]) => {
-        const cards = list.map((ep) => (
-        <a class="ep-card" href={url(`/ep/${ep.id}/`)} data-tags={ep.data.tags.join(',')}>
-          <div class="ep-body">
-            <div class="ep-meta">
-              <span class="ep-no">{`#${String(ep.data.no).padStart(3, '0')}`}</span>
-              <span class="ep-date">{fmt.format(ep.data.date)}</span>
-              {ep.data.tags[0] && <span class="ep-tag">{ep.data.tags[0]}</span>}
-            </div>
-            <div class="ep-title" set:html={toPlain(ep.data.title)} />
-            <div class="ep-sub">{ep.data.subtitle}</div>
-            {/* 핵심 표현 3개 — "그 표현 어디서 봤더라" 로 찾아오는 길 */}
-            {ep.data.keyPoints.length > 0 && (
-              <div class="ep-keys jp">
-                {ep.data.keyPoints.map((k) => toKanji(k.jp)).join(' · ')}
-              </div>
-            )}
-          </div>
-          <span class="ep-emoji" aria-hidden="true">{ep.data.emoji}</span>
-        </a>
-      ));
-
-        // 시즌이 하나뿐이면 헤더 없이 목록만
-        if (seasons.length === 1) return cards;
-
-        // 현재 시즌은 펼치고, 지난 시즌은 접습니다
-        return (
-          <details class="season" open={season === currentSeason}>
-            <summary>
-              <span class="season-title">
-                {`시즌 ${season}`}
-                {SEASON_NAME[season] && ` · ${SEASON_NAME[season]}`}
-              </span>
-              <span class="season-count">{`${list.length}편`}</span>
-            </summary>
-            <div class="season-body">{cards}</div>
-          </details>
-        );
-      })}
-    </div>
-
-    {page.data.length === 0 && (
-      <p class="empty">아직 발행한 회차가 없어요. src/data/episodes/ 에 YAML 을 추가해 보세요.</p>
-    )}
-
-    {page.lastPage > 1 && (
-      <div class="pager" id="pager">
-        {page.url.prev
-          ? <a class="pill" href={page.url.prev}>← 최신</a>
-          : <span class="pill ghost">← 최신</span>}
-        <span class="pager-count">{`${page.currentPage} / ${page.lastPage}`}</span>
-        {page.url.next
-          ? <a class="pill" href={page.url.next}>이전 →</a>
-          : <span class="pill ghost">이전 →</span>}
-      </div>
-    )}
-
-  </div>
+    </section>
+  </main>
 
   <script is:inline define:vars={{ INDEX: url('/search.json'), TAGLINES }}>
     window.__INDEX__ = INDEX;
@@ -428,7 +356,7 @@ const TAGLINES = {
         found.sort(function (a, b) { return b.score - a.score || b.doc.no - a.doc.no; });
 
         status.textContent = found.length
-          ? found.length + '개 회차에서 찾았어요'
+          ? found.length + '개 에피소드에서 찾았어요'
           : '결과가 없어요. 다른 말로 찾아보세요.';
 
         results.innerHTML = found.slice(0, 12).map(function (f) {

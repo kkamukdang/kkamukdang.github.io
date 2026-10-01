@@ -12,10 +12,11 @@
  * 구독 여부는 알 수 없으므로 읽은 편수로 짐작합니다.
  * 검색으로 처음 들어온 사람에게는 이 페이지가 첫 화면이므로 없애지 않습니다.
  */
-import { SITE } from '../lib/site';
+import { SITE, url } from '../lib/site';
 import '../styles/cta.css';
 
 interface Props {
+  variant?: 'default' | 'home';
   title: string;
   /** 제목 아래 설명. 에피소드 하단에서는 생략합니다 */
   lead?: string;
@@ -27,10 +28,18 @@ interface Props {
 const {
   title,
   lead,
+  variant = 'default',
   closable = false,
   mini = '💌 매주 목요일, 한 문장씩 메일로 받아보기 →',
 } = Astro.props;
 ---
+{variant === 'home' ? (
+  <section class="home-subscribe" aria-label="까먹당 뉴스레터 구독" style={`background-image:url(${url('/ui/subscribe-background.webp')})`}>
+    <h2>배우고, 까먹고,<br class="home-subscribe-break" /> 다시 만나는 일본어</h2>
+    <p>💌 매주 목요일, 한 문장씩 메일로 받아보기</p>
+    <a href={SITE.subscribeUrl} target="_blank" rel="noopener">입당하기 <span aria-hidden="true">→</span></a>
+  </section>
+) : (
 <section class="cta" data-cta>
   <div class="cta-full" data-cta-full>
     <h2 class="cta-title">{title}</h2>
@@ -53,6 +62,7 @@ const {
     {mini}
   </a>
 </section>
+)}
 
 <script is:inline>
   /* 읽은 편수와 「접기」 기록에 따라 크기를 정합니다. */

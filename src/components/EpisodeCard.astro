@@ -1,0 +1,21 @@
+---
+import { toPlain, toKanji } from '../lib/furigana';
+import { url } from '../lib/site';
+import { episodeRepresentative } from '../lib/ui/episode-assets';
+const { ep } = Astro.props;
+const image = episodeRepresentative(ep.id);
+const fmt = new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+const srcset = image?.srcset.split(', ').map((entry) => { const [path, size] = entry.split(' '); return `${url(path)} ${size}`; }).join(', ');
+---
+<a class="ep-card home-episode-card" href={url(`/ep/${ep.id}/`)} data-tags={ep.data.tags.join(',')}>
+  <div class="home-card-visual">
+    {image ? <img src={url(image.src)} srcset={srcset} sizes="(min-width: 768px) 380px, calc(100vw - 64px)" width={image.width} height={image.height} alt="" loading="lazy" decoding="async" style={`object-position:${image.position}`} /> : <div class="home-card-fallback" aria-hidden="true">{ep.data.emoji}</div>}
+    <div class="home-card-badges"><span class="home-card-number">{`#${String(ep.data.no).padStart(3, '0')}`}</span>{ep.data.tags[0] && <span class="home-card-tag">{ep.data.tags[0]}</span>}</div>
+  </div>
+  <div class="ep-body">
+    <div class="ep-date">{fmt.format(ep.data.date)}</div>
+    <div class="ep-title" set:html={toPlain(ep.data.title)} />
+    <div class="ep-sub">{ep.data.subtitle}</div>
+    {ep.data.keyPoints.length > 0 && <div class="ep-keys jp">{ep.data.keyPoints.map((k: { jp: string }) => <span>{toKanji(k.jp)}</span>)}</div>}
+  </div>
+</a>

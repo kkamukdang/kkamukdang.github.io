@@ -13,6 +13,7 @@ import SiteFooter from '../components/SiteFooter.astro';
 
 interface Props {
   title: string;
+  lightOnly?: boolean;
   description?: string;
   ogTitle?: string;
   /** 페이지별 body 클래스. 한자 쓰기 페이지가 'write' 를 씁니다. */
@@ -26,6 +27,7 @@ interface Props {
 }
 const {
   title,
+  lightOnly = false,
   description = SITE.description,
   ogTitle = title,
   bodyClass,
@@ -39,7 +41,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://example.com
 const ogUrl = new URL(ogImage ?? '/og-default.png', canonical);
 ---
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme={lightOnly ? 'light' : undefined} data-light-only={lightOnly ? 'true' : undefined}>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -64,7 +66,7 @@ const ogUrl = new URL(ogImage ?? '/og-default.png', canonical);
     // 깜빡임 방지: 저장된 테마를 페인트 전에 적용합니다.
     try {
       var saved = localStorage.getItem('kkamukdang-theme');
-      if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      if (document.documentElement.dataset.lightOnly !== 'true' && saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
     } catch (e) {}
   </script>
 </head>
@@ -72,13 +74,13 @@ const ogUrl = new URL(ogImage ?? '/og-default.png', canonical);
   {/* 기록 저장소는 모든 화면이 씁니다. 여기서 한 번만 불러와요. */}
   <script src={url('/kkmd.js')} is:inline></script>
 
-  <SiteNav current={nav} />
+  <SiteNav current={nav} showTheme={!lightOnly} />
 
   <div class="no-tts" id="noTtsWarning">⚠️ 이 브라우저는 음성 재생을 지원하지 않아요.</div>
 
   <slot />
 
-  <SiteFooter />
+  <SiteFooter pointFontCredit={bodyClass?.split(' ').includes('home-redesign')} />
 
   <script is:inline>
     /* ---------- 테마 ---------- */
@@ -86,6 +88,7 @@ const ogUrl = new URL(ogImage ?? '/og-default.png', canonical);
       var root = document.documentElement;
       var btn = document.getElementById('themeToggle');
       var ico = document.getElementById('themeIcon');
+      if (!btn || !ico || root.dataset.lightOnly === 'true') return;
       function paint() {
         var light = root.getAttribute('data-theme') === 'light';
         ico.textContent = light ? '🌙' : '☀';

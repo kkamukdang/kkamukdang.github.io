@@ -1,0 +1,25 @@
+---
+import { url } from '../lib/site';
+---
+<section class="home-intro" aria-labelledby="home-intro-title" data-home-hero data-hero-state="intro" data-catalog-url={url('/expressions.json')} data-again-url={url('/again/')}>
+  <p class="home-intro-kicker"><img src={url('/ui/hero-bird.webp')} width="40" height="34" alt="" />배우고, 까먹고, 다시 만나는 일본어</p>
+  <div class="home-intro-stage">
+    <p class="home-example example-one">🙊 야 잠깐! 스포 하지 마!</p>
+    <p class="home-example example-two">⚾ 내가 자리만 비우면 꼭 점수 나더라…</p>
+    <p class="home-example example-three">🛵 배달이 아니라 포장으로 되어있잖아!?</p>
+    <p class="home-example example-four">🍗 있잖아… 오늘 밤 치킨 시켜도 될까?</p>
+    <h1 id="home-intro-title">이런 표현을<br />만날 수 있어요!</h1>
+    <p class="home-due-expression" data-hero-expression hidden aria-live="polite"><span class="jp" lang="ja" data-hero-jp></span><span data-hero-kr></span></p>
+    <img class="home-intro-underline" src={url('/ui/hero-underline.webp')} width="279" height="22" alt="" />
+    <a class="home-browse" href="#episodes">에피소드 둘러보기 ↓</a>
+  </div>
+  <img class="home-decoration home-star" src={url('/ui/hero-star.webp')} width="607" height="655" alt="" />
+  <img class="home-decoration home-letter" src={url('/ui/hero-letter.webp')} width="566" height="593" alt="" />
+</section>
+
+<script>
+  import { initHomeHero } from '../lib/client/home-hero';
+  // Main-only opt-in: native #episodes URL/history/focus semantics stay intact.
+  if (document.body.classList.contains('home-redesign')) document.documentElement.dataset.homeScroll = 'true';
+  initHomeHero();
+</script>

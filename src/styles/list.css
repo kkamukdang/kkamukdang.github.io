@@ -26,19 +26,19 @@
   font-family:var(--font-kr); outline:none;
   transition:border-color .15s ease, box-shadow .15s ease;
 }
-.search-box input:hover{ border-color:var(--accent-ink); }
+/* .search-box input:hover{ border-color:var(--accent-ink); }
 .search-box input:focus{
   border-color:var(--accent-ink);
   box-shadow:0 0 0 4px var(--accent-soft);
-}
+} */
 .search-box input::placeholder{ color:var(--muted); }
 .search-box input::-webkit-search-cancel-button{ cursor:pointer; }
-.search-status{ font-size:var(--fs-md); color:var(--muted); margin:16px 2px 0; text-align: center;}
+.search-status{ font-size:var(--fs-md); color:#66522a; margin:32px 0 0; text-align: center;}
 
 .results{ display:none; margin-top:12px; }
 .result{
-  display:block; padding:21px 21px 13px; margin-bottom:12px; text-decoration:none;
-  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  display:block; padding:20px; margin-bottom:12px; text-decoration:none;
+  background:#fff; border-radius:14px;
 }
 .result:hover{ border-color:var(--line-2); }
 .result-meta{ font-size: var(--fs-sm); color:var(--muted); margin-bottom:8px;}
@@ -71,11 +71,11 @@
 .tag-row{ display:flex; flex-wrap:wrap; gap:7px; margin-bottom:16px; }
 .tag-chip{
   padding:7px 13px; font-size:var(--fs-md); cursor:pointer;
-  color:var(--muted); background:transparent;
-  border:1px solid var(--line-2); border-radius:999px;
+  color:#66522a; background:transparent;
+  border:1px solid transparent; border-radius:999px;
   font-family:var(--font-kr); font-weight: 500;
 }
-.tag-chip.on{ color:var(--on-hot); background:var(--hot); border-color:var(--hot); font-weight:700; }
+.tag-chip.on{ color:var(--on-hot); background:var(--home-action); border-color:var(--home-action); font-weight:700; }
 
 /* ---- 회차 카드 ----
    이모지는 글자 폭이 제각각(⚾🍺 vs 🍗🌙)이라 왼쪽에 두면 제목 줄이 어긋나 보입니다.

@@ -11,8 +11,8 @@ import { getListed } from '../lib/episodes';
 import { SITE, url } from '../lib/site';
 import Logo from './Logo.astro';
 
-interface Props { current?: 'episode' | 'again' }
-const { current } = Astro.props;
+interface Props { current?: 'episode' | 'again'; showTheme?: boolean }
+const { current, showTheme = true } = Astro.props;
 
 /**
  * 「에피소드」는 목록이 아니라 **최신 회차 본문**으로 갑니다.
@@ -50,8 +50,8 @@ const links = [
       ))}
     </div>
 
-    <button class="theme-toggle" id="themeToggle" type="button" aria-label="화면 테마 바꾸기">
+    {showTheme && <button class="theme-toggle" id="themeToggle" type="button" aria-label="화면 테마 바꾸기">
       <span class="t-ico" id="themeIcon">☀</span>
-    </button>
+    </button>}
   </div>
 </nav>
