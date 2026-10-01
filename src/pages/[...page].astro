@@ -11,6 +11,8 @@ import Base from '../layouts/Base.astro';
 import SubscribeCta from '../components/SubscribeCta.astro';
 import HomeIntro from '../components/HomeIntro.astro';
 import EpisodeCard from '../components/EpisodeCard.astro';
+import { publicSeasonGroups } from '../lib/ui/home-seasons';
+import '../styles/home-seasons.css';
 import '../styles/home-redesign.css';
 import { toPlain, toKanji } from '../lib/furigana';
 import { SITE, url } from '../lib/site';
@@ -28,6 +30,7 @@ export const getStaticPaths = (async ({ paginate }) => {
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
+const isFirst = page.currentPage === 1;
 
 /**
  * 장면 태그는 다섯 개로 고정입니다. 회차가 늘어도 칩이 늘지 않아요.
@@ -49,14 +52,15 @@ for (const ep of page.data) {
   list.push(ep);
   bySeason.set(ep.data.season, list);
 }
-const seasons = [...bySeason.entries()].sort((a, b) => b[0] - a[0]);
+// Root Home reads every public episode, independently of the legacy 12-item pages.
+const seasons = isFirst ? publicSeasonGroups(all) : [...bySeason.entries()].sort((a, b) => b[0] - a[0]);
 const currentSeason = seasons.length > 0 ? seasons[0][0] : 1;
 
 /** 시즌 이름. 나중에 시즌마다 부제를 붙이고 싶으면 여기만 고치면 됩니다. */
 const SEASON_NAME: Record<number, string> = { 1: '친구랑, 반말로' };
 
 const fmt = new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
-const isFirst = page.currentPage === 1;
+const seasonDescription = (season: number) => SEASON_NAME[season] ? `이번 시즌은 ${SEASON_NAME[season]} 대화하는 에피소드를 만나요.` : '일상 속 일본어를 에피소드로 만나요.';
 
 /**
  * 후리가나를 미리 ruby HTML 로 바꿔서 넘깁니다.
@@ -91,7 +95,11 @@ const TAGLINES = {
     <section class="home-episodes" aria-label="에피소드 목록">
       <svg class="home-wave" viewBox="0 0 1440 72" preserveAspectRatio="none" aria-hidden="true"><path d="M0 35C160-35 240 105 400 40S620 65 790 43 1000 65 1140 38 1320 70 1440 24V72H0Z" /></svg>
       <div class="home-container">
-        <div id="episodes" class="home-episode-heading"><h2>SEASON {currentSeason} · <strong>에피소드</strong></h2><p class="home-season-description">{SEASON_NAME[currentSeason] ? `이번 시즌은 ${SEASON_NAME[currentSeason]} 대화하는 에피소드를 만나요.` : '일상 속 일본어를 에피소드로 만나요.'}</p></div>
+        <div id="episodes" class="home-episode-heading">
+          <h2><span data-home-season-label>SEASON {currentSeason}</span>{isFirst && seasons.length > 1 && <span data-home-season-control hidden><select class="home-season-select" data-home-season-select data-default-season={currentSeason} aria-label="에피소드 시즌 선택" aria-controls="epList">{seasons.map(([season]) => <option value={season} selected={season === currentSeason}>SEASON {season}</option>)}</select></span>} · <strong>에피소드</strong></h2>
+          <p class="home-season-description" data-home-season-description>{seasonDescription(currentSeason)}</p>
+          {isFirst && seasons.length > 1 && <span class="home-season-status" data-home-season-status aria-live="polite" aria-atomic="true"></span>}
+        </div>
         <div class="search-box">
           <div class="search-field"><input type="search" id="q" placeholder="표현이나 에피소드 찾기" autocomplete="off" aria-label="회차 검색" /></div>
           <div id="search-status" class="search-status"></div>
@@ -103,10 +111,10 @@ const TAGLINES = {
           {tags.length > TAGS_SHOWN && <button class="tag-chip more" id="tagMore" type="button">{`+${tags.length - TAGS_SHOWN}`}</button>}
         </div>}
         <div class="ep-list" id="epList">
-          {seasons.map(([season, list]) => seasons.length === 1 ? list.map((ep) => <EpisodeCard ep={ep} />) : <details class="season" open={season === currentSeason}><summary><span class="season-title">{`시즌 ${season}`}</span><span class="season-count">{`${list.length}편`}</span></summary><div class="season-body">{list.map((ep) => <EpisodeCard ep={ep} />)}</div></details>)}
+          {seasons.map(([season, list]) => seasons.length === 1 ? list.map((ep) => <EpisodeCard ep={ep} />) : isFirst ? <div class="home-season-panel" data-home-season-panel={season} data-description={seasonDescription(season)} data-count={list.length} hidden={season !== currentSeason}><div class="season-body">{list.map((ep) => <EpisodeCard ep={ep} />)}</div></div> : <details class="season" open={season === currentSeason}><summary><span class="season-title">{`시즌 ${season}`}</span><span class="season-count">{`${list.length}편`}</span></summary><div class="season-body">{list.map((ep) => <EpisodeCard ep={ep} />)}</div></details>)}
         </div>
-        {page.data.length === 0 && <p class="empty">아직 발행한 회차가 없어요.</p>}
-        {page.lastPage > 1 && <div class="pager" id="pager">
+        {seasons.length === 0 && <p class="empty">아직 발행한 회차가 없어요.</p>}
+        {!isFirst && page.lastPage > 1 && <div class="pager" id="pager">
           {page.url.prev ? <a class="pill" href={page.url.prev}>← 최신</a> : <span class="pill ghost">← 최신</span>}
           <span class="pager-count">{`${page.currentPage} / ${page.lastPage}`}</span>
           {page.url.next ? <a class="pill" href={page.url.next}>이전 →</a> : <span class="pill ghost">이전 →</span>}
@@ -115,6 +123,11 @@ const TAGLINES = {
       </div>
     </section>
   </main>
+
+  <script>
+    import { initHomeSeasons } from '../lib/client/home-seasons';
+    initHomeSeasons();
+  </script>
 
   <script is:inline define:vars={{ INDEX: url('/search.json'), TAGLINES }}>
     window.__INDEX__ = INDEX;
