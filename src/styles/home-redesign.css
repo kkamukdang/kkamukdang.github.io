@@ -44,17 +44,17 @@
 .home-card-number,.home-card-tag{padding:4px 8px;border-radius:5px;color:white}
 .home-card-number{background:#ed7e25;}.home-card-tag{background:#4b4945}
 .home-redesign .home-episode-card .ep-date{font-size:12px;color:var(--home-muted);margin-bottom:10px}
-.home-redesign .home-episode-card .ep-title{font-size:19px;font-weight:800;color:var(--home-ink);line-height:1.55;overflow-wrap:anywhere}
+.home-redesign .home-episode-card .ep-title{font-size:18px;font-weight:800;color:var(--home-ink);line-height:1.55;overflow-wrap:anywhere}
 .home-redesign .home-episode-card .ep-sub{font-size:13px;line-height:1.7;color:var(--home-muted)}
 .home-redesign .home-episode-card .ep-keys{display:flex;flex-wrap:wrap;gap:5px;margin-top:14px;line-height:1.5;color:#685b45}
 .home-redesign .home-episode-card .ep-keys span{background:#faf3e7;padding:4px 7px;border-radius:5px;font-size:11px;overflow-wrap:anywhere;max-width:100%}
 .home-subscribe{margin-top:28px;padding:32px 20px;text-align:center;background-size:cover;background-position:center;border-radius:8px;color:var(--home-ink)}
-.home-subscribe h2{font-size:24px;line-height:1.5;margin:0 0 10px;font-weight:800}
+.home-subscribe h2{font-size:20px;line-height:1.5;margin:0 0 10px;font-weight:800}
 .home-subscribe p{font-size:13px;line-height:1.6;margin:0 0 16px;color:var(--home-muted)}
-.home-subscribe a{display:inline-flex;gap:12px;align-items:center;background:#e56908;color:white;border:2px solid white;padding:8px 30px;border-radius:999px;font-weight:800;letter-spacing:.08em;text-decoration:none;min-height:48px}
+.home-subscribe a{display:inline-flex;gap:12px;align-items:center;background:#bd5200;color:white;padding:8px 30px;border-radius:999px;font-weight:800;letter-spacing:.08em;text-decoration:none;min-height:48px}
 .home-subscribe-break{display:none}
 .home-redesign .site-footer{box-sizing:border-box;width:calc(100% - 40px);max-width:var(--home-width);margin:0 auto;padding:32px 0;color:var(--home-muted);text-align:center}
-.home-redesign a:focus-visible,.home-redesign button:focus-visible,.home-redesign input:focus-visible,.home-redesign summary:focus-visible{outline:3px solid #863300;outline-offset:4px}
+.home-redesign a:focus-visible,.home-redesign button:focus-visible,.home-redesign input:focus-visible,.home-redesign summary:focus-visible{outline:3px solid #fff;}
 @media(min-width:768px){.home-redesign .ep-list,.home-redesign .season-body{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:900px){.home-example{font-size:11px;max-width:220px}.example-three{left:0}.example-four{right:0}.home-intro h1{font-size:34px}.home-decoration{width:96px}.home-letter{width:80px}}
 @media(max-width:767px){
@@ -68,7 +68,7 @@
  .home-episodes{padding-top:24px}.home-episode-heading{margin-bottom:24px}.home-season-description{font-size:12px;margin-top:12px}
  .home-episode-heading>h2{font-size:14px}.home-episode-heading strong{font-size:22px}
  .home-redesign .home-episode-card{padding:16px}.home-redesign .home-episode-card .ep-title{font-size:17px}.home-card-badges{font-size:11px;top:6px;left:6px}
- .home-subscribe{padding:28px 20px;background-position:center}.home-subscribe h2{font-size:21px}.home-subscribe-break{display:block}.home-subscribe p{font-size:11px}
+ .home-subscribe{padding:28px 20px;background-position:center}.home-subscribe h2{font-size:21px}.home-subscribe-break{display:block}.home-subscribe p{font-size:12px}
  .home-redesign .search-box input{padding-block:14px;font-size:13px}
 }
 @media(prefers-reduced-motion:reduce){.home-redesign .ep-card{transition:none}}
@@ -134,7 +134,7 @@ html[data-home-scroll="true"]{scroll-behavior:smooth}
 .home-redesign .home-intro h1{max-width:440px;margin-inline:auto}
 .home-hero-scenes{position:absolute;inset:0;pointer-events:none}
 .home-hero-scenes[hidden]{display:none}
-.home-redesign .home-hero-scenes .home-example{position:absolute;inset:auto;margin:0;box-sizing:border-box;width:max-content;max-width:270px;padding:10px 14px;border-radius:16px;background:#fff;font-size:13px;line-height:1.7;overflow-wrap:anywhere;white-space:normal;box-shadow:0 2px 4px #613e1809}
+.home-redesign .home-hero-scenes .home-example{position:absolute;inset:auto;margin:0;box-sizing:border-box;width:max-content;max-width:270px;padding:10px 12px;border-radius:16px;background:#fff;font-size:13px;line-height:1.7;overflow-wrap:anywhere;white-space:normal;box-shadow:0 2px 4px #613e1809}
 .hero-scene-icon{display:inline;margin-right:8px}
 /* count-1: centered single cue */
 .home-hero-scenes.count-1 .home-example:nth-child(1){left:50%;top:12px;max-width:420px;transform:translateX(-50%)}
@@ -142,9 +142,9 @@ html[data-home-scroll="true"]{scroll-behavior:smooth}
 .home-hero-scenes.count-2 .home-example:nth-child(1){left:60px;top:12px;max-width:300px}
 .home-hero-scenes.count-2 .home-example:nth-child(2){right:36px;top:24px;max-width:300px}
 /* count-3: upper pair + lower left; original scattered feel, no columns */
-.home-hero-scenes.count-3 .home-example:nth-child(1){left:36px;top:12px}
+.home-hero-scenes.count-3 .home-example:nth-child(1){left:0;top:12px; max-width: 230px;}
 .home-hero-scenes.count-3 .home-example:nth-child(2){right:12px;top:20px}
-.home-hero-scenes.count-3 .home-example:nth-child(3){left:-24px;top:108px;max-width:230px}
+.home-hero-scenes.count-3 .home-example:nth-child(3){left:-24px;top:85px;max-width:230px}
 /* count-4: original scattered four positions */
 .home-hero-scenes.count-4 .home-example:nth-child(1){left:-10px;top:12px; max-width:230px}
 .home-hero-scenes.count-4 .home-example:nth-child(2){right:0;top:12px}

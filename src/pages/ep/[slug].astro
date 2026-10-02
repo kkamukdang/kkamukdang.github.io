@@ -93,10 +93,10 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
 
     <EpisodeNav prev={prev} next={next} id="navTop" />
 
-    {d.scene.length > 0 && (
+    {d.sceneLines.length > 0 && (
       <>
         <SectionTitle badge="SCENE" title="오늘의 대화" />
-        <Scene lines={d.scene} specs={specs} />
+        <Scene lines={d.sceneLines} specs={specs} />
       </>
     )}
 
@@ -112,7 +112,7 @@ const heroMeta = `시즌 ${d.season} · #${String(d.no).padStart(3, '0')} · ${f
       season={d.season}
       markNo={d.no}
       exprIds={d.keyPoints.map((k) => k.id)}
-      note="여기까지 읽으면 이번 편에서 딱 3개가 다시 만나기 약속에 등록됩니다."
+      note="방금 본 표현 3개가 다시 만나기 약속에 등록됩니다."
     />
 
     <TodayEnd />

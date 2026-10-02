@@ -205,7 +205,7 @@ keyPoints:
     jp: 〜のに
     kr: ~는데 (억울함)
     sceneIndex: 4
-    note: 문장 끝에 붙여 항의·서운함을 냅니다. のに가 없으면 그냥 사실 전달이에요.
+    note: 문장 끝에 붙여 항의·서운함을 나타내요. のに가 없으면 그냥 사실 전달이에요.
     compareIndex: 1
     applyIndex: 3
     memoryCue:
@@ -229,7 +229,7 @@ keyPoints:
     jp: 〜ちゃった
     kr: ~해버렸다
     sceneIndex: 5
-    note: 〜てしまった의 회화 축약형. 후회·실수에 씁니다.
+    note: 〜てしまった의 회화 축약형. <br>후회·실수에 써요.
     compareIndex: 0
     applyIndex: 0
     memoryCue:
@@ -287,6 +287,6 @@ kanjiPractice:
     exko: 마지막 하나.
 
 nextPreview: >-
-  다음 편은 <b>체중계</b> 앞입니다. 또 <b class="jp">また明日から</b>라고 말해요.
+  다음 편은 체중계 앞입니다. 또 <b class="jp">また明日から</b>라고 말해요.
   그런데 그 말, 6주 전에도 했습니다. <br>친구가 그때 건넸던 한마디가
   이번엔 어떤 얼굴로 돌아올까요?

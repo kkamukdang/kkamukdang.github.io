@@ -211,7 +211,7 @@
     padding:3px 9px 3px 2px; margin-bottom:8px;
   }
   .next-text{font-size:var(--fs-xs);}
-  .next-text b{font-weight:700; /*color: var(--text);*/}
+  .next-text b{font-weight:600; /*color: var(--text);*/}
 
   .footer-note{
     text-align:center; font-size:var(--fs-base); color:var(--muted); margin-top:24px;

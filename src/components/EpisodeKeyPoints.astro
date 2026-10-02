@@ -10,8 +10,8 @@ const { points, scene } = Astro.props;
   {points.map((p, n) => {
     const line = p.sceneIndex == null ? undefined : scene[p.sceneIndex];
     return <article class="kp" data-expr={p.id}>
-      <div class="kp-top"><span class="kp-no">{n + 1}</span><Jp text={p.jp} class="kp-jp" /></div>
-      <div class="kp-kr">{p.kr}</div>
+      <div class="kp-top"><span class="kp-no">{n + 1}</span><div class="kp-kr">{p.kr}</div></div>
+      <Jp text={p.jp} class="kp-jp" />
       {p.note && <Rich class="kp-note" text={p.note} />}
       {line && <details class="kp-example"><summary>대화 속 예문</summary><div class="kp-line"><div class="kp-line-jp"><span class="jp" lang="ja" set:html={toRubyMarked(line.jp, [toChunks(p.jp)])} /></div><div class="kp-line-kr">{line.kr}</div></div></details>}
       <button class="kp-unsure" type="button" data-unsure={p.id}>자신 없어요</button>

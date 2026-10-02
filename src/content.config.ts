@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { sceneLineSchema, splitSceneLines } from './lib/ui/episode-display';
 
 /**
  * 회차 하나 = YAML 파일 하나.
@@ -54,14 +55,8 @@ const episodes = defineCollection({
     unlisted: z.boolean().default(false),
 
     // --- SCENE : 대화 ---
-    scene: z.array(
-      z.object({
-        who: z.string(),                  // 화자 이름
-        side: z.enum(['a', 'b']).default('a'), // a = 왼쪽(나), b = 오른쪽(상대)
-        jp,
-        kr: z.string(),
-      })
-    ).default([]),
+    // Narration is UI-only. sceneIndex continues to count speech lines, not narration.
+    scene: z.array(sceneLineSchema).default([]),
 
     // --- WORD : 단어 / 문법 ---
     wordGroups: z.array(
@@ -140,7 +135,7 @@ const episodes = defineCollection({
         kr: z.string(),
         note: z.string().optional(),      // 표현 옆 한 줄 설명
         /**
-         * 이 표현이 실제로 나온 대화 줄 번호 (scene 배열의 인덱스).
+         * 이 표현이 실제로 나온 대사 줄 번호 (narration을 제외한 scene 인덱스).
          * 「이번 편에서 딱 3개」 카드가 그 문장을 그대로 다시 보여주고,
          * 대화에서도 해당 부분을 표시합니다.
          */
@@ -177,7 +172,7 @@ const episodes = defineCollection({
       })
     ).default([]),
     nextPreview: z.string().optional(),   // NEXT 카드 본문 (HTML 허용)
-  }),
+  }).transform(({ scene, ...data }) => ({ ...data, ...splitSceneLines(scene) })),
 });
 
 export const collections = { episodes };

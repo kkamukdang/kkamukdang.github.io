@@ -209,7 +209,7 @@ keyPoints:
     jp: マジで
     kr: 진짜로
     sceneIndex: 3
-    note: 친구 사이 캐주얼 표현. 상사에게는 本当に 쪽이 안전해요.
+    note: 친구 사이 캐주얼 표현. <br>친분이 없는 사이에는 本当に쪽이 안전해요. 
     compareIndex: 0
     memoryCue:
       asset: /characters/memory/s01e06-diet-again.svg
@@ -294,6 +294,6 @@ kanjiPractice:
     exko: 공부는 또 다음 주부터.
 
 nextPreview: >-
-  다음 주는 <b>시즌 1 총복습</b>이에요. 새로 배우는 건 하나도 없습니다.
+  다음 주는 시즌 1 총복습이에요. 새로 배우는 건 하나도 없습니다.
   6주 동안 만난 표현 18개를 처음부터 다시 만나요.<br>
   다 까먹으셨어도 괜찮아요. 그러라고 만든 회차니까요.😉

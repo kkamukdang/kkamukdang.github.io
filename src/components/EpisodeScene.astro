@@ -2,13 +2,14 @@
 import Jp from './Jp.astro';
 import Speak from './Speak.astro';
 import { toRubyMarked } from '../lib/furigana';
-import { speakerAvatar, isSameSpeakerContinuation } from '../lib/ui/episode-display';
+import { speakerAvatar, isSameSpeakerContinuation, isNarration, type SceneLine } from '../lib/ui/episode-display';
 import { url } from '../lib/site';
-interface Props { lines: { who: string; side: 'a' | 'b'; jp: string; kr: string }[]; specs?: string[][] }
+interface Props { lines: SceneLine[]; specs?: string[][] }
 const { lines, specs = [] } = Astro.props;
 ---
 <div class="phone episode-scene">
   {lines.map((line, index) => {
+    if (isNarration(line)) return <p class="scene-narration">{line.text}</p>;
     const avatar = speakerAvatar(line.who);
     const continues = isSameSpeakerContinuation(lines, index);
     return <div class={`bubble-row ${line.side}${continues ? ' same-speaker' : ''}`}>
