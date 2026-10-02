@@ -1,6 +1,6 @@
 @import './point-font.css';
 /* Episode opt-in only. Shared screens, learning selectors and state classes stay intact. */
-.episode-redesign{--ep-paper:#fffbf5;--ep-card:#fff;--ep-ink:#34332e;--ep-muted:#767676;--ep-line:#e4e1db;--ep-soft:#f4efe6;--ep-orange:#a74600;background:var(--ep-paper);color:var(--ep-ink);background-image:none}
+.episode-redesign{--ep-paper:#fffcf6;--ep-card:#fff;--ep-ink:#34332e;--ep-muted:#666;--ep-line:#e4e1db;--ep-soft:#f4efe6;--ep-orange:#a74600;background:var(--ep-paper);color:var(--ep-ink);background-image:none}
 .episode-redesign .site-nav{background:#fff;border-bottom:1px solid var(--ep-line)}
 .episode-redesign .nav-inner{max-width:960px;padding-inline:20px}
 .episode-redesign .wrap.reading{width:calc(100% - 40px);max-width:960px;margin:0 auto;padding:0 0 48px;min-width:0}
@@ -10,7 +10,7 @@
 .episode-redesign .hero-eyebrow{font-size:12px;color:var(--ep-muted);margin-bottom:16px}
 .episode-redesign .hero h1{font-family:var(--font-jp);font-size:clamp(23px,3vw,32px);font-weight: 800; line-height:1.8;letter-spacing:0;color:var(--ep-ink);margin:0;overflow-wrap:anywhere}
 .episode-redesign .hero h1 rt{font-size:.4em;font-weight:500}
-.episode-redesign .hero p{font-family: var(--font-point);font-weight: 400;font-size:17px;line-height:1.7;color:#4b4b4b;margin:12px 0}
+.episode-redesign .hero p{font-family: var(--font-point);font-weight: 400;font-size:15px;line-height:1.7;color:#4b4b4b;margin:12px 0}
 .episode-redesign .episode-representative{display:block;width:100%;height:auto;border-radius:14px;margin-bottom:32px}
 .episode-redesign .ep-nav{justify-content:center;gap:8px;margin:24px 0;background:none;border:0}
 .episode-redesign .ep-nav .pill{font-size:14px;min-height:44px;display:inline-flex;align-items:center;padding:8px 21px;border:1px solid var(--ep-line);border-radius:999px;background:#fff;color:var(--ep-muted);text-decoration:none}
@@ -29,16 +29,16 @@
 .episode-redesign .bubble-row.b{justify-content:flex-start;flex-direction:row-reverse}
 .episode-redesign .scene-avatar{display:grid;place-items:center;flex:0 0 56px;width: 56px;height:56px;border-radius:50%;background:#eeeeec;overflow:hidden;margin-top:12px}
 .episode-redesign .scene-avatar img{display:block;width:40px;height:68px;object-fit:contain;object-position:center bottom}
-.episode-redesign .bubble{min-width:0;width:auto;max-width:calc(100% - 64px);padding:16px 21px;border:0;border-radius:16px;background:#f2f2f2;box-shadow:none;overflow-wrap:anywhere;}
+.episode-redesign .bubble{min-width:0;width:auto;max-width:calc(100% - 64px);padding:16px 21px 12px;border:0;border-radius:16px;background:#f2f2f2;box-shadow:none;overflow-wrap:anywhere;}
 .episode-redesign .bubble-row.a .bubble{background:#f2f2f2;border:0}
 .episode-redesign .bubble-row.b .bubble{background:#fff0e2;border:0}
 .episode-redesign .bubble::before,.episode-redesign .bubble::after{display:none}
 .episode-redesign .episode-scene .who{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 .episode-redesign .bubble-row.b .scene-avatar{background:#fff0e2}
 .episode-redesign .jp-row{display:flex;align-items:flex-start;gap:8px;min-width:0}
-.episode-redesign .jp-row>.jp{flex:1;min-width:0;font-size:22px;line-height:2;font-weight:700;overflow-wrap:anywhere}
+.episode-redesign .jp-row>.jp{flex:1;min-width:0;font-size:19px;line-height:2;font-weight:700;overflow-wrap:anywhere}
 .episode-redesign .jp rt{font-size:.45em;}
-.episode-redesign .kr{font-size:16px;color:var(--ep-muted);line-height:1.8;margin-top:6px}
+.episode-redesign .kr{font-size:15px;color:var(--ep-muted);line-height:1.8;margin-top:6px}
 .episode-redesign .bubble-row.b .who{color:var(--ep-muted);text-align:left}
 .episode-redesign .bubble-row.b .kr{color:var(--ep-muted);}
 .episode-redesign mark.key{color:inherit;background:none;border-bottom:2px solid #b95b15;border-radius:0}
@@ -47,14 +47,16 @@
 .episode-redesign .spk.playing{background:#dedede;outline:1px solid #6d6a69}
 .episode-redesign .bubble-row.b .spk{color:var(--ep-ink);background:#fff;margin-left:0}
 .episode-redesign .bubble-row.b .spk.playing{background:#ffe2bd;color:var(--ep-ink)}
+ .episode-redesign .bubble-row.same-speaker{margin-top:-8px}
+ .episode-redesign .bubble-row.same-speaker .scene-avatar{visibility:hidden}
 .episode-redesign .episode-points{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;padding:28px 0;background:#fff;border:1px solid var(--ep-line);border-radius:22px}
-.episode-redesign .kp{min-width:0;display:flex;flex-direction:column;border:0;border-right:1px dashed var(--ep-line);border-radius:0;background:none;padding:0 26px}
+.episode-redesign .kp{min-width:0;display:flex;flex-direction:column;border:0;border-right:1px dashed var(--ep-line);border-radius:0;background:none;padding:0 24px}
 .episode-redesign .kp:last-child{border-right:0}
 .episode-redesign .kp-top{display:flex;flex-wrap:nowrap;gap:10px;align-items:flex-start}
 .episode-redesign .kp-no{background:var(--ep-orange);color:#fff;font-size:14px;width:24px;height:24px;flex:0 0 24px;margin-top:10px}
-.episode-redesign .kp-jp{font-family:var(--font-jp);font-size:22px;font-weight:800;line-height:1.8;overflow-wrap:anywhere;word-break:normal;flex:1;min-width:0;color:var(--ep-ink)}
+.episode-redesign .kp-jp{font-family:var(--font-jp);font-size:20px;font-weight:800;line-height:1.8;overflow-wrap:anywhere;word-break:normal;flex:1;min-width:0;color:var(--ep-ink)}
 .episode-redesign .kp-kr{display:block;margin:10px 0 12px 34px;color:var(--ep-orange);font-size:17px;font-weight: 700;line-height:1.6}
-.episode-redesign .kp-note{display:block;margin:0 0 0 34px;color:var(--ep-muted);font-size:14px;line-height:1.8;overflow-wrap:anywhere}
+.episode-redesign .kp-note{display:block;margin:0 0 0 34px;color:var(--ep-muted);font-size:14px;line-height:1.6;overflow-wrap:anywhere}
 .episode-redesign .kp-example{font-size:12px;line-height:1.7;color:var(--ep-muted);margin:12px 0 16px 34px}
 .episode-redesign .kp-example summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:6px;font-size:13px;background:none;border:0;padding:0}
 .episode-redesign .kp-example summary::before{content:'＋'}
@@ -63,7 +65,7 @@
 .episode-redesign .kp-line-jp{align-items:flex-start;flex-wrap:wrap}
 .episode-redesign .kp-line-jp .jp{font-size:15px;min-width:0;overflow-wrap:anywhere}
 .episode-redesign .kp-line-kr{font-size:12px;line-height:1.8}
-.episode-redesign .kp-unsure{margin-top:auto;min-height:44px;border-radius:7px;color:var(--ep-muted);border:1px solid #e6e2e2;font-size:14px;padding:10px}
+.episode-redesign .kp-unsure{margin-top:auto;min-height:44px;border-radius:7px;color:var(--ep-muted);border:1px solid #ccc;font-size:13px;padding:10px}
 .episode-redesign .kp-unsure[data-done]{background:#fff0e2;border-color:#f1bd95;color:#4b4b4b}
 .episode-redesign .stampboard{background:var(--ep-soft);border:0;border-radius:22px;padding:22px;margin-top:18px}
 .episode-redesign .stamp-row{gap:8px}
@@ -81,24 +83,26 @@
 .episode-redesign .later-title::before{content:'BONUS';display:inline-block;vertical-align:middle;margin-right:10px;padding:5px 10px;border-radius:999px;background:#504e49;color:#fff;font:600 11px var(--font-kr)}
 .episode-redesign .later-count{font-size:12px;color:var(--ep-muted)}
 .episode-redesign .later-body{padding:0 22px 24px}
-.episode-redesign .later-h{font-size:16px;font-family: var(--font-point);font-weight: 500;color:var(--ep-orange);line-height:1.8}
+.episode-redesign .later-h{font-size:15px;font-family: var(--font-point);font-weight: 500;color:var(--ep-orange);line-height:1.8}
 .episode-redesign .later-part,.episode-redesign #later-kanji{scroll-margin-top:88px;scroll-margin-bottom:100px}
-.episode-redesign .word-card{background:#fbf3e6;border:0;border-radius:12px;display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:24px;min-width:0}
+.episode-redesign .word-card{background:#fff1d5;border:0;border-radius:12px;display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:24px;min-width:0}
 .episode-redesign .word-jp-row{min-width:0;gap:6px;flex-wrap:wrap}
 .episode-redesign .word-jp{white-space:normal;overflow-wrap:anywhere;color:var(--ep-ink);font-size:23px;font-weight: 800;}
 .episode-redesign .word-body{min-width:0}.episode-redesign .word-mean{color:var(--ep-ink);font-size:17px;line-height:1.8}.episode-redesign .word-note{color:var(--ep-muted);font-size:15px;line-height:1.8}
 .episode-redesign .episode-question{padding:24px;margin:16px 0;background:#fbfbfb;border-radius:12px;font-size:14px;line-height:1.9;color:var(--ep-muted);overflow-wrap:anywhere}
-.episode-redesign .compare-title{font-size:17px;font-family:var(--font-jp);color:var(--ep-ink);line-height:1.9;margin:0 0 16px}
-.episode-redesign .compare-title span {font-size: 22px; font-weight: 800;}
-.episode-redesign .episode-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:12px 0;gap:0;background:#fff;border-radius:8px;overflow:hidden}
+.episode-redesign .compare-title{font-size:16px;font-family:var(--font-jp);color:var(--ep-ink);line-height:1.9;margin:0;}
+.episode-redesign .compare-title span {font-size: 20px; font-weight: 800;}
+.episode-redesign .episode-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:6px 0;gap:0;background:#fff;border-radius:8px;overflow:hidden;border: 1px solid var(--ep-line);}
 .episode-redesign .episode-comparison>div{min-width:0}
-.episode-redesign .episode-comparison dt{background:#ffead8;color:var(--ep-ink);font-family:var(--font-jp);font-weight:700;text-align:center;padding:8px 12px}
-.episode-redesign .episode-comparison dd{padding:16px;margin:0;font-size:13px;line-height:1.9}
-.episode-redesign .comparison-conclusion{border-left:2px solid #eba26d;padding-left:12px}
+.episode-redesign .episode-comparison dt{background:#e5dcd6;color:var(--ep-ink);font-family:var(--font-jp);font-weight:700;text-align:center;padding:8px 12px}
+.episode-redesign .episode-comparison dd{padding:16px;margin:0;font-size:13px;line-height:1.9;text-align: center;}
+.episode-redesign .comparison-conclusion{/*border-left:2px solid #eba26d;padding-left:12px;*/color: var(--ep-ink);}
+.episode-redesign .comparison-conclusion::before {content: '💡';}
 .episode-redesign .later-kanji-link{text-align:center;margin-top:24px}
-.episode-redesign .later-kanji-link a{display:inline-flex;align-items:center;min-height:44px;border:1px solid var(--ep-line);border-radius:999px;padding:8px 20px;color:var(--ep-muted);text-decoration:none;font-size:13px}
+.episode-redesign .later-kanji-link a{display:inline-flex;align-items:center;min-height:44px;border:1px solid #ccc;border-radius:999px;padding:8px 20px;color:var(--ep-muted);text-decoration:none;font-size:13px}
 .episode-redesign .episode-next{margin:20px 0;background:#fff;border:1px solid var(--ep-line);border-radius:22px;padding:24px;color:var(--ep-muted)}
 .episode-redesign .episode-next .sec-title{margin:0 0 16px}
+.episode-redesign .episode-next .sec-title .badge{display: inline-block;vertical-align: middle;padding: 5px 10px;border-radius: 999px;background: #504e49; color: #fff; font: 600 11px var(--font-kr);}
 .episode-redesign .episode-next .next-card{margin:0;background:none;border:0;border-radius:0;padding:0;color:var(--ep-muted)}
 .episode-redesign .next-label{font-size:20px;margin-bottom:12px}
 .episode-redesign .episode-next .next-label{display:none}
@@ -121,8 +125,6 @@
  .episode-redesign .bubble-row{gap:8px}
  .episode-redesign .scene-avatar{flex-basis:36px;width:36px;height:36px}
  .episode-redesign .scene-avatar img{width:29px;height:32px}
- .episode-redesign .bubble-row.same-speaker{margin-top:-8px}
- .episode-redesign .bubble-row.same-speaker .scene-avatar{visibility:hidden}
  .episode-redesign .bubble{max-width:calc(100% - 44px);padding:12px;flex:1;border-radius:12px}
  .episode-redesign .jp-row{gap:4px}.episode-redesign .jp-row>.jp{font-size:16px;line-height:2.1}
  .episode-redesign .kr{font-size:12px}
@@ -143,3 +145,7 @@
  .episode-redesign .cta{padding:24px 16px}.episode-redesign .cta-title{font-size:21px}
 }
 @media(prefers-reduced-motion:reduce){.episode-redesign .spk,.episode-redesign .kp-unsure{transition:none;animation:none}}
+
+/* One focus width for every Episode section; edit this variable to test 800px. */
+.episode-redesign{--episode-reading-width:840px}
+.episode-redesign .wrap.reading{max-width:var(--episode-reading-width)}

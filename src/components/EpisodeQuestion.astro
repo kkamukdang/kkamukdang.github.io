@@ -1,15 +1,14 @@
 ---
 import Rich from './Rich.astro';
-import { questionDisplay } from '../lib/ui/episode-display';
-interface Props { season: number; no: number; question: { title: string; answer: string } }
-const { season, no, question } = Astro.props;
-const display = questionDisplay(season, no, question);
+import type { Question } from '../lib/content/more-content';
+interface Props { question: Question }
+const { question } = Astro.props;
 ---
 <section class="episode-question">
   <Rich tag="h4" class="compare-title" text={question.title} />
-  {display.kind === 'comparison' ? <>
-    {display.intro && <Rich tag="p" text={display.intro} />}
-    <dl class="episode-comparison">{display.items.map((item) => <div><dt lang="ja">{item.term}</dt><dd><Rich text={item.text} /></dd></div>)}</dl>
-    {display.conclusion && <Rich tag="p" class="comparison-conclusion" text={display.conclusion} />}
-  </> : <Rich tag="p" class="tip" text={display.text} />}
+  {question.kind === 'compare' ? <>
+    {question.intro && <Rich tag="p" text={question.intro} />}
+    <dl class="episode-comparison">{question.items.map((item) => <div><dt lang="ja"><Rich tag="span" text={item.term} /></dt><dd><Rich text={item.description} /></dd></div>)}</dl>
+    {question.note && <Rich tag="p" class="comparison-conclusion" text={question.note} />}
+  </> : <Rich tag="p" class="tip" text={question.answer} />}
 </section>

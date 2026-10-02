@@ -101,7 +101,7 @@ mark.key{
   transition:transform .18s ease;
 }
 .later[open] > summary::after{ transform:rotate(180deg); }
-.later > summary:hover{ background:var(--bg-soft); }
+/* .later > summary:hover{ background:var(--bg-soft); } */
 .later-title{ font-size:var(--fs-base); font-weight:700; color:var(--text); }
 .later-count{ font-size:var(--fs-sm); color:var(--muted); }
 .later-body{ padding:0 var(--space-2) 20px; }
@@ -109,7 +109,6 @@ mark.key{
 /* 안쪽 소제목 */
 .later-part + .later-part{
   margin-top:26px; padding-top:22px;
-  border-top:1px solid var(--line);
 }
 .later-h{
   margin:0 0 12px; font-size:var(--fs-sm); 

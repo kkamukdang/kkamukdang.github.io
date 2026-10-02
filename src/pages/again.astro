@@ -4,7 +4,7 @@ import StampBoard from '../components/StampBoard.astro';
 import { SITE, url } from '../lib/site';
 import '../styles/again.css';
 ---
-<Base title={`다시 만나기 — ${SITE.name}`} description="전에 본 표현, 지금 떠오르시나요?" nav="again">
+<Base title={`다시 만나기 — ${SITE.name}`} description="전에 본 표현, 지금 떠오르시나요?" nav="again" bodyClass="again-focus">
   <div class="wrap reading" data-review-v2="true" data-catalog-url={url('/expressions.json')}>
     <header class="again-head">
       <div class="hero-eyebrow">까먹당 · 다시 만나기</div>

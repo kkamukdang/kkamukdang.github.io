@@ -14,7 +14,7 @@
 import type { APIRoute } from 'astro';
 import { getListed } from '../lib/episodes';
 import { toKanji, toKana, toPlain, toParts } from '../lib/furigana';
-import { getVisibleMoreContent } from '../lib/content/more-content';
+import { getVisibleMoreContent, questionAnswerText } from '../lib/content/more-content';
 
 /** 검색용 표준형: 공백·구두점을 걷어내고 소문자로 */
 const norm = (s: string) =>
@@ -46,7 +46,7 @@ export const GET: APIRoute = async () => {
     const entries = [
       ...d.wordGroups.flatMap((g) => g.items.map((i) => entry(i.jp, i.mean, '단어'))),
       ...d.scene.map((l) => entry(l.jp, l.kr, '대화')),
-      ...more.questions.map((question) => entry(question.title, question.answer, '더 파보기')),
+      ...more.questions.map((question) => entry(question.title, questionAnswerText(question), '더 파보기')),
     ];
 
     return {

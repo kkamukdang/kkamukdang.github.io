@@ -75,7 +75,7 @@
   border:1px solid transparent; border-radius:999px;
   font-family:var(--font-kr); font-weight: 500;
 }
-.tag-chip.on{ color:var(--on-hot); background:var(--home-action); border-color:var(--home-action); font-weight:700; }
+.tag-chip.on{ color:var(--on-hot); background:#4b421c; border-color:#4b421c; font-weight:700; }
 
 /* ---- 회차 카드 ----
    이모지는 글자 폭이 제각각(⚾🍺 vs 🍗🌙)이라 왼쪽에 두면 제목 줄이 어긋나 보입니다.

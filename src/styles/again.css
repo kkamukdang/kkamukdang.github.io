@@ -468,3 +468,7 @@
   font-size:var(--fs-sm); line-height:1.7; color:var(--muted-2);
   text-align:center;
 }
+
+/* Focused review route only; archive/cards retain their existing width. */
+.again-focus{--again-reading-width:840px}
+.again-focus .wrap.reading{max-width:var(--again-reading-width)}

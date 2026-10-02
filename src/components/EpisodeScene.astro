@@ -2,7 +2,7 @@
 import Jp from './Jp.astro';
 import Speak from './Speak.astro';
 import { toRubyMarked } from '../lib/furigana';
-import { speakerAvatar } from '../lib/ui/episode-display';
+import { speakerAvatar, isSameSpeakerContinuation } from '../lib/ui/episode-display';
 import { url } from '../lib/site';
 interface Props { lines: { who: string; side: 'a' | 'b'; jp: string; kr: string }[]; specs?: string[][] }
 const { lines, specs = [] } = Astro.props;
@@ -10,7 +10,7 @@ const { lines, specs = [] } = Astro.props;
 <div class="phone episode-scene">
   {lines.map((line, index) => {
     const avatar = speakerAvatar(line.who);
-    const continues = index > 0 && lines[index - 1].who === line.who && lines[index - 1].side === line.side;
+    const continues = isSameSpeakerContinuation(lines, index);
     return <div class={`bubble-row ${line.side}${continues ? ' same-speaker' : ''}`}>
       <span class="scene-avatar" aria-hidden="true">{avatar ? <img src={url(avatar)} width="48" height="48" alt="" loading="lazy" /> : line.who.slice(0, 1)}</span>
       <div class="bubble">
