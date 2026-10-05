@@ -1,6 +1,6 @@
 @import './point-font.css';
 /* Opt-in Main styling. Shared pages retain their existing tokens and rules. */
-.home-redesign{--home-paper:#fffcf6;--home-orange:#ffc076;--home-ink:#34332e;--home-muted:#716a62;--home-line:#eadfd3;--home-action:#a74600;--home-width:840px;background:var(--home-paper);color:var(--home-ink);background-image:none}
+.home-redesign{--home-paper:#FFF7EA;--home-orange:#ffc076;--home-ink:#34332e;--home-muted:#716a62;--home-line:#eadfd3;--home-action:#a74600;--home-width:840px;background:var(--home-paper);color:var(--home-ink);background-image:none}
 .home-redesign .site-nav{background:#fff;border-bottom:1px solid var(--home-line)}
 .home-redesign .nav-inner{max-width:960px;padding-inline:20px}
 .home-redesign .nav-links{margin-left:auto}
@@ -121,9 +121,9 @@ html[data-home-scroll="true"]{scroll-behavior:smooth}
 .home-redesign .home-greeting,.home-redesign .home-intro-kicker,.home-redesign .home-intro-stage,.home-redesign .home-episodes>.home-container{position:relative;z-index:3}
 .home-redesign .home-glow{position:absolute;display:block;border-radius:50%;pointer-events:none;transform-origin:center;opacity:.88}
 .home-redesign .home-glow-left{width:300px;height:300px;top:-200px;left:max(-36px,calc(50% - 730px));background: #FA9F2A;
-background: radial-gradient(circle,rgba(250, 159, 42, 1) 0%, rgba(253, 217, 169, 1) 41%, rgba(255, 252, 246, 1) 66%);animation:home-glow-left 12s ease-in-out infinite}
+background: radial-gradient(circle,rgba(250, 159, 42, 1) 0%, rgba(253, 217, 169, 1) 41%, rgba(255, 247, 234, 1) 66%);animation:home-glow-left 12s ease-in-out infinite}
 .home-redesign .home-glow-right{width:230px;height:230px;top:23px;right:max(-28px,calc(50% - 560px));background: rgba(255, 204, 0, 0.07);
-background: radial-gradient(circle,rgba(255, 204, 0, 1) 0%, rgba(255, 252, 246, 1) 60%);animation:home-glow-right 14s ease-in-out infinite}
+background: radial-gradient(circle,rgba(255, 204, 0, 1) 0%, rgba(255, 247, 234, 1) 60%);animation:home-glow-right 14s ease-in-out infinite}
 @media(max-width:767px){
  .home-redesign .home-glow-left{width:160px;height:160px;top:310px;left:-78px}
  .home-redesign .home-glow-right{width:150px;height:150px;top:425px;right:-72px}

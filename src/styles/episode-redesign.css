@@ -1,6 +1,6 @@
 @import './point-font.css';
 /* Episode opt-in only. Shared screens, learning selectors and state classes stay intact. */
-.episode-redesign{--ep-paper:#fffcf6;--ep-card:#fff;--ep-ink:#34332e;--ep-muted:#666;--ep-line:#e4e1db;--ep-soft:#fffdf0;--ep-orange:#e87545;background:var(--ep-paper);color:var(--ep-ink);background-image:none}
+.episode-redesign{--ep-paper:#FFF7EA;--ep-card:#fff;--ep-ink:#34332e;--ep-muted:#666;--ep-line:#e4e1db;--ep-soft:#fffdf0;--ep-orange:#e87545;background:var(--ep-paper);color:var(--ep-ink);background-image:none}
 .episode-redesign .site-nav{background:#fff;border-bottom:1px solid var(--ep-line)}
 .episode-redesign .nav-inner{max-width:960px;padding-inline:20px}
 .episode-redesign .wrap.reading{width:calc(100% - 40px);max-width:960px;margin:0 auto;padding:0 0 48px;min-width:0}
