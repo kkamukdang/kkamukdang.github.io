@@ -34,7 +34,7 @@
 /* 이미 찍힌 칸 */
 .stamp-cell.on{ border-style:solid; /* border-color:var(--hot);*/ background:var(--bg-soft);  }
 .stamp-cell.on .stamp-mark{ opacity:1; transform:none; color: var(--stamp); }
-.stamp-cell.on .stamp-label{ color:var(--muted); font-weight:700; }
+.stamp-cell.on .stamp-label{ color:var(--stamp); font-weight:700; }
 
 /* 방금 찍히는 칸
    ------------------------------------------------------------
@@ -66,13 +66,13 @@
 .stamp-cell{ position:relative; overflow:visible;}
 .stamp-cell.just::after{
   content:''; position:absolute; inset:-2px;
-  border:2px solid var(--accent-ink); border-radius:13px;
+  border:2px solid var(--ep-orange); border-radius:13px;
   opacity:0; pointer-events:none;
   animation:stamp-ring .7s ease-out .18s both;
 }
 @keyframes stamp-ring{
   0%  { opacity:.85; transform:scale(1); }
-  100%{ opacity:0;  transform:scale(1.35); }
+  100%{ opacity:0;  transform:scale(1.25); }
 }
 
 .stamp-note{

@@ -3,6 +3,7 @@ import { access, readFile } from 'node:fs/promises';
 import yaml from 'js-yaml';
 import { describe, expect, it } from 'vitest';
 import { createRegistryIndex, loadExpressionRegistry } from '../../src/lib/content/expression-registry';
+import { sceneLineSchema, splitSceneLines } from '../../src/lib/ui/episode-display';
 import type { EpisodeData } from '../../src/lib/content/episode-types';
 import { toRubyReviewTarget } from '../../src/lib/furigana';
 import { isEpisodeReviewReady, resolveReviewPrompt, validateEpisodeReviewContent } from '../../src/lib/learning/review-content';
@@ -28,10 +29,11 @@ async function episode3(): Promise<EpisodeData & {
   reviewTargets: Array<{ id: string; scene: string; cloze: string; answer: string }>;
   wordGroups: Array<{ label: string; items: Array<{ jp: string; mean: string; note?: string }> }>;
 }> {
-  return yaml.load(await readFile('src/data/episodes/003-baseball-beer-run.yaml', 'utf8')) as EpisodeData & {
+  const raw = yaml.load(await readFile('src/data/episodes/003-baseball-beer-run.yaml', 'utf8')) as EpisodeData & {
     reviewTargets: Array<{ id: string; scene: string; cloze: string; answer: string }>;
     wordGroups: Array<{ label: string; items: Array<{ jp: string; mean: string; note?: string }> }>;
   };
+  return { ...raw, ...splitSceneLines(sceneLineSchema.array().parse(raw.scene)) };
 }
 
 describe('Work 3-3 Episode #003 콘텐츠 계약', () => {
@@ -170,5 +172,26 @@ describe('Work 3-3 Episode #003 콘텐츠 계약', () => {
     expect(result).toMatchObject({ ok: true, matchedExpectedGaps: true });
     expect(result.summary.actualGaps).toBe(result.summary.expectedGaps);
     expect(result.gaps.some((gap: { episodeId: string }) => gap.episodeId === 's01e03')).toBe(false);
+  });
+});
+
+
+describe('Work 3-3 narration projection regression', () => {
+  it('keeps every R1 scene and sceneIndex when any number of narration lines are inserted', async () => {
+    const episode = await episode3();
+    const registry = createRegistryIndex(await loadExpressionRegistry());
+    const mixed = episode.scene.flatMap(line => [
+      { kind: 'narration', text: '잠시 후' }, line,
+      { kind: 'narration', text: '장면 전환' },
+    ]);
+    const projected = { ...episode, ...splitSceneLines(sceneLineSchema.array().parse(mixed)) };
+    expect(projected.scene).toEqual(episode.scene);
+    expect(projected.sceneLines).toHaveLength(episode.scene.length * 3);
+    expect(projected.keyPoints.map(point => point.sceneIndex)).toEqual(episode.keyPoints.map(point => point.sceneIndex));
+    expect(projected.keyPoints.find(point => point.id === 's01e03-sekiwotatsu')!.sceneIndex).toBe(5);
+    for (const point of episode.keyPoints) {
+      const args = { keyPoint: point, registry: registry.active[point.id]!, state: stageState('R1') };
+      expect(resolveReviewPrompt({ ...args, episode: projected })).toEqual(resolveReviewPrompt({ ...args, episode }));
+    }
   });
 });

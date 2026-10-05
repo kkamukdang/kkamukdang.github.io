@@ -3,7 +3,7 @@ import { url } from '../lib/site';
 import { heroPreviewScenes } from '../lib/ui/hero-scenes';
 const samples = heroPreviewScenes();
 ---
-<section class="home-intro" aria-labelledby="home-intro-title" data-home-hero data-hero-state="intro" data-catalog-url={url('/expressions.json')} data-again-url={url('/again/')}>
+<section class="home-intro" aria-labelledby="home-intro-title" data-home-hero data-hero-state="intro" data-hero-pending="true" data-catalog-url={url('/expressions.json')} data-again-url={url('/again/')}>
   <p class="home-intro-kicker"><img src={url('/ui/hero-bird.webp')} width="40" height="28" alt="" />배우고, 까먹고, 다시 만나는 일본어</p>
   <div class="home-intro-stage">
     <div class={`home-hero-scenes count-${samples.length}`} data-hero-scenes data-count={samples.length}>

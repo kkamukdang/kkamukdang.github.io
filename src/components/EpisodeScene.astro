@@ -16,7 +16,7 @@ const { lines, specs = [] } = Astro.props;
       <span class="scene-avatar" aria-hidden="true">{avatar ? <img src={url(avatar)} width="48" height="48" alt="" loading="lazy" /> : line.who.slice(0, 1)}</span>
       <div class="bubble">
         <div class="who">{line.who}</div>
-        <div class="jp-row">{specs.length ? <span class="jp" lang="ja" set:html={toRubyMarked(line.jp, specs)} /> : <Jp text={line.jp} class="jp" />}<Speak text={line.jp} /></div>
+        <div class="jp-row">{specs.length ? <span class="jp" lang="ja" set:html={toRubyMarked(line.jp, specs)} /> : <Jp text={line.jp} class="jp" />}<Speak text={line.jp} speaker={line.who} /></div>
         <div class="kr">{line.kr}</div>
       </div>
     </div>;

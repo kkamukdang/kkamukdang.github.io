@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { heroPreviewScenes, HERO_PREVIEW_SCENES, HERO_DESKTOP_LIMIT, HERO_MOBILE_LIMIT } from '../../src/lib/ui/hero-scenes';
 import { selectDueExpressions } from '../../src/lib/learning/queue';
-import { homeHeroModel } from '../../src/lib/client/home-hero';
+import { homeHeroModel, heroSceneIcon } from '../../src/lib/client/home-hero';
 import type { BrowserExpression } from '../../src/lib/client/learning-client';
 import { createEmptyState } from '../../src/lib/learning/state';
 import { STORAGE_KEYS } from '../../src/lib/learning/local-storage';
@@ -173,4 +173,27 @@ describe('Hero empty state and representative icon', () => {
     expect(storage.writeCount).toBe(0);
   });
 
+});
+
+
+describe('Main due representative icon rendering policy', () => {
+  it.each([1, 2, 3, 4, 6])('due %i has only the first ordered scene icon; scene counts/flow stay intact', (count) => {
+    const items = Array.from({ length: count }, (_, index) => ({ ...catalog[0],
+      id: `s01e01-voice${String.fromCharCode(97 + index)}` as ExpressionId, emoji: index % 2 ? '⚾' : '🍗',
+    }));
+    const { storage, state } = fixture();
+    for (const item of items) state.expressions[item.id] = expression('2026-10-01');
+    storage.setItem(STORAGE_KEYS.state, JSON.stringify(state)); storage.writeCount = 0;
+    const model = homeHeroModel(storage, items, now);
+    expect(model.kind).toBe('due');
+    expect(model.scenes).toHaveLength(Math.min(count, 4));
+    expect(model.scenes.slice(0, HERO_MOBILE_LIMIT)).toHaveLength(Math.min(count, 2));
+    expect(model.scenes.map((_, index) => heroSceneIcon(model, index)).filter(Boolean)).toEqual([model.scenes[0].icon]);
+    expect(storage.writeCount).toBe(0);
+  });
+  it('intro preserves all four original icons and empty has none', () => {
+    const model = homeHeroModel(new MemoryStorage(), catalog, now);
+    expect(model.scenes.map((_, index) => heroSceneIcon(model, index))).toEqual(['🙊', '⚾', '🛵', '🍗']);
+    expect(heroSceneIcon({ kind: 'empty', scenes: [] }, 0)).toBeUndefined();
+  });
 });

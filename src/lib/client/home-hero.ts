@@ -65,6 +65,12 @@ export function homeHeroModel(
   }
 }
 
+/** Intro keeps all fixed icons; due exposes only its first ordered scene's icon. */
+export function heroSceneIcon(model: HomeHeroModel, index: number): string | undefined {
+  return model.kind === 'intro' || (model.kind === 'due' && index === 0)
+    ? model.scenes[index]?.icon : undefined;
+}
+
 export function initHomeHero(): void {
   const root = document.querySelector<HTMLElement>('[data-home-hero]');
   const title = root?.querySelector<HTMLElement>('#home-intro-title');
@@ -72,6 +78,10 @@ export function initHomeHero(): void {
   const group = root?.querySelector<HTMLElement>('[data-hero-scenes]');
   if (!root || !title || !link || !group) return;
   let catalog: BrowserExpression[] = [];
+  function firstHeroIcon(value = '') {
+    const segmenter = new Intl.Segmenter('ko', { granularity: 'grapheme' });
+    return [...segmenter.segment(value.trim())][0]?.segment ?? '';
+  }
   function paint(): void {
     if (!catalog.length) return; // Keep the fixed server-rendered preview on load failure.
     let model: HomeHeroModel;
@@ -81,24 +91,35 @@ export function initHomeHero(): void {
     group!.dataset.count = String(model.scenes.length);
     group!.className = `home-hero-scenes count-${model.scenes.length}`;
     group!.hidden = model.kind === 'empty';
-    group!.replaceChildren(...model.scenes.map(scene => {
+
+    group!.replaceChildren(...model.scenes.map((scene, index) => {
       const bubble = document.createElement('p');
       bubble.className = 'home-example';
+
       const icon = document.createElement('span');
-      icon.className = 'hero-scene-icon'; icon.setAttribute('aria-hidden', 'true');
-      icon.textContent = scene.icon ?? '';
-      const text = document.createElement('span'); text.className = 'hero-scene-text'; text.textContent = scene.text;
+      icon.className = 'hero-scene-icon';
+      icon.setAttribute('aria-hidden', 'true');
+
+      icon.textContent = firstHeroIcon(scene.icon ?? '');
+
+      const text = document.createElement('span');
+      text.className = 'hero-scene-text';
+      text.textContent = scene.text;
+
       bubble.append(icon, text);
       return bubble;
     }));
     title!.replaceChildren(document.createTextNode(model.kind === 'due' ? '지난번 만난 표현,' : model.kind === 'empty' ? '오늘 만날' : '이런 표현을'), document.createElement('br'), document.createTextNode(model.kind === 'due' ? '기억나세요?' : model.kind === 'empty' ? '표현이 없어요.' : '만날 수 있어요!'));
     link!.textContent = model.kind === 'due' ? '다시 만나기 →' : '에피소드 둘러보기 ↓';
     link!.href = model.kind === 'due' ? root!.dataset.againUrl! : '#episodes';
+    root!.dataset.heroPending = 'false';
   }
   fetch(root.dataset.catalogUrl!)
     .then((response) => { if (!response.ok) throw new Error('catalog unavailable'); return response.json(); })
     .then((value: unknown) => { if (!Array.isArray(value)) throw new Error('invalid catalog'); catalog = value; paint(); })
-    .catch(() => { /* Keep server-rendered intro and existing navigation. */ });
+    .catch(() => { 
+      root!.dataset.heroPending = 'false';
+     });
   window.addEventListener('storage', (event) => { if (!event.key || event.key === STORAGE_KEYS.state || isLegacyKey(event.key)) paint(); });
   window.addEventListener('pageshow', paint);
 }

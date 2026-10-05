@@ -112,6 +112,7 @@ const ogUrl = new URL(ogImage ?? '/og-default.png', canonical);
     (function () {
       var synth = 'speechSynthesis' in window;
       var jaVoice = null;
+      var speakerVoices = [];
       var current = null;
 
       function pickVoice() {
@@ -120,6 +121,29 @@ const ogUrl = new URL(ogImage ?? '/og-default.png', canonical);
           voices.find(function (v) { return v.lang === 'ja-JP'; }) ||
           voices.find(function (v) { return v.lang && v.lang.indexOf('ja') === 0; }) ||
           null;
+        // No gender/name assumptions. Stable identities also ignore duplicate entries.
+        var seen = new Set();
+        speakerVoices = voices.filter(function (v) {
+          if (!/^ja(?:[-_]|$)/i.test(v.lang || '')) return false;
+          var key = (v.voiceURI || v.name) + '|' + v.lang;
+          if (seen.has(key)) return false;
+          seen.add(key); return true;
+        }).sort(function (a, b) {
+          var ka = (a.voiceURI || a.name) + '|' + a.lang;
+          var kb = (b.voiceURI || b.name) + '|' + b.lang;
+          return ka < kb ? -1 : ka > kb ? 1 : 0;
+        });
+      }
+      function voiceForSpeaker(speaker) {
+        // Only the two explicitly approved voices override the existing assignment.
+        var preferredName = speaker === '나'
+          ? 'Microsoft 圭太 Online (Natural) - Japanese (Japan)'
+          : speaker === '친구' ? 'Microsoft 七海 Online (Natural) - Japanese (Japan)' : null;
+        var preferred = preferredName && speakerVoices.find(function (v) { return v.name === preferredName; });
+        if (preferred) return preferred;
+        if (speaker === '나') return speakerVoices[0] || jaVoice;
+        if (speaker === '친구') return speakerVoices[1] || speakerVoices[0] || jaVoice;
+        return jaVoice; // Existing default for unknown or absent speaker.
       }
       if (synth) {
         pickVoice();
@@ -146,6 +170,8 @@ const ogUrl = new URL(ogImage ?? '/og-default.png', canonical);
         var text = btn.getAttribute('data-jp');
 
         if (file) {
+          btn.dataset.playbackSource = 'audio';
+          delete btn.dataset.ttsVoice; delete btn.dataset.ttsVoiceLang; delete btn.dataset.ttsVoiceUri;
           var audio = new Audio(file);
           current = audio;
           btn.classList.add('playing');
@@ -165,7 +191,13 @@ const ogUrl = new URL(ogImage ?? '/og-default.png', canonical);
         }
         var utter = new SpeechSynthesisUtterance(text);
         utter.lang = 'ja-JP';
-        if (jaVoice) utter.voice = jaVoice;
+        pickVoice(); // Handles voices loaded after the initial page event.
+        var voice = voiceForSpeaker(btn.getAttribute('data-speaker'));
+        if (voice) utter.voice = voice;
+        btn.dataset.playbackSource = 'browser-tts';
+        btn.dataset.ttsVoice = voice ? voice.name : 'browser-default';
+        btn.dataset.ttsVoiceLang = voice ? voice.lang : utter.lang;
+        btn.dataset.ttsVoiceUri = voice ? voice.voiceURI : '';
         utter.rate = 0.85;
         btn.classList.add('playing');
         utter.onend = function () { btn.classList.remove('playing'); };

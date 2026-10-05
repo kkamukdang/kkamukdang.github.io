@@ -18,7 +18,7 @@ const expectedQuestionsByEpisode: Record<number, Question[]> = {
       kind: 'compare',
       title: '頼む / 注文する는 어떻게 다를까?',
       items: [
-        { term: '頼む', description: '‘나는 치킨 시킬래’처럼 친구에게 말할 때' },
+        { term: '頼む', description: '"나는 치킨 시킬래"처럼 친구에게 말할 때' },
         { term: '注文する', description: '음식을 주문하는 배달앱 화면이나 가게 안내문 등에서' },
       ],
       note: '음식을 시킬 때는 두 표현 모두 사용할 수 있어요.',
@@ -161,8 +161,9 @@ async function loadAstroComponent(name: string) {
 
 let sceneComponent: Awaited<ReturnType<typeof loadAstroComponent>>;
 let questionComponent: Awaited<ReturnType<typeof loadAstroComponent>>;
+let speakComponent: Awaited<ReturnType<typeof loadAstroComponent>>;
 beforeAll(async () => {
-  [sceneComponent, questionComponent] = await Promise.all([loadAstroComponent('EpisodeScene'), loadAstroComponent('EpisodeQuestion')]);
+  [sceneComponent, questionComponent, speakComponent] = await Promise.all([loadAstroComponent('EpisodeScene'), loadAstroComponent('EpisodeQuestion'), loadAstroComponent('Speak')]);
 });
 
 const speech = { who: '나', side: 'a', jp: '今夜[こんや]は?', kr: '오늘 밤은?' } as const;
@@ -231,5 +232,28 @@ describe('Question renderer follows explicit kind without flattening content', (
     const html = await container.renderToString(questionComponent, { props: { question } });
     expect(html).toContain('일반 <b>문단</b>.');
     expect(html).not.toContain('<dl'); expect(html).not.toContain('<dt'); expect(html).not.toContain('<dd');
+  });
+});
+
+
+describe('Optional speaker metadata on real Speak components', () => {
+  it('passes who independently of side, while narration has no Speak', async () => {
+    const container = await experimental_AstroContainer.create();
+    const html = await container.renderToString(sceneComponent, { props: { lines: [
+      { ...speech, who: '나', side: 'b' }, narration, { ...speech, who: '친구', side: 'a' },
+    ] } });
+    expect(html.match(/data-speaker="나"/g)).toHaveLength(1);
+    expect(html.match(/data-speaker="친구"/g)).toHaveLength(1);
+    expect(html.match(/class="spk"/g)).toHaveLength(2);
+    expect(html).toContain('<p class="scene-narration">잠시 후</p>');
+  });
+  it('speaker remains optional and the existing audio/ruby/laugh/label contracts remain', async () => {
+    const container = await experimental_AstroContainer.create();
+    const html = await container.renderToString(speakComponent, { props: { text: '今夜[こんや](笑)', audio: '/existing.mp3' } });
+    expect(html).not.toContain('data-speaker');
+    expect(html).toContain('data-audio="/existing.mp3"');
+    expect(html).toContain('data-jp="今夜"');
+    expect(html).toContain('aria-label="발음 듣기"');
+    expect(html).toContain('/ui/ico_speaker.webp');
   });
 });

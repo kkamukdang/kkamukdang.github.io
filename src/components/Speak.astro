@@ -13,13 +13,14 @@ import { toPlain } from '../lib/furigana';
 const forSpeech = (t: string) =>
   toPlain(t).replace(/[(（]\s*笑\s*[)）]/g, '').replace(/\s+/g, ' ').trim();
 
-interface Props { text: string; audio?: string; label?: string; class?: string; }
-const { text, audio, label = '발음 듣기', class: className = 'spk' } = Astro.props;
+interface Props { text: string; audio?: string; speaker?: string; label?: string; class?: string; }
+const { text, audio, speaker, label = '발음 듣기', class: className = 'spk' } = Astro.props;
 ---
 <button
   type="button"
   class={className}
   data-jp={forSpeech(text)}
   data-audio={audio}
+  data-speaker={speaker}
   aria-label={label}
 ><img src="/ui/ico_speaker.webp"></button>

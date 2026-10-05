@@ -111,7 +111,7 @@ a.pill:hover{ color:var(--text); border-color:var(--line-2); }
    =========================================================== */
 .site-footer{
   max-width:var(--page-max); margin:24px auto 0; padding:22px var(--page-pad) 12px;
-  border-top:1px solid var(--line);
+  /* border-top:1px solid var(--line); */
   font-size:var(--fs-sm); line-height:1.8; color:var(--muted);
   text-align:center;
 }
